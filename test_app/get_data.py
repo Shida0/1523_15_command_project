@@ -11,11 +11,13 @@ def get_neo() -> tuple:
     neo_list_csv = [] # для csv
     neo_list_json = [] # для json
     
+    print("Проходимся по атсероидам")
     for asteroid in all_asteroids:
         try:
             perihelion = float(asteroid['perihelion_distance']) # перигелий
             
             if perihelion <= 1.3:  # Значит это NEO
+                print("Получен NEO")
                 is_pha = asteroid.get('pha', False) # является ли астероид потенциально опасным
                 H_mag = float(asteroid['absolute_magnitude'])
                 
@@ -49,6 +51,8 @@ def get_neo() -> tuple:
                 neo_list_csv.append(neo_list)
                 neo_list_json.append(neo_dict)
                 
+                print("NEO записан")
+                
             
         except Exception as e:
             print(f"Ошибка при анализе астероидов: {e}")
@@ -58,8 +62,7 @@ def get_neo() -> tuple:
 
 # Записываем информацию в json файл с датой в названии
 def write_json(data: list[dict]) -> None:
-    today = datetime.now().strftime("%Y-%m-%d")
-    filename = f"data/neo_data_{today}.json" # создаем название для файла
+    filename = f"data/neo_data.json" # создаем название для файла
     
     # Добавляем метаданные
     output_data = {
@@ -77,8 +80,7 @@ def write_json(data: list[dict]) -> None:
 
 # Записываем информацию в csv с датой в названии
 def write_csv(data: list[list]) -> None:
-    today = datetime.now().strftime("%Y-%m-%d")
-    filename = f"data/neo_data_{today}.csv" # создаем название для файла
+    filename = f"data/neo_data.csv" # создаем название для файла
     
     with open(filename, "w", newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
