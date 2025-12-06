@@ -18,3 +18,48 @@
 
 Для поиска и мониторинга астероидов используется библиотека astroquery.
 База данных - PostgreSQL, библиотеки - asyncpg и sqlalchemy, миграция бд - alembic.
+
+## 🏗️ Архитектура проекта
+
+### Принципиальная схема потока данных
+
+[Внешние источники данных] → [Ежедневное обновление] → [База данных] → [API] → [Пользователь]
+
+### Структура каталогов (обновленная)
+
+asteroid-watch/
+├── models/              # SQLAlchemy модели данных
+│   ├── asteroid.py      # Модель астероида
+│   ├── close_approach.py # Модель сближения
+│   └── threat_assessment.py # Модель оценки угрозы
+├── services/            # Бизнес-логика
+│   ├── data_updater.py  # Служба обновления данных
+│   ├── asteroid_service.py # Работа с данными астероидов
+│   └── monitoring_service.py # Сервис мониторинга
+├── controllers/         # Управление БД
+│   ├── asteroid_controller.py
+│   ├── approach_controller.py
+│   └── threat_controller.py
+├── schemas/             # Pydantic схемы
+│   ├── asteroid.py
+│   ├── approach.py
+│   └── threat.py
+├── utils/               # Вспомогательные модули
+│   ├── space_math.py    # Математические вычисления
+│   ├── get_data.py      # Получение внешних данных
+│   └── monitoring.py    # Функции мониторинга
+├── views/               # FastAPI эндпоинты
+│   ├── asteroids.py
+│   ├── approaches.py
+│   ├── threats.py
+│   └── admin.py
+├── frontend/            # Веб-интерфейс
+│   ├── templates/       # HTML шаблоны
+│   └── static/          # CSS, JS, изображения
+├── tasks/               # Фоновые задачи
+│   └── nightly_update.py # Ежедневное обновление
+└── config/              # Конфигурация
+    ├── database.py      # Настройки БД
+    └── scheduler.py     # Настройки планировщика
+
+
