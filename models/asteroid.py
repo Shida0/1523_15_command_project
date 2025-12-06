@@ -56,6 +56,11 @@ class AsteroidModel(Base):
         nullable=False,
         comment="Расчетный диаметр в километрах"
     )
+    accurate_diameter: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        comment="Диаметр точный или же расчитан нами по стандартному альбедо"
+    )
     albedo: Mapped[Optional[float]] = mapped_column(
         Float,
         nullable=True,
