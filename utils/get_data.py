@@ -3,9 +3,9 @@ from astroquery.jplsbdb import SBDB
 from datetime import datetime
 import logging
 
-from utils.space_math import *
+from .space_math import *
 
-logger = logging.Logger()
+logger = logging.Logger(__name__)
 
 # Получаем данные обо всех NEO в данный момент
 def get_neo() -> tuple:
@@ -17,7 +17,7 @@ def get_neo() -> tuple:
             perihelion = float(asteroid['perihelion_distance']) # перигелий
             
             if perihelion <= 1.3:  # Значит это NEO
-                ast_id = asteroid["number"]                
+                ast_id = int(asteroid["number"])                
                 is_pha = asteroid.get('pha', False) # является ли астероид потенциально опасным
                 H_mag = float(asteroid['absolute_magnitude'])
                 
@@ -32,33 +32,37 @@ def get_neo() -> tuple:
                     else:
                         accurate_diameter = False
                         diameter = get_size_by_h_mag(H_mag) # диаметр не точен
+                        albedo = 0.15
                                                                 
                 else:
                     accurate_diameter = False
                     diameter = get_size_by_h_mag(H_mag)
+                    albedo = 0.15
                     
-            # все наши данные на 1 астероид
-            ast_data = { 
-                "number": asteroid["number"],
-                "name": asteroid.get("name"),
-                "designation": asteroid.get("designation"),
-                "perihelion": perihelion,
-                "aphelion": asteroid.get("aphelion_distance"),
-                "earth_moid": asteroid.get("earth_moid"),
-                "is_neo": True,
-                "is_pha": is_pha,
-                "H_mag": H_mag,
-                "diameter": diameter,
-                "accurate_diameter": accurate_diameter,
-                "last_updated": datetime.now().isoformat()
-            }
-            
-            out_data.append(ast_data)
+                # все наши данные на 1 астероид
+                ast_data = { 
+                    "mpc_number": asteroid["number"],
+                    "name": asteroid.get("name"),
+                    "designation": asteroid.get("designation"),
+                    "perihelion_au": perihelion,
+                    "aphelion_au": float(asteroid.get("aphelion_distance")),
+                    "earth_moid_au": float(asteroid.get("earth_moid")),
+                    "is_neo": True,
+                    "is_pha": is_pha,
+                    "absolute_magnitude": H_mag,
+                    "estimated_diameter_km": diameter,
+                    "accurate_diameter": accurate_diameter,
+                    "albedo": albedo,
+                    "last_updated": datetime.now()
+                }
+                
+                out_data.append(ast_data)
+                
+                logger.info(f"Данные для астероида {asteroid.get('name')} ({asteroid['number']}) были получены!")
                 
         except Exception as e:
             logger.error(f"Ошибка при анализе астероидов: {e}")
             continue
         
-        finally:
-            return out_data
+    return out_data
         

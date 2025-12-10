@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 import time
 import logging
 
-from space_math import *
+from .space_math import *
 
-logger = logging.Logger()
+logger = logging.Logger(__name__)
 
 def get_current_close_approaches(data: list, days: int = 30) -> list:
     """

@@ -9,3 +9,8 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+
+# write data to DB
+import utils
+
+utils.write_data()

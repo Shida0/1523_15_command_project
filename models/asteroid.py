@@ -1,4 +1,4 @@
-from sqlalchemy import CheckConstraint, Float, String, Boolean, JSON
+from sqlalchemy import CheckConstraint, Float, String, Boolean, JSON, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, Optional
 from datetime import datetime
@@ -79,16 +79,6 @@ class AsteroidModel(Base):
         default=False,
         nullable=False,
         comment="Является ли потенциально опасным (PHA)"
-    )
-    
-    # Дополнительные данные
-    orbit_data: Mapped[Optional[dict]] = mapped_column(
-        JSON,
-        nullable=True,
-        comment="Дополнительные орбитальные параметры в формате JSON"
-    )
-    last_orbit_update: Mapped[Optional[datetime]] = mapped_column(
-        comment="Дата последнего обновления орбитальных данных из внешних источников"
     )
     
     # Связи с другими таблицами
