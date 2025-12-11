@@ -246,7 +246,7 @@ class AsteroidController(BaseController[AsteroidModel]):
             total = total_result.scalar() or 0
             
             # Количество PHA
-            pha_query = select(func.count()).where(self.model.is_pha == True)
+            pha_query = select(func.count()).select_from(self.model).where(self.model.is_pha == True)
             pha_result = await session.execute(pha_query)
             pha_count = pha_result.scalar() or 0
             

@@ -5,7 +5,7 @@ import logging
 
 from .space_math import *
 
-logger = logging.Logger(__name__)
+logger = logging.getLogger(__name__)
 
 # Получаем данные обо всех NEO в данный момент
 def get_neo() -> tuple:
@@ -17,27 +17,31 @@ def get_neo() -> tuple:
             perihelion = float(asteroid['perihelion_distance']) # перигелий
             
             if perihelion <= 1.3:  # Значит это NEO
-                ast_id = int(asteroid["number"])                
+                ast_id = asteroid.get("number")
+                if ast_id:
+                    ast_id = int(ast_id) if ast_id.isdigit() else None          
+                          
                 is_pha = asteroid.get('pha', False) # является ли астероид потенциально опасным
                 H_mag = float(asteroid['absolute_magnitude'])
                 
                 phys_data = SBDB.query(ast_id, phys=True).get('physical_parameters') # обращаемся к другой базе данных где может быть диаметр
                 if phys_data:
-                    albedo = phys_data.get("albedo")
+                    albedo = phys_data.get("albedo", 0.15)
                     diameter = phys_data.get("diameter")
-                    accurate_diameter = True
                     
-                    if not diameter and albedo:
-                        diameter = get_size_by_albedo(albedo, H_mag) # расчитываем диаметр по альбедо
+                    if diameter:
+                        accurate_diameter = True
                     else:
+                        # Диаметр по альбедо или по стандартному
+                        if albedo and albedo != 0.15:
+                            diameter = get_size_by_albedo(albedo, H_mag)
+                        else:
+                            diameter = get_size_by_h_mag(H_mag)
                         accurate_diameter = False
-                        diameter = get_size_by_h_mag(H_mag) # диаметр не точен
-                        albedo = 0.15
-                                                                
                 else:
-                    accurate_diameter = False
-                    diameter = get_size_by_h_mag(H_mag)
                     albedo = 0.15
+                    diameter = get_size_by_h_mag(H_mag)
+                    accurate_diameter = False
                     
                 # все наши данные на 1 астероид
                 ast_data = { 

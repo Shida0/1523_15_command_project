@@ -61,9 +61,9 @@ class AsteroidModel(Base):
         nullable=False,
         comment="Диаметр точный или же расчитан нами по стандартному альбедо"
     )
-    albedo: Mapped[Optional[float]] = mapped_column(
+    albedo: Mapped[float] = mapped_column(
         Float,
-        nullable=True,
+        nullable=False,
         comment="Альбедо (отражательная способность), если известно"
     )
     
@@ -107,6 +107,11 @@ class AsteroidModel(Base):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        
+        # Проверка альбедо
+        if self.albedo <= 0 or self.albedo > 1:
+            raise ValueError(f"Альбедо должно быть в диапазоне (0, 1]. Получено: {self.albedo}")
+        
         # Автоматическая проверка: афелий всегда больше перигелия
         if self.aphelion_au <= self.perihelion_au:
             raise ValueError(

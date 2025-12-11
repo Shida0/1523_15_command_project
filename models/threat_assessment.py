@@ -78,5 +78,8 @@ class ThreatAssessmentModel(Base):
     def _calculate_input_hash(self) -> str:
         """Вычисляет хеш входных данных для отслеживания изменений."""
         import hashlib
-        input_data = f"{self.threat_level}:{self.impact_category}:{self.energy_megatons}"
+        threat_level = getattr(self, 'threat_level', '')
+        impact_category = getattr(self, 'impact_category', '')
+        energy = getattr(self, 'energy_megatons', 0.0)
+        input_data = f"{threat_level}:{impact_category}:{energy}"
         return hashlib.sha256(input_data.encode()).hexdigest()

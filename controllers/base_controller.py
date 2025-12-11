@@ -159,7 +159,7 @@ class BaseController(Generic[ModelType]):
         self, 
         session: AsyncSession, 
         skip: int = 0, 
-        limit: int = 100
+        limit: int|None = 100
     ) -> List[ModelType]:
         """
         Получает все записи с пагинацией.

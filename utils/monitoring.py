@@ -5,7 +5,7 @@ import logging
 
 from .space_math import *
 
-logger = logging.Logger(__name__)
+logger = logging.getLogger(__name__)
 
 def get_current_close_approaches(data: list, days: int = 30) -> list:
     """

@@ -116,7 +116,8 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
             threat = await self.update(session, threat.id, new_data)
             
             # Пересчитываем хеш входных данных
-            threat.calculation_input_hash = None  # Будет пересчитан в __init__
+            threat.calculation_input_hash = threat._calculate_input_hash()
+            await session.flush()  # Сохраняем изменения
             
             logger.info(f"Обновлена оценка угрозы для сближения ID {approach_id}")
             return threat

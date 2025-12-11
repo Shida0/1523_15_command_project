@@ -4,7 +4,7 @@
 и массовых операций для ежедневного обновления.
 """
 from typing import List, Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 import logging
@@ -133,7 +133,7 @@ class ApproachController(BaseController[CloseApproachModel]):
             Список ближайших сближений
         """
         try:
-            now = datetime.now(datetime.UTC)
+            now = datetime.now(timezone.utc)
             
             query = (
                 select(self.model)
