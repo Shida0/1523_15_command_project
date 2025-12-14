@@ -14,9 +14,27 @@ class Base(AsyncAttrs, DeclarativeBase):
     @declared_attr.directive
     def __tablename__(cls) -> str:
         """Автоматически генерирует имя таблицы из имени класса."""
-        name = cls.__name__ # Преобразует CamelCase в snake_case (Asteroid → asteroids)
-        name = re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
-        return name + 's'
+        name = cls.__name__
+        
+        # Улучшенная логика преобразования CamelCase в snake_case
+        # Обрабатываем аббревиатуры правильно
+        name = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', name)
+        name = re.sub(r'([A-Z])([A-Z][a-z])', r'\1_\2', name)
+        name = name.lower()
+        
+        # Преобразование в множественное число
+        if name.endswith(('s', 'x', 'z', 'ch', 'sh')):
+            name += 'es'
+        elif name.endswith('y') and name[-2] not in 'aeiou':
+            name = name[:-1] + 'ies'
+        elif name.endswith('f'):
+            name = name[:-1] + 'ves'
+        elif name.endswith('fe'):
+            name = name[:-2] + 'ves'
+        else:
+            name += 's'
+        
+        return name
     
     # Общие поля для всех таблиц
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -41,4 +59,3 @@ class Base(AsyncAttrs, DeclarativeBase):
                     value = value[:17] + '...'
                 attrs.append(f"{key}={value!r}")
         return f"{self.__class__.__name__}({', '.join(attrs)})"
-    

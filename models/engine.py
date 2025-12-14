@@ -6,7 +6,7 @@ from .get_db_config import get_async_db_url
 # Параметр echo=True полезен для отладки - показывает все SQL-запросы
 async_engine = create_async_engine(
     url=get_async_db_url(),
-    echo=True,  
+    echo=False,  
     pool_pre_ping=True, 
     pool_recycle=3600
 )

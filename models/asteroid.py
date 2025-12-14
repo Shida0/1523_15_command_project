@@ -106,16 +106,13 @@ class AsteroidModel(Base):
     )
     
     def __init__(self, **kwargs):
+        # Устанавливаем значения по умолчанию перед вызовом super()
+        kwargs.setdefault('is_neo', True)
+        kwargs.setdefault('is_pha', False)
+        
         super().__init__(**kwargs)
         
         # Проверка альбедо
         if self.albedo <= 0 or self.albedo > 1:
             raise ValueError(f"Альбедо должно быть в диапазоне (0, 1]. Получено: {self.albedo}")
         
-        # Автоматическая проверка: афелий всегда больше перигелия
-        if self.aphelion_au <= self.perihelion_au:
-            raise ValueError(
-                f"Афелий ({self.aphelion_au}) должен быть больше перигелия ({self.perihelion_au})"
-            )
-            
-            

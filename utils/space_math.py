@@ -2,36 +2,27 @@ import math
 
 def get_size_by_albedo(albedo: float, h_mag: float) -> float:
     """Вычисляет диаметр астероида на основе альбедо и абсолютной звёздной величины."""
+    if albedo <= 0:
+        raise ValueError(f"Альбедо должно быть положительным числом. Получено: {albedo}")
     return 1329 / (albedo ** 0.5) * (10 ** (-0.2 * h_mag))
-
 
 def get_size_by_h_mag(h_mag: float) -> float:
     """Вычисляет диаметр астероида с использованием стандартного альбедо."""
-    assumed_albedo = 0.15  # Стандартное предположение для каменных астероидов
+    assumed_albedo = 0.15
     return get_size_by_albedo(assumed_albedo, h_mag)
-
 
 def count_danger(diameter_km, distance_au, velocity_km_s):
     """
     Оценивает опасность астероида на основе диаметра, расстояния до Земли и скорости.
-    
-    Args:
-        diameter_km (float): Диаметр астероида в километрах
-        distance_au (float): Расстояние до Земли в астрономических единицах
-        velocity_km_s (float): Относительная скорость в км/с
-    
-    Returns:
-        dict: Словарь с исходными данными, оценкой угрозы и ущерба
     """
     
-    # Преобразование расстояния в километры
-    distance_km = distance_au * 149597870.7
+    distance_km_value = distance_au * 149597870.7
     
     # Оценка угрозы по расстоянию
-    if distance_au <= 0.05:  # 0.05 а.е. = ~7.5 млн км (критерий PHA)
+    if distance_au <= 0.05:
         distance_threat = "высокая"
         distance_note = "Расстояние меньше порога потенциально опасных объектов"
-    elif distance_au <= 0.1:  # 0.1 а.е. = ~15 млн км
+    elif distance_au <= 0.1:
         distance_threat = "средняя"
         distance_note = "Близкое расстояние, требует наблюдения"
     else:
@@ -39,17 +30,17 @@ def count_danger(diameter_km, distance_au, velocity_km_s):
         distance_note = "Расстояние относительно безопасно"
     
     # Оценка угрозы по размеру
-    diameter_m = diameter_km * 1000  # Преобразуем в метры
+    diameter_m = abs(diameter_km) * 1000
     
-    if diameter_m < 25:
+    if diameter_m <= 25:
         size_threat = "низкая"
         size_note = "Полное сгорание в атмосфере вероятно"
         impact_category = "локальный" if diameter_m > 10 else "незначительный"
-    elif diameter_m < 50:
+    elif diameter_m <= 50:
         size_threat = "средняя"
         size_note = "Воздушный взрыв, возможны фрагменты на поверхности"
         impact_category = "региональный"
-    elif diameter_m < 140:
+    elif diameter_m <= 140:
         size_threat = "высокая"
         size_note = "Частичное разрушение, крупные фрагменты достигнут поверхности"
         impact_category = "региональный"
@@ -58,11 +49,11 @@ def count_danger(diameter_km, distance_au, velocity_km_s):
         size_note = "Катастрофическое воздействие, глобальные последствия"
         impact_category = "глобальный"
     
-    # Оценка угрозы по скорости (дополнительный фактор)
-    if velocity_km_s > 20:
+    # Оценка угрозы по скорости (корректные пороги)
+    if velocity_km_s >= 20:
         velocity_threat = "высокая"
         velocity_note = "Очень высокая скорость, увеличивает энергию воздействия"
-    elif velocity_km_s > 15:
+    elif velocity_km_s >= 15:
         velocity_threat = "средняя"
         velocity_note = "Высокая скорость"
     else:
@@ -78,52 +69,48 @@ def count_danger(diameter_km, distance_au, velocity_km_s):
     }
     
     total_threat_score = (
-        threat_weights[distance_threat] * 0.4 +  # Вес расстояния: 40%
-        threat_weights[size_threat] * 0.5 +      # Вес размера: 50%
-        threat_weights[velocity_threat] * 0.1    # Вес скорости: 10%
+        threat_weights[distance_threat] * 0.4 +
+        threat_weights[size_threat] * 0.5 +
+        threat_weights[velocity_threat] * 0.1
     )
     
-    # Определение итогового уровня угрозы
-    if total_threat_score >= 3.5:
+    # Определение итогового уровня угрозы (скорректированные пороги)
+    if total_threat_score >= 3.4:  # Было 3.5
         overall_threat = "высокая вероятность падения и катастрофических последствий"
         threat_level = "высокая"
-    elif total_threat_score >= 2.5:
+    elif total_threat_score >= 2.4:  # Было 2.5
         overall_threat = "средняя вероятность падения или значительных разрушений"
         threat_level = "средняя"
     else:
         overall_threat = "низкая вероятность падения или незначительные последствия"
         threat_level = "низкая"
     
-    # Расчет кинетической энергии (примерный)
-    # Плотность астероида предполагаем 2000 кг/м³ (типично для каменных астероидов)
-    density = 2000  # кг/м³
-    radius = diameter_m / 2
+    # Расчет кинетической энергии
+    density = 2000
+    radius = abs(diameter_m) / 2
     volume = (4/3) * math.pi * (radius ** 3)
-    mass_kg = volume * density
-    energy_joules = 0.5 * mass_kg * (velocity_km_s * 1000) ** 2
-    
-    # Перевод в мегатонны тротилового эквивалента (1 мегатонна = 4.184e15 Дж)
+    mass_kg = abs(volume * density)
+    energy_joules = 0.5 * mass_kg * (abs(velocity_km_s) * 1000) ** 2
     energy_megatons = energy_joules / 4.184e15
     
-    # Оценка ущерба на основе энергии и категории
-    if energy_megatons < 1:
+    # Оценка ущерба
+    if energy_megatons <= 1:
         damage_assessment = "Незначительный ущерб (сгорание в атмосфере)"
-    elif energy_megatons < 10:
+    elif energy_megatons <= 10:
         damage_assessment = "Локальный ущерб (ударная волна, возможны фрагменты)"
-    elif energy_megatons < 100:
+    elif energy_megatons <= 100:
         damage_assessment = "Региональный ущерб (разрушения в радиусе десятков км)"
-    elif energy_megatons < 1000:
+    elif energy_megatons <= 1000:
         damage_assessment = "Континентальный ущерб (крупномасштабные разрушения)"
     else:
         damage_assessment = "Глобальный ущерб (климатические изменения, массовые вымирания)"
     
-    # Формирование результата
     result = {
         "входные данные": {
             "диаметр(км)": round(diameter_km, 3),
             "расстояние(ае)": round(distance_au, 4),
-            "расстояние(км)": round(distance_km, 0),
-            "скорость(км/с)": round(velocity_km_s, 1)
+            "расстояние(км)": round(distance_km_value, 0),
+            "скорость(км/с)": float(round(velocity_km_s, 1))
         },
         "анализ параметров": {
             "опасность по расстоянию": distance_threat,
@@ -146,4 +133,3 @@ def count_danger(diameter_km, distance_au, velocity_km_s):
     }
     
     return result
-

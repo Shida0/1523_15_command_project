@@ -83,3 +83,23 @@ class ThreatAssessmentModel(Base):
         energy = getattr(self, 'energy_megatons', 0.0)
         input_data = f"{threat_level}:{impact_category}:{energy}"
         return hashlib.sha256(input_data.encode()).hexdigest()
+    
+    def update_hash(self):
+        """Обновляет хеш при изменении данных."""
+        # Не обновляем, если хеш был задан явно
+        if not hasattr(self, '_custom_hash') or not self._custom_hash:
+            self.calculation_input_hash = self._calculate_input_hash()
+    
+    def __setattr__(self, name, value):
+        """Перехватываем установку атрибутов для обновления хеша."""
+        # Вызываем родительский метод
+        super().__setattr__(name, value)
+        
+        # Если изменились поля, влияющие на хеш
+        if name in ['threat_level', 'impact_category', 'energy_megatons']:
+            # Проверяем, был ли хеш задан явно
+            if not hasattr(self, '_custom_hash'):
+                self._custom_hash = False
+            
+            if not self._custom_hash:
+                self.update_hash()

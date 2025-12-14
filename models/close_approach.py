@@ -1,4 +1,4 @@
-from sqlalchemy import Float, DateTime, ForeignKey, String
+from sqlalchemy import Float, DateTime, ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from datetime import datetime
@@ -21,7 +21,7 @@ class CloseApproachModel(Base):
     
     # Временные параметры сближения
     approach_time: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
+        DateTime,
         nullable=False,
         index=True,
         comment="Точное время максимального сближения"
@@ -61,6 +61,12 @@ class CloseApproachModel(Base):
         cascade='all, delete-orphan',
         uselist=False,
         lazy='selectin'
+    )
+    
+    # Уникальное ограничение
+    __table_args__ = (
+        UniqueConstraint('asteroid_id', 'approach_time', 
+                        name='uq_asteroid_approach_time'),
     )
     
     def __init__(self, **kwargs):

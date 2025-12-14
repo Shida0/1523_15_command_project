@@ -20,10 +20,13 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(project_root / 'logs' / 'update.log'),
+        logging.FileHandler(project_root / 'logs' / 'update.log', mode="w"),
         logging.StreamHandler(sys.stdout)
     ]
 )
+
+# Отключаем детальное логирование SQLAlchemy
+logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 

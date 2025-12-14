@@ -1,7 +1,6 @@
 """
 Контроллер для работы с оценками угроз сближений.
-Содержит методы для получения статистики по угрозам,
-фильтрации по уровню опасности и массовых операций.
+Использует общие методы BaseController.
 """
 from typing import List, Dict, Any, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,8 +12,10 @@ from controllers.base_controller import BaseController
 
 logger = logging.getLogger(__name__)
 
+
 class ThreatController(BaseController[ThreatAssessmentModel]):
     """Контроллер для операций с оценками угроз."""
+    
     
     def __init__(self):
         """Инициализирует контроллер для модели ThreatAssessmentModel."""
@@ -28,29 +29,8 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> Optional[ThreatAssessmentModel]:
         """
         Получает оценку угрозы для конкретного сближения.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            approach_id: ID сближения
-            
-        Returns:
-            Оценка угрозы или None, если не найдена
         """
-        try:
-            query = select(self.model).where(self.model.approach_id == approach_id)
-            result = await session.execute(query)
-            threat = result.scalar_one_or_none()
-            
-            if threat:
-                logger.debug(f"Найдена оценка угрозы для сближения ID {approach_id}")
-            else:
-                logger.debug(f"Оценка угрозы для сближения ID {approach_id} не найдена")
-                
-            return threat
-            
-        except Exception as e:
-            logger.error(f"Ошибка получения оценки угрозы для сближения ID {approach_id}: {e}")
-            raise
+        return await self._find_by_fields(session, {"approach_id": approach_id})
     
     async def get_high_threats(
         self, 
@@ -59,33 +39,14 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> List[ThreatAssessmentModel]:
         """
         Получает сближения с высоким уровнем угрозы.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список оценок с высоким уровнем угрозы
         """
-        try:
-            query = (
-                select(self.model)
-                .where(
-                    self.model.threat_level.in_(['высокий', 'критический'])
-                )
-                .order_by(desc(self.model.energy_megatons))
-                .limit(limit)
-            )
-            
-            result = await session.execute(query)
-            threats = result.scalars().all()
-            
-            logger.debug(f"Получено {len(threats)} оценок с высоким уровнем угрозы")
-            return threats
-            
-        except Exception as e:
-            logger.error(f"Ошибка получения высоких угроз: {e}")
-            raise
+        return await self.filter(
+            session=session,
+            filters={"threat_level__in": ["высокий", "критический"]},
+            limit=limit,
+            order_by="energy_megatons",
+            order_desc=True
+        )
     
     async def update_assessment(
         self,
@@ -95,37 +56,21 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> Optional[ThreatAssessmentModel]:
         """
         Обновляет оценку угрозы для сближения.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            approach_id: ID сближения
-            new_data: Новые данные для оценки
-            
-        Returns:
-            Обновленная оценка угрозы или None, если не найдена
         """
-        try:
-            # Находим существующую оценку
-            threat = await self.get_by_approach_id(session, approach_id)
-            
-            if not threat:
-                logger.warning(f"Попытка обновления несуществующей оценки для сближения ID {approach_id}")
-                return None
-            
-            # Обновляем данные 
-            threat = await self.update(session, threat.id, new_data)
-            
-            # Пересчитываем хеш входных данных
+        threat = await self.get_by_approach_id(session, approach_id)
+        
+        if not threat:
+            logger.warning(f"Попытка обновления несуществующей оценки для сближения ID {approach_id}")
+            return None
+        
+        threat = await self.update(session, threat.id, new_data)
+        
+        # Пересчитываем хеш входных данных
+        if threat:
             threat.calculation_input_hash = threat._calculate_input_hash()
-            await session.flush()  # Сохраняем изменения
-            
-            logger.info(f"Обновлена оценка угрозы для сближения ID {approach_id}")
-            return threat
-            
-        except Exception as e:
-            logger.error(f"Ошибка обновления оценки для сближения ID {approach_id}: {e}")
-            await session.rollback()
-            raise
+            await session.flush()
+        
+        return threat
     
     async def bulk_create_assessments(
         self,
@@ -134,61 +79,22 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> int:
         """
         Массовое создание оценок угроз.
-        Используется при ежедневном обновлении данных.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            assessments_data: Список словарей с данными оценок
-            
-        Returns:
-            Количество созданных/обновленных оценок
         """
-        created_updated = 0
+        created, updated = await self.bulk_create(
+            session=session,
+            data_list=assessments_data,
+            conflict_action="update",
+            conflict_fields=["approach_id"]  # Уникальное поле
+        )
         
-        try:
-            for assessment_data in assessments_data:
-                approach_id = assessment_data.get('approach_id')
-                
-                if not approach_id:
-                    logger.warning("Пропущена оценка без approach_id")
-                    continue
-                
-                # Проверяем существование оценки
-                existing = await self.get_by_approach_id(session, approach_id)
-                
-                if existing:
-                    # Обновляем существующую оценку
-                    await self.update_assessment(session, approach_id, assessment_data)
-                else:
-                    # Создаем новую оценку
-                    await self.create(session, assessment_data)
-                
-                created_updated += 1
-            
-            await session.commit()
-            logger.info(f"Массовое создание оценок завершено. Обработано: {created_updated}")
-            return created_updated
-            
-        except Exception as e:
-            logger.error(f"Ошибка массового создания оценок: {e}")
-            await session.rollback()
-            raise
+        return created + updated
     
     async def get_statistics(self, session: AsyncSession) -> Dict[str, Any]:
         """
         Возвращает статистику по оценкам угроз.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            
-        Returns:
-            Словарь со статистикой
         """
         try:
-            # Общее количество оценок
-            total_query = select(func.count()).select_from(self.model)
-            total_result = await session.execute(total_query)
-            total = total_result.scalar() or 0
+            total = await self.count(session)
             
             # Распределение по уровням угроз
             threat_levels = ['низкий', 'средний', 'высокий', 'критический']
@@ -211,7 +117,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
             max_energy_result = await session.execute(max_energy_query)
             max_energy = max_energy_result.scalar() or 0
             
-            statistics = {
+            return {
                 "total_assessments": total,
                 "threat_levels": level_stats,
                 "average_energy_mt": avg_energy,
@@ -221,9 +127,6 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
                     level_stats.get('критический', {}).get('count', 0)
                 )
             }
-            
-            logger.debug(f"Статистика оценок угроз: {statistics}")
-            return statistics
             
         except Exception as e:
             logger.error(f"Ошибка получения статистики оценок угроз: {e}")
@@ -236,30 +139,15 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> List[ThreatAssessmentModel]:
         """
         Получает все оценки угроз для конкретного астероида.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            asteroid_id: ID астероида
-            
-        Returns:
-            Список оценок угроз астероида
         """
-        try:
-            from models.close_approach import CloseApproachModel
-            
-            query = (
-                select(self.model)
-                .join(CloseApproachModel)
-                .where(CloseApproachModel.asteroid_id == asteroid_id)
-                .order_by(CloseApproachModel.approach_time)
-            )
-            
-            result = await session.execute(query)
-            threats = result.scalars().all()
-            
-            logger.debug(f"Получено {len(threats)} оценок угроз для астероида ID {asteroid_id}")
-            return threats
-            
-        except Exception as e:
-            logger.error(f"Ошибка получения оценок угроз для астероида ID {asteroid_id}: {e}")
-            raise
+        from models.close_approach import CloseApproachModel
+        
+        query = (
+            select(self.model)
+            .join(CloseApproachModel)
+            .where(CloseApproachModel.asteroid_id == asteroid_id)
+            .order_by(CloseApproachModel.approach_time)
+        )
+        
+        result = await session.execute(query)
+        return result.scalars().all()

@@ -18,3 +18,11 @@ python-multipart==0.0.6    # Для загрузки файлов через Fas
 # Для математических вычислений (уже используются в utils)
 numpy==1.26.2
 astropy==5.3.4
+
+# Для тестов
+pytest==7.4.0
+pytest-asyncio==0.21.0
+pytest-cov==4.1.0
+pytest-mock==3.11.1
+pytest-xdist==3.3.1
+coverage==7.2.7
