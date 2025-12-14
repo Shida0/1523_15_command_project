@@ -85,15 +85,7 @@ createdb asteroid_watch -U postgres
 alembic upgrade head
 ```
 
-### Запуск системы
-
-#### Первоначальное заполнение базы данных
-
-``` bash
-python -m utils.write_to_db
-```
-
-#### Запуск ежедневного обновления (вручную)
+### Запуск ежедневного обновления (вручную) - так же заполнение БД
 
 ``` bash
 python update_db.py
