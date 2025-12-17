@@ -44,6 +44,14 @@ class CloseApproachModel(Base):
         comment="Относительная скорость в км/с"
     )
     
+    # NASA обозначение (для удобства, дублирует данные из asteroid)
+    asteroid_designation: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        index=True,
+        comment="Обозначение NASA астероида (дублируется для удобства запросов)"
+    )
+    
     # Технические поля
     calculation_batch_id: Mapped[str] = mapped_column(
         String(50),

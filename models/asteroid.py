@@ -1,7 +1,6 @@
-from sqlalchemy import CheckConstraint, Float, String, Boolean, JSON, DateTime
+from sqlalchemy import CheckConstraint, Float, String, Boolean, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, Optional
-from datetime import datetime
 
 from .base import Base
 
@@ -11,37 +10,34 @@ class AsteroidModel(Base):
     Соответствует таблице 'asteroid_models' (автоматически из Base).
     """
     
-    # Основные идентификаторы
-    mpc_number: Mapped[int] = mapped_column(
-        unique=True, 
+    # Основные идентификаторы NASA
+    designation: Mapped[str] = mapped_column(
+        String(50),
+        unique=True,
         nullable=False,
-        comment="Уникальный номер из каталога Minor Planet Center"
+        index=True,
+        comment="Обозначение NASA (напр., '99942', '2025 XN4') - первичный идентификатор"
     )
     name: Mapped[Optional[str]] = mapped_column(
         String(100), 
         nullable=True,
-        comment="Собственное название астероида"
-    )
-    designation: Mapped[Optional[str]] = mapped_column(
-        String(50), 
-        nullable=True,
-        comment="Временное обозначение"
+        comment="Собственное название астероида (напр., 'Apophis')"
     )
     
-    # Орбитальные параметры
-    perihelion_au: Mapped[float] = mapped_column(
+    # Орбитальные параметры (могут отсутствовать в данных NASA)
+    perihelion_au: Mapped[Optional[float]] = mapped_column(
         Float, 
-        nullable=False,
-        comment="Расстояние перигелия в астрономических единицах"
+        nullable=True,
+        comment="Расстояние перигелия в астрономических единицах (может быть NULL)"
     )
-    aphelion_au: Mapped[float] = mapped_column(
+    aphelion_au: Mapped[Optional[float]] = mapped_column(
         Float, 
-        nullable=False,
-        comment="Расстояние афелия в астрономических единицах"
+        nullable=True,
+        comment="Расстояние афелия в астрономических единицах (может быть NULL)"
     )
-    earth_moid_au: Mapped[float] = mapped_column(
+    earth_moid_au: Mapped[Optional[float]] = mapped_column(
         Float, 
-        nullable=False,
+        nullable=True,
         comment="Минимальное расстояние пересечения орбит с Землей (MOID)"
     )
     
@@ -67,18 +63,16 @@ class AsteroidModel(Base):
         comment="Альбедо (отражательная способность), если известно"
     )
     
-    # Классификация
-    is_neo: Mapped[bool] = mapped_column(
-        Boolean,
-        default=True,
-        nullable=False,
-        comment="Является ли околоземным объектом (NEO)"
+    # Дополнительные данные NASA
+    orbit_id: Mapped[Optional[str]] = mapped_column(
+        String(20),
+        nullable=True,
+        comment="ID орбиты из NASA SBDB"
     )
-    is_pha: Mapped[bool] = mapped_column(
-        Boolean,
-        default=False,
-        nullable=False,
-        comment="Является ли потенциально опасным (PHA)"
+    orbit_class: Mapped[Optional[str]] = mapped_column(
+        String(50),
+        nullable=True,
+        comment="Класс орбиты (напр., 'Apollo', 'Aten', 'Amor')"
     )
     
     # Связи с другими таблицами
@@ -89,30 +83,34 @@ class AsteroidModel(Base):
         order_by='CloseApproachModel.approach_time'
     )
     
-    # Добавьте CheckConstraint в __table_args__
+    # Обновленные CheckConstraint для поддержки NULL значений
     __table_args__ = (
+        UniqueConstraint('designation', name='uq_asteroid_designation'),
         CheckConstraint(
-            "aphelion_au > perihelion_au",
+            "aphelion_au IS NULL OR perihelion_au IS NULL OR aphelion_au > perihelion_au",
             name='check_aphelion_gt_perihelion'
         ),
         CheckConstraint(
-            "earth_moid_au >= 0",
+            "earth_moid_au IS NULL OR earth_moid_au >= 0",
             name='check_moid_non_negative'
         ),
         CheckConstraint(
-            "perihelion_au > 0",
+            "perihelion_au IS NULL OR perihelion_au > 0",
             name='check_perihelion_positive'
+        ),
+        CheckConstraint(
+            "albedo > 0 AND albedo <= 1",
+            name='check_albedo_range'
         ),
     )
     
     def __init__(self, **kwargs):
-        # Устанавливаем значения по умолчанию перед вызовом super()
-        kwargs.setdefault('is_neo', True)
-        kwargs.setdefault('is_pha', False)
-        
         super().__init__(**kwargs)
         
         # Проверка альбедо
         if self.albedo <= 0 or self.albedo > 1:
             raise ValueError(f"Альбедо должно быть в диапазоне (0, 1]. Получено: {self.albedo}")
+    
+    def __repr__(self) -> str:
+        return f"AsteroidModel(id={self.id}, designation={self.designation}, name={self.name})"
         
