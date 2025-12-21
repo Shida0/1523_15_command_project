@@ -11,9 +11,18 @@ from .cad_api import CombinedCADClient
 
 logger = logging.getLogger(__name__)
 
-def get_current_close_approaches(data, days=3650, max_distance_au=0.05):
+def get_current_close_approaches(asteroids: List[Dict[str, Any]], days: int = 3650, max_distance_au: int = 0.05) -> List[Dict]:
+    """Функция для получения всех сближений от сегодняшнего дня до определенного дня в будущем
+
+    Args:
+        asteroids: List[Dict[str, Any]] - список потенциально опасных астероидов по которым будем находить сближения 
+        days: Optional[int] - Количество дней, по которым начиная от сегодняшней даты будут искаться сближения
+        max_distance_au: Optional[float] - Максимальная дистанция удалённости астероида от Земли при сближении, в астрономических единицах
+
+    Returns:
+        список всех сближений потенциально-опасных астероидов
+    """
     # Собираем ID всех PHA астероидов
-    asteroids = [a for a in data if a.get('is_pha', False)]
     asteroid_ids = [str(a.get('mpc_number') or a.get('designation', '')) for a in asteroids]
     
     # Используем bulk-запрос
