@@ -138,12 +138,6 @@ python -c "from utils.get_data import NASASBDBClient; client = NASASBDBClient();
 python -c "from utils.cad_api import CombinedCADClient; client = CombinedCADClient(); approaches = client.get_close_approaches(asteroid_ids=['99942', '101955'])"
 ```
 
-#### Шаг 3: Запуск полного цикла мониторинга
-
-``` bash
-python -m utils.monitoring
-```
-
 ### Используемые внешние API
 
 1. **NASA SBDB API** — данные об астероидах
