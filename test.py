@@ -1,8 +1,9 @@
 import logging
 import sys
 from datetime import datetime
-from utils import NASASBDBClient
+from external_apis import NASASBDBClient
 from utils import get_current_close_approaches
+from utils import get_all_treats
 
 # ========== НАСТРОЙКА ЛОГГИРОВАНИЯ ==========
 def setup_logging():
@@ -78,6 +79,10 @@ if __name__ == "__main__":
                            f"Дата: {approach['approach_time']} - "
                            f"Расстояние: {approach['distance_au']:.6f} а.е. "
                            f"({approach['distance_km']:,.0f} км)")
+                
+        # 3. Получаем опасности
+        logger.info("Этап 3: Получение данных о потенциальных угрозах Земле...")
+        treats = get_all_treats()
         
         # Сохраняем результаты
         import json
@@ -92,6 +97,10 @@ if __name__ == "__main__":
         with open(f"asteroids_{timestamp}.json", "w", encoding='utf-8') as file:
             json.dump(asteroids, file, indent=4, ensure_ascii=False, default=str)
         logger.info(f"Данные об астероидах сохранены в asteroids_{timestamp}.json")
+
+        with open(f"treats_{timestamp}.json", "w", encoding='utf-8') as file:
+            json.dump(treats, file, indent=4, ensure_ascii=False, default=str)
+            logger.info(f"Данные об опасностях сохранены в asteroids_{timestamp}.json")
         
         logger.info("=" * 60)
         logger.info("РАБОТА ЗАВЕРШЕНА УСПЕШНО")

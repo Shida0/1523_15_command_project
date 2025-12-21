@@ -307,7 +307,7 @@ class CADDataParser(GetDate):
             ) from e
 
 
-class CombinedCADClient:
+class CADClient:
     """Основной клиент для получения данных о сближениях"""
     
     def __init__(self, request_delay: float = 3.0):

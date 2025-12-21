@@ -1,0 +1,579 @@
+2025-12-21 15:42:23 - __main__ - INFO - ============================================================
+2025-12-21 15:42:23 - __main__ - INFO - НАЧАЛО РАБОТЫ МОНИТОРА АСТЕРОИДОВ
+2025-12-21 15:42:23 - __main__ - INFO - ============================================================
+2025-12-21 15:42:23 - __main__ - INFO - Этап 1: Получение данных об астероидах PHA...
+2025-12-21 15:42:23 - external_apis.sbdb_api - INFO - Fetching list of Potentially Hazardous Asteroids (PHAs) from NASA SBDB Query API...
+2025-12-21 15:42:36 - external_apis.sbdb_api - INFO - SBDB Query API returned 2525 PHAs.
+2025-12-21 15:42:36 - external_apis.sbdb_api - INFO - Fetching detailed data for 2525 PHAs using astroquery...
+2025-12-21 15:42:36 - external_apis.sbdb_api - DEBUG - Processing 1/2525: 1566
+2025-12-21 15:42:36 - external_apis.sbdb_api - DEBUG - Raw SBDB response for 1566: odict_keys(['phys_par', 'object', 'signature', 'orbit'])
+2025-12-21 15:42:36 - external_apis.sbdb_api - DEBUG - Parsed 1566: H=16.53, diam=1.0, peri=0.1864944109615815
+2025-12-21 15:42:38 - external_apis.sbdb_api - DEBUG - Processing 2/2525: 1620
+2025-12-21 15:42:38 - external_apis.sbdb_api - DEBUG - Raw SBDB response for 1620: odict_keys(['phys_par', 'signature', 'object', 'orbit'])
+2025-12-21 15:42:38 - external_apis.sbdb_api - DEBUG - Parsed 1620: H=15.26, diam=2.56, peri=0.8278035737172076
+2025-12-21 15:42:40 - external_apis.sbdb_api - DEBUG - Processing 3/2525: 1862
+2025-12-21 15:42:40 - external_apis.sbdb_api - DEBUG - Raw SBDB response for 1862: odict_keys(['phys_par', 'signature', 'orbit', 'object'])
+2025-12-21 15:42:40 - external_apis.sbdb_api - DEBUG - Parsed 1862: H=16.08, diam=1.5, peri=0.6473270985677544
+2025-12-21 15:42:42 - external_apis.sbdb_api - DEBUG - Processing 4/2525: 1981
+2025-12-21 15:42:42 - external_apis.sbdb_api - DEBUG - Raw SBDB response for 1981: odict_keys(['object', 'orbit', 'signature', 'phys_par'])
+2025-12-21 15:42:42 - external_apis.sbdb_api - DEBUG - Parsed 1981: H=15.27, diam=3.4, peri=0.6208147993729659
+2025-12-21 15:42:44 - external_apis.sbdb_api - DEBUG - Processing 5/2525: 2101
+2025-12-21 15:42:44 - external_apis.sbdb_api - DEBUG - Raw SBDB response for 2101: odict_keys(['orbit', 'object', 'signature', 'phys_par'])
+2025-12-21 15:42:44 - external_apis.sbdb_api - DEBUG - Parsed 2101: H=18.69, diam=0.6, peri=0.442031456643264
+2025-12-21 15:42:46 - external_apis.sbdb_api - DEBUG - Processing 6/2525: 2102
+2025-12-21 15:42:46 - external_apis.sbdb_api - DEBUG - Parsed 2102: H=16.0, diam=1.649, peri=0.9038809959206442
+2025-12-21 15:42:48 - external_apis.sbdb_api - DEBUG - Processing 7/2525: 2135
+2025-12-21 15:42:48 - external_apis.sbdb_api - DEBUG - Parsed 2135: H=18.05, diam=0.8423243420708194, peri=0.7948729510676352
+2025-12-21 15:42:50 - external_apis.sbdb_api - DEBUG - Processing 8/2525: 2201
+2025-12-21 15:42:50 - external_apis.sbdb_api - DEBUG - Parsed 2201: H=15.32, diam=1.8, peri=0.6301834628533539
+2025-12-21 15:42:52 - external_apis.sbdb_api - DEBUG - Processing 9/2525: 2340
+2025-12-21 15:42:52 - external_apis.sbdb_api - DEBUG - Parsed 2340: H=20.43, diam=0.3, peri=0.4641772223384067
+2025-12-21 15:42:54 - external_apis.sbdb_api - DEBUG - Processing 10/2525: 3122
+2025-12-21 15:42:54 - external_apis.sbdb_api - DEBUG - Parsed 3122: H=14.08, diam=4.9, peri=1.020220572477762
+2025-12-21 15:42:54 - external_apis.sbdb_api - INFO -   Progress: 10/2525 PHAs processed.
+2025-12-21 15:42:56 - external_apis.sbdb_api - DEBUG - Processing 11/2525: 3200
+2025-12-21 15:42:56 - external_apis.sbdb_api - DEBUG - Parsed 3200: H=14.39, diam=6.25, peri=0.1402114151295407
+2025-12-21 15:42:58 - external_apis.sbdb_api - DEBUG - Processing 12/2525: 3361
+2025-12-21 15:42:58 - external_apis.sbdb_api - DEBUG - Parsed 3361: H=19.54, diam=0.3, peri=0.819077315963267
+2025-12-21 15:43:00 - external_apis.sbdb_api - DEBUG - Processing 13/2525: 3362
+2025-12-21 15:43:00 - external_apis.sbdb_api - DEBUG - Parsed 3362: H=18.52, diam=0.7, peri=0.5259716972976222
+2025-12-21 15:43:02 - external_apis.sbdb_api - DEBUG - Processing 14/2525: 3671
+2025-12-21 15:43:02 - external_apis.sbdb_api - DEBUG - Parsed 3671: H=16.49, diam=1.5, peri=1.002327294409289
+2025-12-21 15:43:04 - external_apis.sbdb_api - DEBUG - Processing 15/2525: 3757
+2025-12-21 15:43:04 - external_apis.sbdb_api - DEBUG - Parsed 3757: H=19.01, diam=0.5, peri=1.016589680452097
+2025-12-21 15:43:06 - external_apis.sbdb_api - DEBUG - Processing 16/2525: 4015
+2025-12-21 15:43:06 - external_apis.sbdb_api - DEBUG - Parsed 4015: H=16.19, diam=4.0, peri=0.9694834255235233
+2025-12-21 15:43:08 - external_apis.sbdb_api - DEBUG - Processing 17/2525: 4034
+2025-12-21 15:43:08 - external_apis.sbdb_api - DEBUG - Parsed 4034: H=18.49, diam=0.42, peri=0.588994496368989
+2025-12-21 15:43:10 - external_apis.sbdb_api - DEBUG - Processing 18/2525: 4179
+2025-12-21 15:43:10 - external_apis.sbdb_api - DEBUG - Parsed 4179: H=15.29, diam=5.4, peri=0.9542965353866953
+2025-12-21 15:43:12 - external_apis.sbdb_api - DEBUG - Processing 19/2525: 4183
+2025-12-21 15:43:12 - external_apis.sbdb_api - DEBUG - Parsed 4183: H=14.16, diam=3.651, peri=0.7206695224818622
+2025-12-21 15:43:14 - external_apis.sbdb_api - DEBUG - Processing 20/2525: 4450
+2025-12-21 15:43:14 - external_apis.sbdb_api - DEBUG - Parsed 4450: H=17.27, diam=1.2063667299773768, peri=0.5961937238925656
+2025-12-21 15:43:14 - external_apis.sbdb_api - INFO -   Progress: 20/2525 PHAs processed.
+2025-12-21 15:43:16 - external_apis.sbdb_api - DEBUG - Processing 21/2525: 4486
+2025-12-21 15:43:16 - external_apis.sbdb_api - DEBUG - Parsed 4486: H=15.61, diam=1.849, peri=0.7500937768721676
+2025-12-21 15:43:18 - external_apis.sbdb_api - DEBUG - Processing 22/2525: 4581
+2025-12-21 15:43:18 - external_apis.sbdb_api - DEBUG - Parsed 4581: H=20.74, diam=0.2440503031263628, peri=0.6575542925440822
+2025-12-21 15:43:20 - external_apis.sbdb_api - DEBUG - Processing 23/2525: 4660
+2025-12-21 15:43:20 - external_apis.sbdb_api - DEBUG - Parsed 4660: H=18.75, diam=0.33, peri=0.9521989214483247
+2025-12-21 15:43:22 - external_apis.sbdb_api - DEBUG - Processing 24/2525: 4769
+2025-12-21 15:43:22 - external_apis.sbdb_api - DEBUG - Parsed 4769: H=17.4, diam=1.4, peri=0.5494090391109215
+2025-12-21 15:43:24 - external_apis.sbdb_api - DEBUG - Processing 25/2525: 4953
+2025-12-21 15:43:24 - external_apis.sbdb_api - DEBUG - Parsed 4953: H=14.88, diam=3.6264304392641, peri=0.5553847895406632
+2025-12-21 15:43:26 - external_apis.sbdb_api - DEBUG - Processing 26/2525: 5011
+2025-12-21 15:43:26 - external_apis.sbdb_api - DEBUG - Parsed 5011: H=16.65, diam=1.6050159456001842, peri=0.8175773066920412
+2025-12-21 15:43:28 - external_apis.sbdb_api - DEBUG - Processing 27/2525: 5189
+2025-12-21 15:43:28 - external_apis.sbdb_api - DEBUG - Parsed 5189: H=17.84, diam=0.9278533741746176, peri=0.8096138901214572
+2025-12-21 15:43:30 - external_apis.sbdb_api - DEBUG - Processing 28/2525: 5604
+2025-12-21 15:43:30 - external_apis.sbdb_api - DEBUG - Parsed 5604: H=17.38, diam=0.55, peri=0.5519625933617245
+2025-12-21 15:43:32 - external_apis.sbdb_api - DEBUG - Processing 29/2525: 5693
+2025-12-21 15:43:32 - external_apis.sbdb_api - DEBUG - Parsed 5693: H=16.78, diam=1.5117478214140834, peri=0.5271580377228019
+2025-12-21 15:43:34 - external_apis.sbdb_api - DEBUG - Processing 30/2525: 6037
+2025-12-21 15:43:34 - external_apis.sbdb_api - DEBUG - Parsed 6037: H=18.86, diam=0.5800685924337514, peri=0.6362706829579036
+2025-12-21 15:43:34 - external_apis.sbdb_api - INFO -   Progress: 30/2525 PHAs processed.
+2025-12-21 15:43:36 - external_apis.sbdb_api - DEBUG - Processing 31/2525: 6239
+2025-12-21 15:43:36 - external_apis.sbdb_api - DEBUG - Parsed 6239: H=18.6, diam=0.6538518417986329, peri=0.6762385380124215
+2025-12-21 15:43:38 - external_apis.sbdb_api - DEBUG - Processing 32/2525: 6489
+2025-12-21 15:43:38 - external_apis.sbdb_api - DEBUG - Parsed 6489: H=19.22, diam=0.53, peri=0.9442529975427694
+2025-12-21 15:43:40 - external_apis.sbdb_api - DEBUG - Processing 33/2525: 6491
+2025-12-21 15:43:40 - external_apis.sbdb_api - DEBUG - Parsed 6491: H=18.72, diam=0.6186989107373352, peri=1.021429484185359
+2025-12-21 15:43:42 - external_apis.sbdb_api - DEBUG - Processing 34/2525: 7335
+2025-12-21 15:43:42 - external_apis.sbdb_api - DEBUG - Parsed 7335: H=17.7, diam=1.8, peri=0.9137677591299521
+2025-12-21 15:43:44 - external_apis.sbdb_api - DEBUG - Processing 35/2525: 7341
+2025-12-21 15:43:44 - external_apis.sbdb_api - DEBUG - Parsed 7341: H=16.96, diam=0.982, peri=0.9095137415281951
+2025-12-21 15:43:46 - external_apis.sbdb_api - DEBUG - Processing 36/2525: 7482
+2025-12-21 15:43:46 - external_apis.sbdb_api - DEBUG - Parsed 7482: H=16.58, diam=1.052, peri=0.9044096118930282
+2025-12-21 15:43:48 - external_apis.sbdb_api - DEBUG - Processing 37/2525: 7753
+2025-12-21 15:43:48 - external_apis.sbdb_api - DEBUG - Parsed 7753: H=18.01, diam=0.8579843207816867, peri=0.7607508823787917
+2025-12-21 15:43:50 - external_apis.sbdb_api - DEBUG - Processing 38/2525: 7822
+2025-12-21 15:43:50 - external_apis.sbdb_api - DEBUG - Parsed 7822: H=17.34, diam=1.602, peri=0.9378519147655442
+2025-12-21 15:43:52 - external_apis.sbdb_api - DEBUG - Processing 39/2525: 8014
+2025-12-21 15:43:52 - external_apis.sbdb_api - DEBUG - Parsed 8014: H=18.88, diam=0.7, peri=0.9506730970461742
+2025-12-21 15:43:54 - external_apis.sbdb_api - DEBUG - Processing 40/2525: 8566
+2025-12-21 15:43:54 - external_apis.sbdb_api - DEBUG - Parsed 8566: H=16.47, diam=1.568, peri=0.8580213316508271
+2025-12-21 15:43:54 - external_apis.sbdb_api - INFO -   Progress: 40/2525 PHAs processed.
+2025-12-21 15:43:56 - external_apis.sbdb_api - DEBUG - Processing 41/2525: 9856
+2025-12-21 15:43:56 - external_apis.sbdb_api - DEBUG - Parsed 9856: H=17.1, diam=1.0, peri=0.8393852954756156
+2025-12-21 15:43:58 - external_apis.sbdb_api - DEBUG - Processing 42/2525: 10115
+2025-12-21 15:43:58 - external_apis.sbdb_api - DEBUG - Parsed 10115: H=17.1, diam=0.938, peri=0.8429519728266607
+2025-12-21 15:44:00 - external_apis.sbdb_api - DEBUG - Processing 43/2525: 11500
+2025-12-21 15:44:00 - external_apis.sbdb_api - DEBUG - Parsed 11500: H=18.37, diam=0.738, peri=0.6955975738330963
+2025-12-21 15:44:02 - external_apis.sbdb_api - DEBUG - Processing 44/2525: 12538
+2025-12-21 15:44:02 - external_apis.sbdb_api - DEBUG - Parsed 12538: H=15.96, diam=1.663, peri=0.9158456984380791
+2025-12-21 15:44:04 - external_apis.sbdb_api - DEBUG - Processing 45/2525: 12923
+2025-12-21 15:44:04 - external_apis.sbdb_api - DEBUG - Parsed 12923: H=15.8, diam=2.06, peri=0.9953544794007738
+2025-12-21 15:44:06 - external_apis.sbdb_api - DEBUG - Processing 46/2525: 13651
+2025-12-21 15:44:06 - external_apis.sbdb_api - DEBUG - Parsed 13651: H=17.89, diam=0.562, peri=0.9272230799296647
+2025-12-21 15:44:08 - external_apis.sbdb_api - DEBUG - Processing 47/2525: 14827
+2025-12-21 15:44:08 - external_apis.sbdb_api - DEBUG - Parsed 14827: H=18.81, diam=0.9, peri=0.957069615914134
+2025-12-21 15:44:10 - external_apis.sbdb_api - DEBUG - Processing 48/2525: 16960
+2025-12-21 15:44:10 - external_apis.sbdb_api - DEBUG - Parsed 16960: H=14.32, diam=4.693311193803246, peri=0.3101041708851328
+2025-12-21 15:44:12 - external_apis.sbdb_api - DEBUG - Processing 49/2525: 20236
+2025-12-21 15:44:12 - external_apis.sbdb_api - DEBUG - Parsed 20236: H=17.7, diam=0.9896448099650541, peri=0.8926861638984449
+2025-12-21 15:44:14 - external_apis.sbdb_api - DEBUG - Processing 50/2525: 20425
+2025-12-21 15:44:14 - external_apis.sbdb_api - DEBUG - Parsed 20425: H=20.51, diam=0.27131846503826684, peri=0.8188923583335695
+2025-12-21 15:44:14 - external_apis.sbdb_api - INFO -   Progress: 50/2525 PHAs processed.
+2025-12-21 15:44:16 - external_apis.sbdb_api - DEBUG - Processing 51/2525: 22753
+2025-12-21 15:44:16 - external_apis.sbdb_api - DEBUG - Parsed 22753: H=17.67, diam=1.0034121406587795, peri=0.5240674089955278
+2025-12-21 15:44:18 - external_apis.sbdb_api - DEBUG - Processing 52/2525: 23187
+2025-12-21 15:44:18 - external_apis.sbdb_api - DEBUG - Parsed 23187: H=16.05, diam=2.115823085777925, peri=0.7584209792795545
+2025-12-21 15:44:20 - external_apis.sbdb_api - DEBUG - Processing 53/2525: 25143
+2025-12-21 15:44:20 - external_apis.sbdb_api - DEBUG - Parsed 25143: H=19.26, diam=0.33, peri=0.9531785784123709
+2025-12-21 15:44:22 - external_apis.sbdb_api - DEBUG - Processing 54/2525: 26663
+2025-12-21 15:44:22 - external_apis.sbdb_api - DEBUG - Parsed 26663: H=18.16, diam=0.8007175573858947, peri=0.81662718397088
+2025-12-21 15:44:24 - external_apis.sbdb_api - DEBUG - Processing 55/2525: 27002
+2025-12-21 15:44:24 - external_apis.sbdb_api - DEBUG - Parsed 27002: H=18.31, diam=0.747273104154048, peri=0.9879541045248524
+2025-12-21 15:44:26 - external_apis.sbdb_api - DEBUG - Processing 56/2525: 29075
+2025-12-21 15:44:26 - external_apis.sbdb_api - DEBUG - Parsed 29075: H=17.28, diam=1.3, peri=0.8365527171804735
+2025-12-21 15:44:28 - external_apis.sbdb_api - DEBUG - Processing 57/2525: 31669
+2025-12-21 15:44:28 - external_apis.sbdb_api - DEBUG - Parsed 31669: H=16.09, diam=2.0772049622566757, peri=0.9022970135446039
+2025-12-21 15:44:30 - external_apis.sbdb_api - DEBUG - Processing 58/2525: 33342
+2025-12-21 15:44:30 - external_apis.sbdb_api - DEBUG - Parsed 33342: H=18.02, diam=0.432, peri=0.4185357257001727
+2025-12-21 15:44:32 - external_apis.sbdb_api - DEBUG - Processing 59/2525: 35107
+2025-12-21 15:44:32 - external_apis.sbdb_api - DEBUG - Parsed 35107: H=16.87, diam=0.929, peri=0.9732235157691279
+2025-12-21 15:44:34 - external_apis.sbdb_api - DEBUG - Processing 60/2525: 35396
+2025-12-21 15:44:34 - external_apis.sbdb_api - DEBUG - Parsed 35396: H=17.01, diam=0.704, peri=0.7445756719956147
+2025-12-21 15:44:34 - external_apis.sbdb_api - INFO -   Progress: 60/2525 PHAs processed.
+2025-12-21 15:44:36 - external_apis.sbdb_api - DEBUG - Processing 61/2525: 37638
+2025-12-21 15:44:36 - external_apis.sbdb_api - DEBUG - Parsed 37638: H=19.28, diam=0.4780566363465972, peri=0.9181522372302877
+2025-12-21 15:44:38 - external_apis.sbdb_api - DEBUG - Processing 62/2525: 37655
+2025-12-21 15:44:38 - external_apis.sbdb_api - DEBUG - Parsed 37655: H=17.85, diam=0.9235902751613072, peri=0.3658226573605868
+2025-12-21 15:44:40 - external_apis.sbdb_api - DEBUG - Processing 63/2525: 38071
+2025-12-21 15:44:40 - external_apis.sbdb_api - DEBUG - Parsed 38071: H=19.57, diam=0.41829180044307535, peri=1.030580672887986
+2025-12-21 15:44:42 - external_apis.sbdb_api - DEBUG - Processing 64/2525: 39572
+2025-12-21 15:44:42 - external_apis.sbdb_api - DEBUG - Parsed 39572: H=16.56, diam=1.554, peri=1.032777255087781
+2025-12-21 15:44:44 - external_apis.sbdb_api - DEBUG - Processing 65/2525: 41429
+2025-12-21 15:44:44 - external_apis.sbdb_api - DEBUG - Parsed 41429: H=20.66, diam=0.204, peri=0.7077705693375353
+2025-12-21 15:44:46 - external_apis.sbdb_api - DEBUG - Processing 66/2525: 52760
+2025-12-21 15:44:46 - external_apis.sbdb_api - DEBUG - Parsed 52760: H=17.52, diam=1.0, peri=0.9065071634230686
+2025-12-21 15:44:48 - external_apis.sbdb_api - DEBUG - Processing 67/2525: 52768
+2025-12-21 15:44:48 - external_apis.sbdb_api - DEBUG - Parsed 52768: H=16.02, diam=1.75, peri=1.00950882311332
+2025-12-21 15:44:50 - external_apis.sbdb_api - DEBUG - Processing 68/2525: 53319
+2025-12-21 15:44:50 - external_apis.sbdb_api - DEBUG - Parsed 53319: H=15.35, diam=7.0, peri=0.9764396418912014
+2025-12-21 15:44:52 - external_apis.sbdb_api - DEBUG - Processing 69/2525: 53426
+2025-12-21 15:44:52 - external_apis.sbdb_api - DEBUG - Parsed 53426: H=17.19, diam=1.2516397622489825, peri=0.8847533795276978
+2025-12-21 15:44:54 - external_apis.sbdb_api - DEBUG - Processing 70/2525: 53550
+2025-12-21 15:44:54 - external_apis.sbdb_api - DEBUG - Parsed 53550: H=19.06, diam=0.5290288438695072, peri=0.8676230292605305
+2025-12-21 15:44:54 - external_apis.sbdb_api - INFO -   Progress: 70/2525 PHAs processed.
+2025-12-21 15:44:56 - external_apis.sbdb_api - DEBUG - Processing 71/2525: 53789
+2025-12-21 15:44:56 - external_apis.sbdb_api - DEBUG - Parsed 53789: H=17.35, diam=0.843, peri=1.001552838661272
+2025-12-21 15:44:58 - external_apis.sbdb_api - DEBUG - Processing 72/2525: 65679
+2025-12-21 15:44:58 - external_apis.sbdb_api - DEBUG - Parsed 65679: H=19.62, diam=0.918, peri=0.6728058123930288
+2025-12-21 15:45:00 - external_apis.sbdb_api - DEBUG - Processing 73/2525: 65690
+2025-12-21 15:45:00 - external_apis.sbdb_api - DEBUG - Parsed 65690: H=19.06, diam=0.5290288438695072, peri=0.9090463976935004
+2025-12-21 15:45:02 - external_apis.sbdb_api - DEBUG - Processing 74/2525: 65717
+2025-12-21 15:45:02 - external_apis.sbdb_api - DEBUG - Parsed 65717: H=20.87, diam=0.2298684415429666, peri=1.003151470415492
+2025-12-21 15:45:04 - external_apis.sbdb_api - DEBUG - Processing 75/2525: 65803
+2025-12-21 15:45:04 - external_apis.sbdb_api - DEBUG - Parsed 65803: H=18.11, diam=0.78, peri=1.013087019677958
+2025-12-21 15:45:06 - external_apis.sbdb_api - DEBUG - Processing 76/2525: 65909
+2025-12-21 15:45:06 - external_apis.sbdb_api - DEBUG - Parsed 65909: H=19.31, diam=0.47149745339850874, peri=0.5022385184245686
+2025-12-21 15:45:08 - external_apis.sbdb_api - DEBUG - Processing 77/2525: 66391
+2025-12-21 15:45:08 - external_apis.sbdb_api - DEBUG - Parsed 66391: H=16.64, diam=1.317, peri=0.2001717126652359
+2025-12-21 15:45:10 - external_apis.sbdb_api - DEBUG - Processing 78/2525: 67367
+2025-12-21 15:45:10 - external_apis.sbdb_api - DEBUG - Parsed 67367: H=17.08, diam=1.3166773096470952, peri=1.03025802621155
+2025-12-21 15:45:12 - external_apis.sbdb_api - DEBUG - Processing 79/2525: 67381
+2025-12-21 15:45:12 - external_apis.sbdb_api - DEBUG - Parsed 67381: H=19.8, diam=0.3762524628723901, peri=0.6036559488808461
+2025-12-21 15:45:14 - external_apis.sbdb_api - DEBUG - Processing 80/2525: 68216
+2025-12-21 15:45:14 - external_apis.sbdb_api - DEBUG - Parsed 68216: H=16.57, diam=0.994, peri=0.8887794136702197
+2025-12-21 15:45:14 - external_apis.sbdb_api - INFO -   Progress: 80/2525 PHAs processed.
+2025-12-21 15:45:16 - external_apis.sbdb_api - DEBUG - Processing 81/2525: 68346
+2025-12-21 15:45:16 - external_apis.sbdb_api - DEBUG - Parsed 68346: H=16.92, diam=0.736, peri=0.8796508439013376
+2025-12-21 15:45:18 - external_apis.sbdb_api - DEBUG - Processing 82/2525: 68347
+2025-12-21 15:45:18 - external_apis.sbdb_api - DEBUG - Parsed 68347: H=19.92, diam=0.35602406242525886, peri=0.5963160262186356
+2025-12-21 15:45:20 - external_apis.sbdb_api - DEBUG - Processing 83/2525: 68372
+2025-12-21 15:45:20 - external_apis.sbdb_api - DEBUG - Parsed 68372: H=18.95, diam=0.5565181739034998, peri=0.9456690112160838
+2025-12-21 15:45:22 - external_apis.sbdb_api - DEBUG - Processing 84/2525: 68548
+2025-12-21 15:45:22 - external_apis.sbdb_api - DEBUG - Parsed 68548: H=16.56, diam=1.182, peri=0.9616218302309921
+2025-12-21 15:45:24 - external_apis.sbdb_api - DEBUG - Processing 85/2525: 68950
+2025-12-21 15:45:24 - external_apis.sbdb_api - DEBUG - Parsed 68950: H=16.39, diam=1.65, peri=0.6930680645947391
+2025-12-21 15:45:26 - external_apis.sbdb_api - DEBUG - Processing 86/2525: 69230
+2025-12-21 15:45:26 - external_apis.sbdb_api - DEBUG - Parsed 69230: H=17.68, diam=0.9988018806480428, peri=0.6224416915835348
+2025-12-21 15:45:28 - external_apis.sbdb_api - DEBUG - Processing 87/2525: 85182
+2025-12-21 15:45:28 - external_apis.sbdb_api - DEBUG - Parsed 85182: H=17.13, diam=1.1, peri=0.493847902697014
+2025-12-21 15:45:30 - external_apis.sbdb_api - DEBUG - Processing 88/2525: 85236
+2025-12-21 15:45:30 - external_apis.sbdb_api - DEBUG - Parsed 85236: H=18.75, diam=0.6102100434426088, peri=0.8499361387195231
+2025-12-21 15:45:32 - external_apis.sbdb_api - DEBUG - Processing 89/2525: 85585
+2025-12-21 15:45:32 - external_apis.sbdb_api - DEBUG - Parsed 85585: H=21.64, diam=0.16124243625985538, peri=0.8351893841126772
+2025-12-21 15:45:34 - external_apis.sbdb_api - DEBUG - Processing 90/2525: 85640
+2025-12-21 15:45:34 - external_apis.sbdb_api - DEBUG - Parsed 85640: H=21.14, diam=0.20299220046713304, peri=0.8127181304960699
+2025-12-21 15:45:34 - external_apis.sbdb_api - INFO -   Progress: 90/2525 PHAs processed.
+2025-12-21 15:45:36 - external_apis.sbdb_api - DEBUG - Processing 91/2525: 85713
+2025-12-21 15:45:36 - external_apis.sbdb_api - DEBUG - Parsed 85713: H=15.77, diam=3.484, peri=0.6947004083173667
+2025-12-21 15:45:38 - external_apis.sbdb_api - DEBUG - Processing 92/2525: 85774
+2025-12-21 15:45:38 - external_apis.sbdb_api - DEBUG - Parsed 85774: H=19.09, diam=0.939, peri=0.9414057399661232
+2025-12-21 15:45:40 - external_apis.sbdb_api - DEBUG - Processing 93/2525: 85938
+2025-12-21 15:45:40 - external_apis.sbdb_api - DEBUG - Parsed 85938: H=18.73, diam=0.6158562474574313, peri=0.9548707132747895
+2025-12-21 15:45:42 - external_apis.sbdb_api - DEBUG - Processing 94/2525: 85989
+2025-12-21 15:45:42 - external_apis.sbdb_api - DEBUG - Parsed 85989: H=17.07, diam=1.462, peri=0.3242109627855923
+2025-12-21 15:45:44 - external_apis.sbdb_api - DEBUG - Processing 95/2525: 85990
+2025-12-21 15:45:44 - external_apis.sbdb_api - DEBUG - Parsed 85990: H=20.27, diam=0.451, peri=0.6947263134097657
+2025-12-21 15:45:46 - external_apis.sbdb_api - DEBUG - Processing 96/2525: 86039
+2025-12-21 15:45:46 - external_apis.sbdb_api - DEBUG - Parsed 86039: H=15.95, diam=2.22, peri=0.7410431617369875
+2025-12-21 15:45:48 - external_apis.sbdb_api - DEBUG - Processing 97/2525: 86819
+2025-12-21 15:45:48 - external_apis.sbdb_api - DEBUG - Parsed 86819: H=17.48, diam=0.802, peri=0.9861725306040375
+2025-12-21 15:45:50 - external_apis.sbdb_api - DEBUG - Processing 98/2525: 87684
+2025-12-21 15:45:50 - external_apis.sbdb_api - DEBUG - Parsed 87684: H=15.96, diam=2.2053592798190564, peri=0.3067867229783774
+2025-12-21 15:45:52 - external_apis.sbdb_api - DEBUG - Processing 99/2525: 88254
+2025-12-21 15:45:52 - external_apis.sbdb_api - DEBUG - Parsed 88254: H=17.77, diam=0.8, peri=0.4380128240844254
+2025-12-21 15:45:54 - external_apis.sbdb_api - DEBUG - Processing 100/2525: 89136
+2025-12-21 15:45:54 - external_apis.sbdb_api - DEBUG - Parsed 89136: H=20.28, diam=0.3016333457803826, peri=1.013158230266751
+2025-12-21 15:45:54 - external_apis.sbdb_api - INFO -   Progress: 100/2525 PHAs processed.
+2025-12-21 15:45:56 - external_apis.sbdb_api - DEBUG - Processing 101/2525: 89830
+2025-12-21 15:45:56 - external_apis.sbdb_api - DEBUG - Parsed 89830: H=15.0, diam=5.067, peri=1.024278839013335
+2025-12-21 15:45:58 - external_apis.sbdb_api - DEBUG - Processing 102/2525: 89958
+2025-12-21 15:45:58 - external_apis.sbdb_api - DEBUG - Parsed 89958: H=17.22, diam=1.234466620906499, peri=0.1865153325330181
+2025-12-21 15:46:00 - external_apis.sbdb_api - DEBUG - Processing 103/2525: 89959
+2025-12-21 15:46:00 - external_apis.sbdb_api - DEBUG - Parsed 89959: H=16.55, diam=1.407, peri=0.8183700681269326
+2025-12-21 15:46:02 - external_apis.sbdb_api - DEBUG - Processing 104/2525: 90075
+2025-12-21 15:46:02 - external_apis.sbdb_api - DEBUG - Parsed 90075: H=15.38, diam=2.233, peri=0.9101997905141261
+2025-12-21 15:46:04 - external_apis.sbdb_api - DEBUG - Processing 105/2525: 90403
+2025-12-21 15:46:04 - external_apis.sbdb_api - DEBUG - Parsed 90403: H=17.78, diam=0.572, peri=0.888815500745537
+2025-12-21 15:46:06 - external_apis.sbdb_api - DEBUG - Processing 106/2525: 90416
+2025-12-21 15:46:06 - external_apis.sbdb_api - DEBUG - Parsed 90416: H=18.86, diam=0.968, peri=0.8607730559870785
+2025-12-21 15:46:08 - external_apis.sbdb_api - DEBUG - Processing 107/2525: 99248
+2025-12-21 15:46:08 - external_apis.sbdb_api - DEBUG - Parsed 99248: H=16.54, diam=1.115, peri=0.9188389409461186
+2025-12-21 15:46:10 - external_apis.sbdb_api - DEBUG - Processing 108/2525: 99942
+2025-12-21 15:46:10 - external_apis.sbdb_api - DEBUG - Parsed 99942: H=19.09, diam=0.34, peri=0.7460522521429133
+2025-12-21 15:46:12 - external_apis.sbdb_api - DEBUG - Processing 109/2525: 100085
+2025-12-21 15:46:12 - external_apis.sbdb_api - DEBUG - Parsed 100085: H=17.89, diam=0.9067328528328749, peri=1.01097448080251
+2025-12-21 15:46:14 - external_apis.sbdb_api - DEBUG - Processing 110/2525: 101869
+2025-12-21 15:46:14 - external_apis.sbdb_api - DEBUG - Parsed 101869: H=19.48, diam=0.43599283417412305, peri=0.632246798641622
+2025-12-21 15:46:14 - external_apis.sbdb_api - INFO -   Progress: 110/2525 PHAs processed.
+2025-12-21 15:46:16 - external_apis.sbdb_api - DEBUG - Processing 111/2525: 101955
+2025-12-21 15:46:16 - external_apis.sbdb_api - DEBUG - Parsed 101955: H=20.21, diam=0.48444, peri=0.8968944004459729
+2025-12-21 15:46:18 - external_apis.sbdb_api - DEBUG - Processing 112/2525: 103067
+2025-12-21 15:46:18 - external_apis.sbdb_api - DEBUG - Parsed 103067: H=16.8, diam=1.282, peri=0.7719838013487923
+2025-12-21 15:46:20 - external_apis.sbdb_api - DEBUG - Processing 113/2525: 111253
+2025-12-21 15:46:20 - external_apis.sbdb_api - DEBUG - Parsed 111253: H=15.25, diam=3.006, peri=0.9823024334379599
+2025-12-21 15:46:22 - external_apis.sbdb_api - DEBUG - Processing 114/2525: 136617
+2025-12-21 15:46:22 - external_apis.sbdb_api - DEBUG - Parsed 136617: H=17.97, diam=0.8739354402336879, peri=0.9540854720263912
+2025-12-21 15:46:24 - external_apis.sbdb_api - DEBUG - Processing 115/2525: 136618
+2025-12-21 15:46:24 - external_apis.sbdb_api - DEBUG - Parsed 136618: H=16.86, diam=1.457066426679202, peri=0.9515911694468785
+2025-12-21 15:46:26 - external_apis.sbdb_api - DEBUG - Processing 116/2525: 136795
+2025-12-21 15:46:26 - external_apis.sbdb_api - DEBUG - Parsed 136795: H=18.11, diam=0.819368665269149, peri=0.9117023309721297
+2025-12-21 15:46:28 - external_apis.sbdb_api - DEBUG - Processing 117/2525: 136849
+2025-12-21 15:46:28 - external_apis.sbdb_api - DEBUG - Parsed 136849: H=17.7, diam=0.9896448099650541, peri=0.6290157367903417
+2025-12-21 15:46:30 - external_apis.sbdb_api - DEBUG - Processing 118/2525: 137108
+2025-12-21 15:46:30 - external_apis.sbdb_api - DEBUG - Parsed 137108: H=18.05, diam=0.8423243420708194, peri=0.6388510456200265
+2025-12-21 15:46:32 - external_apis.sbdb_api - DEBUG - Processing 119/2525: 137120
+2025-12-21 15:46:32 - external_apis.sbdb_api - DEBUG - Parsed 137120: H=18.29, diam=0.7541875370549558, peri=0.8572145869826526
+2025-12-21 15:46:34 - external_apis.sbdb_api - DEBUG - Processing 120/2525: 137126
+2025-12-21 15:46:34 - external_apis.sbdb_api - DEBUG - Parsed 137126: H=18.06, diam=0.8384542132643548, peri=0.7065553941066233
+2025-12-21 15:46:34 - external_apis.sbdb_api - INFO -   Progress: 120/2525 PHAs processed.
+2025-12-21 15:46:36 - external_apis.sbdb_api - DEBUG - Processing 121/2525: 137427
+2025-12-21 15:46:36 - external_apis.sbdb_api - DEBUG - Parsed 137427: H=15.28, diam=3.016333457803826, peri=0.9470205754274508
+2025-12-21 15:46:38 - external_apis.sbdb_api - DEBUG - Processing 122/2525: 138095
+2025-12-21 15:46:38 - external_apis.sbdb_api - DEBUG - Parsed 138095: H=15.98, diam=2.1851404244104287, peri=1.04013098064542
+2025-12-21 15:46:40 - external_apis.sbdb_api - DEBUG - Processing 123/2525: 138127
+2025-12-21 15:46:40 - external_apis.sbdb_api - DEBUG - Parsed 138127: H=17.11, diam=0.754, peri=0.3090403026353136
+2025-12-21 15:46:42 - external_apis.sbdb_api - DEBUG - Processing 124/2525: 138175
+2025-12-21 15:46:42 - external_apis.sbdb_api - DEBUG - Parsed 138175: H=20.49, diam=0.2738289438857671, peri=0.7092472085925098
+2025-12-21 15:46:44 - external_apis.sbdb_api - DEBUG - Processing 125/2525: 138404
+2025-12-21 15:46:44 - external_apis.sbdb_api - DEBUG - Parsed 138404: H=19.39, diam=0.4544429301502733, peri=0.7759217893810436
+2025-12-21 15:46:46 - external_apis.sbdb_api - DEBUG - Processing 126/2525: 138524
+2025-12-21 15:46:46 - external_apis.sbdb_api - DEBUG - Parsed 138524: H=16.86, diam=1.457066426679202, peri=1.019327093554952
+2025-12-21 15:46:48 - external_apis.sbdb_api - DEBUG - Processing 127/2525: 138727
+2025-12-21 15:46:48 - external_apis.sbdb_api - DEBUG - Parsed 138727: H=19.34, diam=0.4650282658143066, peri=0.8309563489267306
+2025-12-21 15:46:50 - external_apis.sbdb_api - DEBUG - Processing 128/2525: 138971
+2025-12-21 15:46:50 - external_apis.sbdb_api - DEBUG - Parsed 138971: H=18.52, diam=0.6783898656010261, peri=0.6889841023925171
+2025-12-21 15:46:52 - external_apis.sbdb_api - DEBUG - Processing 129/2525: 139211
+2025-12-21 15:46:52 - external_apis.sbdb_api - DEBUG - Parsed 139211: H=17.76, diam=0.9626742414187877, peri=1.019122874217034
+2025-12-21 15:46:54 - external_apis.sbdb_api - DEBUG - Processing 130/2525: 139359
+2025-12-21 15:46:54 - external_apis.sbdb_api - DEBUG - Parsed 139359: H=16.52, diam=1.7040382986768248, peri=0.3430523287604268
+2025-12-21 15:46:54 - external_apis.sbdb_api - INFO -   Progress: 130/2525 PHAs processed.
+2025-12-21 15:46:56 - external_apis.sbdb_api - DEBUG - Processing 131/2525: 139622
+2025-12-21 15:46:56 - external_apis.sbdb_api - DEBUG - Parsed 139622: H=18.46, diam=0.6973958383216827, peri=0.9799972397020305
+2025-12-21 15:46:58 - external_apis.sbdb_api - DEBUG - Processing 132/2525: 140039
+2025-12-21 15:46:58 - external_apis.sbdb_api - DEBUG - Parsed 140039: H=18.08, diam=0.8307672188322568, peri=0.7870276169669812
+2025-12-21 15:47:00 - external_apis.sbdb_api - DEBUG - Processing 133/2525: 140158
+2025-12-21 15:47:00 - external_apis.sbdb_api - DEBUG - Parsed 140158: H=18.48, diam=0.566, peri=0.7263817537148147
+2025-12-21 15:47:02 - external_apis.sbdb_api - DEBUG - Processing 134/2525: 140288
+2025-12-21 15:47:02 - external_apis.sbdb_api - DEBUG - Parsed 140288: H=16.73, diam=1.263, peri=0.877375776902735
+2025-12-21 15:47:04 - external_apis.sbdb_api - DEBUG - Processing 135/2525: 141053
+2025-12-21 15:47:04 - external_apis.sbdb_api - DEBUG - Parsed 141053: H=18.86, diam=0.5800685924337514, peri=0.6427310702917189
+2025-12-21 15:47:06 - external_apis.sbdb_api - DEBUG - Processing 136/2525: 141432
+2025-12-21 15:47:06 - external_apis.sbdb_api - DEBUG - Parsed 141432: H=20.06, diam=0.239, peri=0.5588358501616407
+2025-12-21 15:47:08 - external_apis.sbdb_api - DEBUG - Processing 137/2525: 141495
+2025-12-21 15:47:08 - external_apis.sbdb_api - DEBUG - Parsed 141495: H=18.46, diam=0.6973958383216827, peri=0.220494097306173
+2025-12-21 15:47:10 - external_apis.sbdb_api - DEBUG - Processing 138/2525: 141525
+2025-12-21 15:47:10 - external_apis.sbdb_api - DEBUG - Parsed 141525: H=18.07, diam=0.8346018660845508, peri=0.2994376770982908
+2025-12-21 15:47:12 - external_apis.sbdb_api - DEBUG - Processing 139/2525: 141527
+2025-12-21 15:47:12 - external_apis.sbdb_api - DEBUG - Parsed 141527: H=18.94, diam=0.5590869450803535, peri=0.5648559907125155
+2025-12-21 15:47:14 - external_apis.sbdb_api - DEBUG - Processing 140/2525: 141593
+2025-12-21 15:47:14 - external_apis.sbdb_api - DEBUG - Parsed 141593: H=18.32, diam=0.7438396961160308, peri=0.9437377351353118
+2025-12-21 15:47:14 - external_apis.sbdb_api - INFO -   Progress: 140/2525 PHAs processed.
+2025-12-21 15:47:16 - external_apis.sbdb_api - DEBUG - Processing 141/2525: 141614
+2025-12-21 15:47:16 - external_apis.sbdb_api - DEBUG - Parsed 141614: H=19.52, diam=0.4280350681218989, peri=0.7533125602737089
+2025-12-21 15:47:18 - external_apis.sbdb_api - DEBUG - Processing 142/2525: 141851
+2025-12-21 15:47:18 - external_apis.sbdb_api - DEBUG - Parsed 141851: H=17.81, diam=0.9407611003698407, peri=0.1794705609628498
+2025-12-21 15:47:20 - external_apis.sbdb_api - DEBUG - Processing 143/2525: 143404
+2025-12-21 15:47:20 - external_apis.sbdb_api - DEBUG - Parsed 143404: H=16.95, diam=1.3979104499166897, peri=0.7717417515683687
+2025-12-21 15:47:22 - external_apis.sbdb_api - DEBUG - Processing 144/2525: 143487
+2025-12-21 15:47:22 - external_apis.sbdb_api - DEBUG - Parsed 143487: H=18.94, diam=0.5590869450803535, peri=0.5738086589633381
+2025-12-21 15:47:24 - external_apis.sbdb_api - DEBUG - Processing 145/2525: 143649
+2025-12-21 15:47:24 - external_apis.sbdb_api - DEBUG - Parsed 143649: H=17.39, diam=1.141509030139927, peri=0.8823718399547206
+2025-12-21 15:47:26 - external_apis.sbdb_api - DEBUG - Processing 146/2525: 143651
+2025-12-21 15:47:26 - external_apis.sbdb_api - DEBUG - Parsed 143651: H=16.1, diam=2.067661072379766, peri=1.010736450843287
+2025-12-21 15:47:28 - external_apis.sbdb_api - DEBUG - Processing 147/2525: 143992
+2025-12-21 15:47:28 - external_apis.sbdb_api - DEBUG - Parsed 143992: H=16.16, diam=2.0113115678691216, peri=0.8797924301394798
+2025-12-21 15:47:30 - external_apis.sbdb_api - DEBUG - Processing 148/2525: 144332
+2025-12-21 15:47:30 - external_apis.sbdb_api - DEBUG - Parsed 144332: H=16.61, diam=1.6348554198778826, peri=1.010737731701166
+2025-12-21 15:47:32 - external_apis.sbdb_api - DEBUG - Processing 149/2525: 144898
+2025-12-21 15:47:32 - external_apis.sbdb_api - DEBUG - Parsed 144898: H=18.89, diam=0.5721097529763803, peri=0.6200929183653956
+2025-12-21 15:47:34 - external_apis.sbdb_api - DEBUG - Processing 150/2525: 144900
+2025-12-21 15:47:34 - external_apis.sbdb_api - DEBUG - Parsed 144900: H=18.31, diam=0.747273104154048, peri=0.33344081847995
+2025-12-21 15:47:34 - external_apis.sbdb_api - INFO -   Progress: 150/2525 PHAs processed.
+2025-12-21 15:47:36 - external_apis.sbdb_api - DEBUG - Processing 151/2525: 152560
+2025-12-21 15:47:36 - external_apis.sbdb_api - DEBUG - Parsed 152560: H=19.23, diam=0.4891920058867821, peri=0.8689737488338501
+2025-12-21 15:47:38 - external_apis.sbdb_api - DEBUG - Processing 152/2525: 152561
+2025-12-21 15:47:38 - external_apis.sbdb_api - DEBUG - Parsed 152561: H=19.1, diam=0.5193729792671287, peri=0.7480166498585509
+2025-12-21 15:47:40 - external_apis.sbdb_api - DEBUG - Processing 153/2525: 152637
+2025-12-21 15:47:40 - external_apis.sbdb_api - DEBUG - Parsed 152637: H=17.87, diam=0.9151227486221243, peri=0.6845359769566636
+2025-12-21 15:47:42 - external_apis.sbdb_api - DEBUG - Processing 154/2525: 152664
+2025-12-21 15:47:42 - external_apis.sbdb_api - DEBUG - Parsed 152664: H=19.7, diam=0.39398469514814133, peri=0.72080410640013
+2025-12-21 15:47:44 - external_apis.sbdb_api - DEBUG - Processing 155/2525: 152671
+2025-12-21 15:47:44 - external_apis.sbdb_api - DEBUG - Parsed 152671: H=20.24, diam=0.298, peri=0.7157767464057636
+2025-12-21 15:47:46 - external_apis.sbdb_api - DEBUG - Processing 156/2525: 152680
+2025-12-21 15:47:46 - external_apis.sbdb_api - DEBUG - Parsed 152680: H=19.49, diam=0.43398962906336863, peri=0.5216889827831572
+2025-12-21 15:47:48 - external_apis.sbdb_api - DEBUG - Processing 157/2525: 152685
+2025-12-21 15:47:48 - external_apis.sbdb_api - DEBUG - Parsed 152685: H=19.33, diam=0.467174738762832, peri=0.574770320402739
+2025-12-21 15:47:50 - external_apis.sbdb_api - DEBUG - Processing 158/2525: 152754
+2025-12-21 15:47:50 - external_apis.sbdb_api - DEBUG - Parsed 152754: H=19.22, diam=0.414, peri=0.5985713769167451
+2025-12-21 15:47:52 - external_apis.sbdb_api - DEBUG - Processing 159/2525: 152770
+2025-12-21 15:47:52 - external_apis.sbdb_api - DEBUG - Parsed 152770: H=18.41, diam=0.7136402742003394, peri=0.6493468747007242
+2025-12-21 15:47:54 - external_apis.sbdb_api - DEBUG - Processing 160/2525: 152828
+2025-12-21 15:47:54 - external_apis.sbdb_api - DEBUG - Parsed 152828: H=21.26, diam=0.19207876354941594, peri=0.5542081535897452
+2025-12-21 15:47:54 - external_apis.sbdb_api - INFO -   Progress: 160/2525 PHAs processed.
+2025-12-21 15:47:56 - external_apis.sbdb_api - DEBUG - Processing 161/2525: 152978
+2025-12-21 15:47:56 - external_apis.sbdb_api - DEBUG - Parsed 152978: H=19.58, diam=0.531, peri=0.8871158606793249
+2025-12-21 15:47:58 - external_apis.sbdb_api - DEBUG - Processing 162/2525: 153002
+2025-12-21 15:47:58 - external_apis.sbdb_api - DEBUG - Parsed 153002: H=18.28, diam=0.7576687085565795, peri=0.2734372463358645
+2025-12-21 15:48:00 - external_apis.sbdb_api - DEBUG - Processing 163/2525: 153201
+2025-12-21 15:48:00 - external_apis.sbdb_api - DEBUG - Parsed 153201: H=19.3, diam=0.51, peri=0.1996926447684089
+2025-12-21 15:48:02 - external_apis.sbdb_api - DEBUG - Processing 164/2525: 153220
+2025-12-21 15:48:02 - external_apis.sbdb_api - DEBUG - Parsed 153220: H=17.43, diam=1.1206741422786106, peri=0.843744629667175
+2025-12-21 15:48:04 - external_apis.sbdb_api - DEBUG - Processing 165/2525: 153311
+2025-12-21 15:48:04 - external_apis.sbdb_api - DEBUG - Parsed 153311: H=17.4, diam=1.1362642725569714, peri=0.8857939901843755
+2025-12-21 15:48:06 - external_apis.sbdb_api - DEBUG - Processing 166/2525: 153591
+2025-12-21 15:48:06 - external_apis.sbdb_api - DEBUG - Parsed 153591: H=17.11, diam=2.0, peri=1.033735694440601
+2025-12-21 15:48:08 - external_apis.sbdb_api - DEBUG - Processing 167/2525: 153814
+2025-12-21 15:48:08 - external_apis.sbdb_api - DEBUG - Parsed 153814: H=18.28, diam=0.932, peri=0.9117159340070163
+2025-12-21 15:48:10 - external_apis.sbdb_api - DEBUG - Processing 168/2525: 153958
+2025-12-21 15:48:10 - external_apis.sbdb_api - DEBUG - Parsed 153958: H=18.35, diam=0.7336338328773944, peri=0.9343752767675129
+2025-12-21 15:48:12 - external_apis.sbdb_api - DEBUG - Processing 169/2525: 154019
+2025-12-21 15:48:12 - external_apis.sbdb_api - DEBUG - Parsed 154019: H=22.07, diam=0.13227548159727456, peri=0.8479685204797874
+2025-12-21 15:48:14 - external_apis.sbdb_api - DEBUG - Processing 170/2525: 154269
+2025-12-21 15:48:14 - external_apis.sbdb_api - DEBUG - Parsed 154269: H=17.87, diam=0.9151227486221243, peri=0.9610085496058786
+2025-12-21 15:48:14 - external_apis.sbdb_api - INFO -   Progress: 170/2525 PHAs processed.
+2025-12-21 15:48:16 - external_apis.sbdb_api - DEBUG - Processing 171/2525: 154275
+2025-12-21 15:48:16 - external_apis.sbdb_api - DEBUG - Parsed 154275: H=20.13, diam=0.32320595310709044, peri=0.551808927559933
+2025-12-21 15:48:18 - external_apis.sbdb_api - DEBUG - Processing 172/2525: 154276
+2025-12-21 15:48:18 - external_apis.sbdb_api - DEBUG - Parsed 154276: H=17.61, diam=1.06, peri=0.5304892420826325
+2025-12-21 15:48:20 - external_apis.sbdb_api - DEBUG - Processing 173/2525: 154302
+2025-12-21 15:48:20 - external_apis.sbdb_api - DEBUG - Parsed 154302: H=17.69, diam=0.9942128028579545, peri=0.754088972736796
+2025-12-21 15:48:22 - external_apis.sbdb_api - DEBUG - Processing 174/2525: 154330
+2025-12-21 15:48:22 - external_apis.sbdb_api - DEBUG - Parsed 154330: H=18.19, diam=0.7897313006344391, peri=0.8730798037850804
+2025-12-21 15:48:24 - external_apis.sbdb_api - DEBUG - Processing 175/2525: 154590
+2025-12-21 15:48:24 - external_apis.sbdb_api - DEBUG - Parsed 154590: H=21.7, diam=0.086, peri=0.6607707474452017
+2025-12-21 15:48:26 - external_apis.sbdb_api - DEBUG - Processing 176/2525: 155338
+2025-12-21 15:48:26 - external_apis.sbdb_api - DEBUG - Parsed 155338: H=20.4, diam=0.28541668088449595, peri=0.8121564534917588
+2025-12-21 15:48:28 - external_apis.sbdb_api - DEBUG - Processing 177/2525: 159504
+2025-12-21 15:48:28 - external_apis.sbdb_api - DEBUG - Parsed 159504: H=16.97, diam=2.324, peri=0.9318636377834063
+2025-12-21 15:48:30 - external_apis.sbdb_api - DEBUG - Processing 178/2525: 159857
+2025-12-21 15:48:30 - external_apis.sbdb_api - DEBUG - Parsed 159857: H=15.47, diam=3.07, peri=0.9196386063417075
+2025-12-21 15:48:32 - external_apis.sbdb_api - DEBUG - Processing 179/2525: 161989
+2025-12-21 15:48:32 - external_apis.sbdb_api - DEBUG - Parsed 161989: H=17.31, diam=1.9, peri=0.8826111275340879
+2025-12-21 15:48:34 - external_apis.sbdb_api - DEBUG - Processing 180/2525: 162000
+2025-12-21 15:48:34 - external_apis.sbdb_api - DEBUG - Parsed 162000: H=19.64, diam=0.4, peri=0.9023724433801164
+2025-12-21 15:48:34 - external_apis.sbdb_api - INFO -   Progress: 180/2525 PHAs processed.
+2025-12-21 15:48:36 - external_apis.sbdb_api - DEBUG - Processing 181/2525: 162039
+2025-12-21 15:48:36 - external_apis.sbdb_api - DEBUG - Parsed 162039: H=18.93, diam=0.5616675731662333, peri=0.6121144289715683
+2025-12-21 15:48:38 - external_apis.sbdb_api - DEBUG - Processing 182/2525: 162082
+2025-12-21 15:48:38 - external_apis.sbdb_api - DEBUG - Parsed 162082: H=19.12, diam=0.5146113391720002, peri=1.013185172968382
+2025-12-21 15:48:40 - external_apis.sbdb_api - DEBUG - Processing 183/2525: 162116
+2025-12-21 15:48:40 - external_apis.sbdb_api - DEBUG - Parsed 162116: H=19.54, diam=0.538, peri=0.8457227233579345
+2025-12-21 15:48:42 - external_apis.sbdb_api - DEBUG - Processing 184/2525: 162120
+2025-12-21 15:48:42 - external_apis.sbdb_api - DEBUG - Parsed 162120: H=20.64, diam=0.25555203956408995, peri=0.4666901338118601
+2025-12-21 15:48:44 - external_apis.sbdb_api - DEBUG - Processing 185/2525: 162162
+2025-12-21 15:48:44 - external_apis.sbdb_api - DEBUG - Parsed 162162: H=19.99, diam=0.3447302159425513, peri=0.9709200198995044
+2025-12-21 15:48:46 - external_apis.sbdb_api - DEBUG - Processing 186/2525: 162173
+2025-12-21 15:48:46 - external_apis.sbdb_api - DEBUG - Parsed 162173: H=19.55, diam=0.896, peri=0.9633805833140925
+2025-12-21 15:48:48 - external_apis.sbdb_api - DEBUG - Processing 187/2525: 162183
+2025-12-21 15:48:48 - external_apis.sbdb_api - DEBUG - Parsed 162183: H=21.25, diam=0.19296535883889382, peri=0.9641094183953454
+2025-12-21 15:48:50 - external_apis.sbdb_api - DEBUG - Processing 188/2525: 162361
+2025-12-21 15:48:50 - external_apis.sbdb_api - DEBUG - Parsed 162361: H=20.24, diam=0.30724112836184736, peri=0.5157421323455305
+2025-12-21 15:48:52 - external_apis.sbdb_api - DEBUG - Processing 189/2525: 162416
+2025-12-21 15:48:52 - external_apis.sbdb_api - DEBUG - Parsed 162416: H=21.67, diam=0.15903010709629334, peri=0.9676938537868528
+2025-12-21 15:48:54 - external_apis.sbdb_api - DEBUG - Processing 190/2525: 162421
+2025-12-21 15:48:54 - external_apis.sbdb_api - DEBUG - Parsed 162421: H=18.11, diam=0.819368665269149, peri=0.8294046488724092
+2025-12-21 15:48:54 - external_apis.sbdb_api - INFO -   Progress: 190/2525 PHAs processed.
+2025-12-21 15:48:56 - external_apis.sbdb_api - DEBUG - Processing 191/2525: 162422
+2025-12-21 15:48:56 - external_apis.sbdb_api - DEBUG - Parsed 162422: H=20.6, diam=0.26030310669964696, peri=0.5660535733311677
+2025-12-21 15:48:58 - external_apis.sbdb_api - DEBUG - Processing 192/2525: 162474
+2025-12-21 15:48:58 - external_apis.sbdb_api - DEBUG - Parsed 162474: H=18.62, diam=0.6478572920810582, peri=0.7973790263873791
+2025-12-21 15:49:00 - external_apis.sbdb_api - DEBUG - Processing 193/2525: 162510
+2025-12-21 15:49:00 - external_apis.sbdb_api - DEBUG - Parsed 162510: H=17.6, diam=1.406, peri=0.960192364774519
+2025-12-21 15:49:02 - external_apis.sbdb_api - DEBUG - Processing 194/2525: 162567
+2025-12-21 15:49:02 - external_apis.sbdb_api - DEBUG - Parsed 162567: H=19.97, diam=0.335, peri=0.9353695704557725
+2025-12-21 15:49:04 - external_apis.sbdb_api - DEBUG - Processing 195/2525: 162687
+2025-12-21 15:49:04 - external_apis.sbdb_api - DEBUG - Parsed 162687: H=18.75, diam=0.6102100434426088, peri=0.8554807642735046
+2025-12-21 15:49:06 - external_apis.sbdb_api - DEBUG - Processing 196/2525: 162695
+2025-12-21 15:49:06 - external_apis.sbdb_api - DEBUG - Parsed 162695: H=20.2, diam=0.3129531674054072, peri=0.7736081980994802
+2025-12-21 15:49:08 - external_apis.sbdb_api - DEBUG - Processing 197/2525: 162783
+2025-12-21 15:49:08 - external_apis.sbdb_api - DEBUG - Parsed 162783: H=20.91, diam=0.22567286965001698, peri=1.008500970706125
+2025-12-21 15:49:10 - external_apis.sbdb_api - DEBUG - Processing 198/2525: 162825
+2025-12-21 15:49:10 - external_apis.sbdb_api - DEBUG - Parsed 162825: H=17.97, diam=0.8739354402336879, peri=0.4534319658753601
+2025-12-21 15:49:12 - external_apis.sbdb_api - DEBUG - Processing 199/2525: 162882
+2025-12-21 15:49:12 - external_apis.sbdb_api - DEBUG - Parsed 162882: H=18.77, diam=0.6046156041373403, peri=0.4640576954692899
+2025-12-21 15:49:14 - external_apis.sbdb_api - DEBUG - Processing 200/2525: 162922
+2025-12-21 15:49:14 - external_apis.sbdb_api - DEBUG - Parsed 162922: H=20.91, diam=0.22567286965001698, peri=0.8150880750277938
+2025-12-21 15:49:14 - external_apis.sbdb_api - INFO -   Progress: 200/2525 PHAs processed.
+2025-12-21 15:49:16 - external_apis.sbdb_api - DEBUG - Processing 201/2525: 162979
+2025-12-21 15:49:16 - external_apis.sbdb_api - DEBUG - Parsed 162979: H=18.29, diam=0.7541875370549558, peri=0.9297647551377087
+2025-12-21 15:49:18 - external_apis.sbdb_api - DEBUG - Processing 202/2525: 162998
+2025-12-21 15:49:18 - external_apis.sbdb_api - DEBUG - Parsed 162998: H=18.17, diam=0.875, peri=1.012014759775139
+2025-12-21 15:49:20 - external_apis.sbdb_api - DEBUG - Processing 203/2525: 163014
+2025-12-21 15:49:20 - external_apis.sbdb_api - DEBUG - Parsed 163014: H=17.75, diam=0.9671177438235905, peri=0.9906186661193113
+2025-12-21 15:49:22 - external_apis.sbdb_api - DEBUG - Processing 204/2525: 163026
+2025-12-21 15:49:22 - external_apis.sbdb_api - DEBUG - Parsed 163026: H=21.23, diam=0.19475084532097645, peri=0.823471982075436
+2025-12-21 15:49:24 - external_apis.sbdb_api - DEBUG - Processing 205/2525: 163051
+2025-12-21 15:49:24 - external_apis.sbdb_api - DEBUG - Parsed 163051: H=16.4, diam=1.800857510412324, peri=0.9863729934161193
+2025-12-21 15:49:26 - external_apis.sbdb_api - DEBUG - Processing 206/2525: 163067
+2025-12-21 15:49:26 - external_apis.sbdb_api - DEBUG - Parsed 163067: H=19.99, diam=0.3447302159425513, peri=0.8471554606344979
+2025-12-21 15:49:28 - external_apis.sbdb_api - DEBUG - Processing 207/2525: 163132
+2025-12-21 15:49:28 - external_apis.sbdb_api - DEBUG - Parsed 163132: H=18.61, diam=0.46, peri=0.8596899035466015
+2025-12-21 15:49:30 - external_apis.sbdb_api - DEBUG - Processing 208/2525: 163243
+2025-12-21 15:49:30 - external_apis.sbdb_api - DEBUG - Parsed 163243: H=16.47, diam=1.682, peri=0.3033945056683323
+2025-12-21 15:49:32 - external_apis.sbdb_api - DEBUG - Processing 209/2525: 163249
+2025-12-21 15:49:32 - external_apis.sbdb_api - DEBUG - Parsed 163249: H=18.7, diam=0.6244236612741558, peri=0.8942367540375723
+2025-12-21 15:49:34 - external_apis.sbdb_api - DEBUG - Processing 210/2525: 163348
+2025-12-21 15:49:34 - external_apis.sbdb_api - DEBUG - Parsed 163348: H=20.05, diam=0.735, peri=0.4951785621022975
+2025-12-21 15:49:34 - external_apis.sbdb_api - INFO -   Progress: 210/2525 PHAs processed.
+2025-12-21 15:49:36 - external_apis.sbdb_api - DEBUG - Processing 211/2525: 163364
+2025-12-21 15:49:36 - external_apis.sbdb_api - DEBUG - Parsed 163364: H=18.91, diam=0.5668646192337082, peri=0.8615729841221937
+2025-12-21 15:49:38 - external_apis.sbdb_api - DEBUG - Processing 212/2525: 163373
+2025-12-21 15:49:38 - external_apis.sbdb_api - DEBUG - Parsed 163373: H=19.03, diam=0.5363883681824047, peri=0.666517680784412
+2025-12-21 15:49:40 - external_apis.sbdb_api - DEBUG - Processing 213/2525: 163683
+2025-12-21 15:49:40 - external_apis.sbdb_api - DEBUG - Parsed 163683: H=19.05, diam=0.5314707300640299, peri=0.4916259885922758
+2025-12-21 15:49:42 - external_apis.sbdb_api - DEBUG - Processing 214/2525: 163697
+2025-12-21 15:49:42 - external_apis.sbdb_api - DEBUG - Parsed 163697: H=20.08, diam=0.33073438687790757, peri=0.8477472542655632
+2025-12-21 15:49:44 - external_apis.sbdb_api - DEBUG - Processing 215/2525: 163818
+2025-12-21 15:49:44 - external_apis.sbdb_api - DEBUG - Parsed 163818: H=18.46, diam=0.386, peri=0.7934885111349832
+2025-12-21 15:49:46 - external_apis.sbdb_api - DEBUG - Processing 216/2525: 163899
+2025-12-21 15:49:46 - external_apis.sbdb_api - DEBUG - Parsed 163899: H=17.56, diam=0.791, peri=0.6545051910253473
+2025-12-21 15:49:48 - external_apis.sbdb_api - DEBUG - Processing 217/2525: 164121
+2025-12-21 15:49:48 - external_apis.sbdb_api - DEBUG - Parsed 164121: H=16.15, diam=1.717, peri=0.7857483108217199
+2025-12-21 15:49:50 - external_apis.sbdb_api - DEBUG - Processing 218/2525: 164202
+2025-12-21 15:49:50 - external_apis.sbdb_api - DEBUG - Parsed 164202: H=20.91, diam=0.22567286965001698, peri=0.7123027023125902
+2025-12-21 15:49:52 - external_apis.sbdb_api - DEBUG - Processing 219/2525: 164207
+2025-12-21 15:49:52 - external_apis.sbdb_api - DEBUG - Parsed 164207: H=21.19, diam=0.163, peri=0.8650312633377649
+2025-12-21 15:49:54 - external_apis.sbdb_api - DEBUG - Processing 220/2525: 164211
+2025-12-21 15:49:54 - external_apis.sbdb_api - DEBUG - Parsed 164211: H=19.5, diam=0.43199562784405615, peri=0.9609794742208304
+2025-12-21 15:49:54 - external_apis.sbdb_api - INFO -   Progress: 220/2525 PHAs processed.
+2025-12-21 15:49:56 - external_apis.sbdb_api - DEBUG - Processing 221/2525: 164216
+2025-12-21 15:49:56 - external_apis.sbdb_api - DEBUG - Parsed 164216: H=17.28, diam=1.200823978332127, peri=0.9342940968039031
+2025-12-21 15:49:58 - external_apis.sbdb_api - DEBUG - Processing 222/2525: 164400
+2025-12-21 15:49:58 - external_apis.sbdb_api - DEBUG - Parsed 164400: H=17.37, diam=1.1520712831513185, peri=0.881509136563781
+2025-12-21 15:50:00 - external_apis.sbdb_api - DEBUG - Processing 223/2525: 168318
+2025-12-21 15:50:00 - external_apis.sbdb_api - DEBUG - Parsed 168318: H=18.91, diam=0.9, peri=0.9904600749391957
+2025-12-21 15:50:02 - external_apis.sbdb_api - DEBUG - Processing 224/2525: 170086
+2025-12-21 15:50:02 - external_apis.sbdb_api - DEBUG - Parsed 170086: H=18.14, diam=0.8081265057239874, peri=0.7121497616737099
+2025-12-21 15:50:04 - external_apis.sbdb_api - DEBUG - Processing 225/2525: 170903
+2025-12-21 15:50:04 - external_apis.sbdb_api - DEBUG - Parsed 170903: H=18.2, diam=0.7861028149035884, peri=0.5303949744999898
+2025-12-21 15:50:06 - external_apis.sbdb_api - DEBUG - Processing 226/2525: 171576
+2025-12-21 15:50:06 - external_apis.sbdb_api - DEBUG - Parsed 171576: H=18.67, diam=0.6331102596892499, peri=0.4520335464389963
+2025-12-21 15:50:08 - external_apis.sbdb_api - DEBUG - Processing 227/2525: 171839
+2025-12-21 15:50:08 - external_apis.sbdb_api - DEBUG - Parsed 171839: H=19.23, diam=0.4891920058867821, peri=1.006851318884391
+2025-12-21 15:50:10 - external_apis.sbdb_api - DEBUG - Processing 228/2525: 172678
+2025-12-21 15:50:10 - external_apis.sbdb_api - DEBUG - Parsed 172678: H=18.89, diam=0.5721097529763803, peri=0.7602830729436033
+2025-12-21 15:50:12 - external_apis.sbdb_api - DEBUG - Processing 229/2525: 173561
+2025-12-21 15:50:12 - external_apis.sbdb_api - DEBUG - Parsed 173561: H=18.36, diam=0.7302630915985235, peri=0.9975427809798312
+2025-12-21 15:50:14 - external_apis.sbdb_api - DEBUG - Processing 230/2525: 175706
+2025-12-21 15:50:14 - external_apis.sbdb_api - DEBUG - Parsed 175706: H=18.3, diam=1.196, peri=0.685482371248965
+2025-12-21 15:50:14 - external_apis.sbdb_api - INFO -   Progress: 230/2525 PHAs processed.
+2025-12-21 15:50:16 - external_apis.sbdb_api - DEBUG - Processing 231/2525: 175729
+2025-12-21 15:50:16 - external_apis.sbdb_api - DEBUG - Parsed 175729: H=20.44, diam=0.2802072393619452, peri=0.7316096156728128
+2025-12-21 15:50:18 - external_apis.sbdb_api - DEBUG - Processing 232/2525: 177049
+2025-12-21 15:50:18 - external_apis.sbdb_api - DEBUG - Parsed 177049: H=19.8, diam=0.3762524628723901, peri=0.5469696343974487
+2025-12-21 15:50:20 - external_apis.sbdb_api - DEBUG - Processing 233/2525: 177614
+2025-12-21 15:50:20 - external_apis.sbdb_api - DEBUG - Parsed 177614: H=17.58, diam=1.045873963073493, peri=0.9062963590941293
+2025-12-21 15:50:22 - external_apis.sbdb_api - DEBUG - Processing 234/2525: 179806
+2025-12-21 15:50:22 - external_apis.sbdb_api - DEBUG - Parsed 179806: H=20.46, diam=0.27763828395002915, peri=0.8641090469436249
+2025-12-21 15:50:24 - external_apis.sbdb_api - DEBUG - Processing 235/2525: 180186
+2025-12-21 15:50:24 - external_apis.sbdb_api - DEBUG - Parsed 180186: H=17.58, diam=1.045873963073493, peri=0.8924645725320489
+2025-12-21 15:50:26 - external_apis.sbdb_api - DEBUG - Processing 236/2525: 184266
+2025-12-21 15:50:26 - external_apis.sbdb_api - DEBUG - Parsed 184266: H=19.49, diam=0.43398962906336863, peri=0.852621306520079
+2025-12-21 15:50:28 - external_apis.sbdb_api - DEBUG - Processing 237/2525: 185851
+2025-12-21 15:50:28 - external_apis.sbdb_api - DEBUG - Parsed 185851: H=18.31, diam=0.863, peri=0.8508393099488355
+2025-12-21 15:50:30 - external_apis.sbdb_api - DEBUG - Processing 238/2525: 186844
+2025-12-21 15:50:30 - external_apis.sbdb_api - DEBUG - Parsed 186844: H=17.43, diam=1.1206741422786106, peri=0.7933054822305771
+2025-12-21 15:50:32 - external_apis.sbdb_api - DEBUG - Processing 239/2525: 187040
+2025-12-21 15:50:32 - external_apis.sbdb_api - DEBUG - Parsed 187040: H=19.2, diam=0.43, peri=0.9186706408721063
+2025-12-21 15:50:34 - external_apis.sbdb_api - DEBUG - Processing 240/2525: 189040
+2025-12-21 15:50:34 - external_apis.sbdb_api - DEBUG - Parsed 189040: H=19.87, diam=0.36431692816309336, peri=0.8477124359445024
+2025-12-21 15:50:34 - external_apis.sbdb_api - INFO -   Progress: 240/2525 PHAs processed.
+2025-12-21 15:50:36 - external_apis.sbdb_api - DEBUG - Processing 241/2525: 189865
+2025-12-21 15:50:36 - external_apis.sbdb_api - DEBUG - Parsed 189865: H=19.48, diam=0.43599283417412305, peri=0.2733207905013017
+2025-12-21 15:50:38 - external_apis.sbdb_api - DEBUG - Processing 242/2525: 192559
+2025-12-21 15:50:38 - external_apis.sbdb_api - DEBUG - Parsed 192559: H=20.43, diam=0.28150061721332786, peri=0.8312891859809588
+2025-12-21 15:50:40 - external_apis.sbdb_api - DEBUG - Processing 243/2525: 192563
+2025-12-21 15:50:40 - external_apis.sbdb_api - DEBUG - Parsed 192563: H=17.33, diam=1.1734898874423902, peri=0.8600128322745082
+2025-12-21 15:50:42 - external_apis.sbdb_api - DEBUG - Processing 244/2525: 194006
+2025-12-21 15:50:42 - external_apis.sbdb_api - DEBUG - Parsed 194006: H=20.46, diam=0.27763828395002915, peri=0.833533313630735
+2025-12-21 15:50:44 - external_apis.sbdb_api - DEBUG - Processing 245/2525: 194268
+2025-12-21 15:50:44 - external_apis.sbdb_api - DEBUG - Parsed 194268: H=18.33, diam=1.244, peri=0.308685417155861
+2025-12-21 15:50:46 - external_apis.sbdb_api - DEBUG - Processing 246/2525: 196068
+2025-12-21 15:50:46 - external_apis.sbdb_api - DEBUG - Parsed 196068: H=18.13, diam=0.811856648192822, peri=0.7100405566171959
+2025-12-21 15:50:48 - external_apis.sbdb_api - DEBUG - Processing 247/2525: 196625
+2025-12-21 15:50:48 - external_apis.sbdb_api - DEBUG - Parsed 196625: H=20.29, diam=0.30024746644365935, peri=0.7529416187856344
+2025-12-21 15:50:50 - external_apis.sbdb_api - DEBUG - Processing 248/2525: 197588
+2025-12-21 15:50:50 - external_apis.sbdb_api - DEBUG - Parsed 197588: H=17.12, diam=1.2926452403671214, peri=0.9854241118769533
+2025-12-21 15:50:52 - external_apis.sbdb_api - DEBUG - Processing 249/2525: 199003
+2025-12-21 15:50:52 - external_apis.sbdb_api - DEBUG - Parsed 199003: H=18.16, diam=0.8007175573858947, peri=0.8132232740401926
+2025-12-21 15:50:54 - external_apis.sbdb_api - DEBUG - Processing 250/2525: 199145
+2025-12-21 15:50:54 - external_apis.sbdb_api - DEBUG - Parsed 199145: H=18.3, diam=0.750722360083508, peri=0.4413641166637955
+2025-12-21 15:50:54 - external_apis.sbdb_api - INFO -   Progress: 250/2525 PHAs processed.
+2025-12-21 15:50:56 - external_apis.sbdb_api - DEBUG - Processing 251/2525: 199801
+2025-12-21 15:50:56 - external_apis.sbdb_api - DEBUG - Parsed 199801: H=19.36, diam=0.4607648610469008, peri=0.7252518955502819
+2025-12-21 15:50:58 - external_apis.sbdb_api - DEBUG - Processing 252/2525: 200840
+2025-12-21 15:50:58 - external_apis.sbdb_api - DEBUG - Parsed 200840: H=17.79, diam=0.9494658556569391, peri=1.018295909395823
+2025-12-21 15:51:00 - external_apis.sbdb_api - DEBUG - Processing 253/2525: 202683
+2025-12-21 15:51:00 - external_apis.sbdb_api - DEBUG - Parsed 202683: H=19.78, diam=0.3797338840474203, peri=0.2787970217198246
+2025-12-21 15:51:02 - external_apis.sbdb_api - DEBUG - Processing 254/2525: 206378
+2025-12-21 15:51:02 - external_apis.sbdb_api - DEBUG - Parsed 206378: H=18.76, diam=0.376, peri=1.003257546361018
+2025-12-21 15:51:04 - external_apis.sbdb_api - DEBUG - Processing 255/2525: 206910
+2025-12-21 15:51:04 - external_apis.sbdb_api - DEBUG - Parsed 206910: H=17.28, diam=1.200823978332127, peri=0.7319372891809097
+2025-12-21 15:51:06 - external_apis.sbdb_api - DEBUG - Processing 256/2525: 207398
+2025-12-21 15:51:06 - external_apis.sbdb_api - DEBUG - Parsed 207398: H=20.36, diam=0.29072297315593765, peri=0.7483334378735081
+2025-12-21 15:51:08 - external_apis.sbdb_api - DEBUG - Processing 257/2525: 207945
+2025-12-21 15:51:08 - external_apis.sbdb_api - DEBUG - Parsed 207945: H=19.61, diam=0.423, peri=0.9158714265691412
+2025-12-21 15:51:10 - external_apis.sbdb_api - DEBUG - Processing 258/2525: 208023
+2025-12-21 15:51:10 - external_apis.sbdb_api - DEBUG - Parsed 208023: H=20.52, diam=0.2700718699265918, peri=0.714065089066585
+2025-12-21 15:51:12 - external_apis.sbdb_api - DEBUG - Processing 259/2525: 208115
+2025-12-21 15:51:12 - external_apis.sbdb_api - DEBUG - Parsed 208115: H=20.85, diam=0.23199538804518843, peri=0.8385134737117319
+2025-12-21 15:51:14 - external_apis.sbdb_api - DEBUG - Processing 260/2525: 212546
+2025-12-21 15:51:14 - external_apis.sbdb_api - DEBUG - Parsed 212546: H=17.71, diam=0.9850978050930368, peri=1.034315058535318
+2025-12-21 15:51:14 - external_apis.sbdb_api - INFO -   Progress: 260/2525 PHAs processed.
+2025-12-21 15:51:16 - external_apis.sbdb_api - DEBUG - Processing 261/2525: 214869
+2025-12-21 15:51:16 - external_apis.sbdb_api - DEBUG - Parsed 214869: H=16.51, diam=1.7119037820898695, peri=0.9886051581880653
+2025-12-21 15:51:18 - external_apis.sbdb_api - DEBUG - Processing 262/2525: 215588
+2025-12-21 15:51:18 - external_apis.sbdb_api - DEBUG - Parsed 215588: H=19.42, diam=0.488, peri=0.3614786026308294
+2025-12-21 15:51:20 - external_apis.sbdb_api - DEBUG - Processing 263/2525: 216115
+2025-12-21 15:51:20 - external_apis.sbdb_api - DEBUG - Parsed 216115: H=18.91, diam=0.5668646192337082, peri=0.6313044824763618
+2025-12-21 15:51:22 - external_apis.sbdb_api - DEBUG - Processing 264/2525: 216258
+2025-12-21 15:51:22 - external_apis.sbdb_api - DEBUG - Parsed 216258: H=20.33, diam=0.29476733257802434, peri=0.8605960742963751
+2025-12-21 15:51:24 - external_apis.sbdb_api - DEBUG - Processing 265/2525: 216523
+2025-12-21 15:51:24 - external_apis.sbdb_api - DEBUG - Parsed 216523: H=20.7, diam=0.24858753701650987, peri=0.5371391628331907
+2025-12-21 15:51:26 - external_apis.sbdb_api - DEBUG - Processing 266/2525: 216985
+2025-12-21 15:51:26 - external_apis.sbdb_api - DEBUG - Parsed 216985: H=21.34, diam=0.18513108713073345, peri=0.8714360302788196
+2025-12-21 15:51:28 - external_apis.sbdb_api - DEBUG - Processing 267/2525: 217430
+2025-12-21 15:51:28 - external_apis.sbdb_api - DEBUG - Parsed 217430: H=19.55, diam=0.4221622068193863, peri=0.8973163853821957
+2025-12-21 15:51:30 - external_apis.sbdb_api - DEBUG - Processing 268/2525: 217628
+2025-12-21 15:51:30 - external_apis.sbdb_api - DEBUG - Parsed 217628: H=16.68, diam=1.4, peri=0.7283769185780181
+2025-12-21 15:51:32 - external_apis.sbdb_api - DEBUG - Processing 269/2525: 220839
+2025-12-21 15:51:32 - external_apis.sbdb_api - DEBUG - Parsed 220839: H=17.43, diam=1.1206741422786106, peri=0.7697006739235851
+2025-12-21 15:51:34 - external_apis.sbdb_api - DEBUG - Processing 270/2525: 221455
+2025-12-21 15:51:34 - external_apis.sbdb_api - DEBUG - Parsed 221455: H=19.52, diam=0.4280350681218989, peri=0.6922993911912785
+2025-12-21 15:51:34 - external_apis.sbdb_api - INFO -   Progress: 270/2525 PHAs processed.

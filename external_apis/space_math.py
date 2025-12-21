@@ -1,7 +1,5 @@
-import math
 from typing import Dict, Any, Optional
 from datetime import datetime
-import random
 
 def get_size_by_albedo(albedo: float, h_mag: float) -> float:
     """Вычисляет диаметр астероида на основе альбедо и абсолютной звёздной величины."""

@@ -9,7 +9,7 @@ import requests
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-import math
+
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ class SentryImpactRisk:
         }
 
 
-class SentryImpactRiskAnalyzer:
+class SentryClient:
     """
     Анализатор рисков на основе NASA Sentry API (Sentry-II).
     Возвращает ТОЛЬКО объекты с ts_max > 0 (актуальные угрозы).
@@ -243,46 +243,6 @@ class SentryImpactRiskAnalyzer:
 
         return self._get_cached_or_fetch(cache_key, fetch_data)
 
-    def fetch_recently_removed_objects(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """
-        Получает список объектов, удаленных из ТАБЛИЦЫ РИСКОВ Sentry.
-        Это не означает, что астероид уничтожен, а значит, что новые данные
-        исключили возможность его столкновения с Землей в обозримом будущем.
-        Поле `removed_date` может быть пустым.
-        """
-        try:
-            logger.info("Запрос списка удаленных объектов...")
-            response = self.session.get(
-                self.SENTRY_API_REMOVED,
-                timeout=self.timeout
-            )
-            response.raise_for_status()
-            data = response.json()
-
-            removed_objects = []
-            for item in data.get('data', []):
-                obj_info = {
-                    "designation": item.get('des', 'Неизвестно'),
-                    "fullname": item.get('fullname', ''),
-                    "removed_date": item.get('removed_date', 'Неизвестно'),
-                    "removed_reason": item.get('removed_reason', 'Дополнительные наблюдения'),
-                    "last_ip": self._safe_float(item.get('last_ip')),
-                    "last_diameter": self._safe_float(item.get('last_diameter')),
-                    "note": "Объект удален из списка рисков после уточнения орбиты"
-                }
-                removed_objects.append(obj_info)
-
-            # Сортируем по дате удаления (новые первыми)
-            removed_objects.sort(
-                key=lambda x: x['removed_date'],
-                reverse=True
-            )
-
-            return removed_objects[:limit]
-
-        except Exception as e:
-            logger.error(f"Ошибка получения удаленных объектов: {e}")
-            return []
 
     def fetch_object_details(self, designation: str) -> Optional[SentryImpactRisk]:
         cache_key = f"object_{designation}"
@@ -378,83 +338,3 @@ class SentryImpactRiskAnalyzer:
             impact_probability_text_ru=impact_probability_text_ru,
             last_update=datetime.now()
         )
-
-
-# ============================================================================
-# ФАСАДНЫЕ ФУНКЦИИ ДЛЯ ИНТЕГРАЦИИ С ВАШИМ ПРОЕКТОМ
-# ============================================================================
-
-def get_current_impact_risks(limit: Optional[int] = None) -> List[Dict[str, Any]]:
-    """
-    Основная функция для получения актуальных рисков.
-    Возвращает список объектов с ts_max > 0 (реальные угрозы).
-
-    Args:
-        limit: Ограничить количество возвращаемых объектов
-
-    Returns:
-        Список словарей с данными об угрозах
-    """
-    analyzer = SentryImpactRiskAnalyzer()
-    try:
-        risks = analyzer.fetch_current_impact_risks()
-
-        # Сортировка по вероятности (убывание)
-        risks.sort(key=lambda x: x.ip, reverse=True)
-
-        if limit and limit > 0:
-            risks = risks[:limit]
-
-        return [risk.to_dict() for risk in risks]
-
-    except Exception as e:
-        logger.error(f"Критическая ошибка при получении рисков: {e}")
-        return []
-
-
-def check_asteroid_risk(designation: str) -> Dict[str, Any]:
-    """
-    Проверяет, представляет ли конкретный астероид угрозу.
-
-    Args:
-        designation: Обозначение астероида (например, "2023 DW")
-
-    Returns:
-        Словарь с оценкой риска. Если объект не найден в Sentry,
-        считается, что у него нулевая вероятность столкновения.
-    """
-    analyzer = SentryImpactRiskAnalyzer()
-
-    # Пробуем получить данные из Sentry
-    risk_object = analyzer.fetch_object_details(designation)
-
-    if risk_object:
-        # Объект найден в Sentry
-        result = risk_object.to_dict()
-        result['in_sentry'] = True
-        result['status'] = 'В списке рисков NASA' if risk_object.ts_max > 0 else 'Безопасен'
-        return result
-    else:
-        # Объект НЕ найден в Sentry = нулевая вероятность
-        return {
-            "designation": designation,
-            "in_sentry": False,
-            "status": "НЕ НАЙДЕН в Sentry Risk Table",
-            "conclusion": "Вероятность столкновения с Землей в ближайшие 100 лет равна нулю",
-            "impact_probability": 0.0,
-            "torino_scale": 0,
-            "threat_level": "НУЛЕВОЙ (безопасен)",
-            "note": "Объект либо безопасен, либо удален из списка рисков после уточнения орбиты",
-            "data_updated": datetime.now().isoformat()
-        }
-
-
-def get_recently_safe_asteroids(limit: int = 10) -> List[Dict[str, Any]]:
-    """
-    Получает список недавно признанных безопасными астероидов.
-
-    Returns:
-        Список объектов, удаленных из таблицы рисков
-    """
-    analyzer = SentryImpactRiskAnalyzer()
-    return analyzer.fetch_recently_removed_objects(limit=limit)

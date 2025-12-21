@@ -1,0 +1,13 @@
+2025-12-21 16:02:30 - __main__ - INFO - ============================================================
+2025-12-21 16:02:30 - __main__ - INFO - НАЧАЛО РАБОТЫ МОНИТОРА АСТЕРОИДОВ
+2025-12-21 16:02:30 - __main__ - INFO - ============================================================
+2025-12-21 16:02:30 - __main__ - INFO - Этап 1: Получение данных об астероидах PHA...
+2025-12-21 16:02:30 - external_apis.sbdb_api - INFO - Fetching list of Potentially Hazardous Asteroids (PHAs) from NASA SBDB Query API...
+2025-12-21 16:02:46 - external_apis.sbdb_api - INFO - SBDB Query API returned 2525 PHAs.
+2025-12-21 16:02:46 - external_apis.sbdb_api - INFO - Fetching detailed data for 2525 PHAs using astroquery...
+2025-12-21 16:02:46 - external_apis.sbdb_api - DEBUG - Processing 1/2525: 1566
+2025-12-21 16:02:46 - external_apis.sbdb_api - DEBUG - Raw SBDB response for 1566: odict_keys(['phys_par', 'object', 'signature', 'orbit'])
+2025-12-21 16:02:46 - external_apis.sbdb_api - DEBUG - Parsed 1566: H=16.53, diam=1.0, peri=0.1864944109615815
+2025-12-21 16:02:48 - external_apis.sbdb_api - DEBUG - Processing 2/2525: 1620
+2025-12-21 16:02:48 - external_apis.sbdb_api - DEBUG - Raw SBDB response for 1620: odict_keys(['phys_par', 'signature', 'object', 'orbit'])
+2025-12-21 16:02:48 - external_apis.sbdb_api - DEBUG - Parsed 1620: H=15.26, diam=2.56, peri=0.8278035737172076

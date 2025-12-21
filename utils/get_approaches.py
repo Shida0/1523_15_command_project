@@ -7,7 +7,7 @@ import logging
 from typing import List, Dict, Any
 from datetime import datetime, timedelta
 
-from .cad_api import CombinedCADClient
+from external_apis import CADClient
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ def get_current_close_approaches(asteroids: List[Dict[str, Any]], days: int = 36
     asteroid_ids = [str(a.get('mpc_number') or a.get('designation', '')) for a in asteroids]
     
     # Используем bulk-запрос
-    client = CombinedCADClient()
+    client = CADClient()
     all_approaches = client.get_close_approaches(
         asteroid_ids=asteroid_ids,
         start_date=datetime.now(),
