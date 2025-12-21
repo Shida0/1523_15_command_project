@@ -1585,3 +1585,347 @@
 2025-12-21 13:57:35 - utils.get_data - DEBUG - Processing 750/2525: 531944
 2025-12-21 13:57:35 - utils.get_data - DEBUG - Parsed 531944: H=21.33, diam=0.18598561340294012, peri=1.049780023132726
 2025-12-21 13:57:35 - utils.get_data - INFO -   Progress: 750/2525 PHAs processed.
+2025-12-21 13:57:37 - utils.get_data - DEBUG - Processing 751/2525: 533011
+2025-12-21 13:57:37 - utils.get_data - DEBUG - Parsed 533011: H=21.85, diam=0.14637919397264432, peri=1.02273088710072
+2025-12-21 13:57:39 - utils.get_data - DEBUG - Processing 752/2525: 533372
+2025-12-21 13:57:40 - utils.get_data - DEBUG - Parsed 533372: H=20.18, diam=0.3158488874107467, peri=0.8850410947321529
+2025-12-21 13:57:42 - utils.get_data - DEBUG - Processing 753/2525: 533671
+2025-12-21 13:57:42 - utils.get_data - DEBUG - Parsed 533671: H=15.9, diam=2.2671452828784515, peri=0.3019403650773722
+2025-12-21 13:57:44 - utils.get_data - DEBUG - Processing 754/2525: 533722
+2025-12-21 13:57:44 - utils.get_data - DEBUG - Parsed 533722: H=18.2, diam=0.701, peri=0.8146487929042452
+2025-12-21 13:57:46 - utils.get_data - DEBUG - Processing 755/2525: 535844
+2025-12-21 13:57:46 - utils.get_data - DEBUG - Parsed 535844: H=21.89, diam=0.14370747258356684, peri=0.9505886770290196
+2025-12-21 13:57:48 - utils.get_data - DEBUG - Processing 756/2525: 536531
+2025-12-21 13:57:48 - utils.get_data - DEBUG - Parsed 536531: H=20.46, diam=0.27763828395002915, peri=0.919135229588182
+2025-12-21 13:57:50 - utils.get_data - DEBUG - Processing 757/2525: 537395
+2025-12-21 13:57:51 - utils.get_data - DEBUG - Parsed 537395: H=20.48, diam=0.27509288086289807, peri=1.030780212117225
+2025-12-21 13:57:53 - utils.get_data - DEBUG - Processing 758/2525: 538212
+2025-12-21 13:57:53 - utils.get_data - DEBUG - Parsed 538212: H=19.35, diam=0.654, peri=0.4445005449260112
+2025-12-21 13:57:55 - utils.get_data - DEBUG - Processing 759/2525: 539063
+2025-12-21 13:57:55 - utils.get_data - DEBUG - Parsed 539063: H=19.12, diam=0.5146113391720002, peri=0.4263635208658149
+2025-12-21 13:57:57 - utils.get_data - DEBUG - Processing 760/2525: 549948
+2025-12-21 13:57:57 - utils.get_data - DEBUG - Parsed 549948: H=20.84, diam=0.2330662301019603, peri=0.7721813443638825
+2025-12-21 13:57:57 - utils.get_data - INFO -   Progress: 760/2525 PHAs processed.
+2025-12-21 13:57:59 - utils.get_data - DEBUG - Processing 761/2525: 551685
+2025-12-21 13:57:59 - utils.get_data - DEBUG - Parsed 551685: H=21.82, diam=0.14841553140382205, peri=0.6353307684745407
+2025-12-21 13:58:01 - utils.get_data - DEBUG - Processing 762/2525: 576763
+2025-12-21 13:58:02 - utils.get_data - DEBUG - Parsed 576763: H=19.25, diam=0.4847070666187945, peri=1.033476276493566
+2025-12-21 13:58:04 - utils.get_data - DEBUG - Processing 763/2525: 585310
+2025-12-21 13:58:04 - utils.get_data - DEBUG - Parsed 585310: H=20.34, diam=0.2934129997064242, peri=0.8831315385351008
+2025-12-21 13:58:06 - utils.get_data - DEBUG - Processing 764/2525: 605070
+2025-12-21 13:58:06 - utils.get_data - DEBUG - Parsed 605070: H=19.67, diam=0.39946556821669454, peri=0.9095281272387656
+2025-12-21 13:58:08 - utils.get_data - DEBUG - Processing 765/2525: 606441
+2025-12-21 13:58:08 - utils.get_data - DEBUG - Parsed 606441: H=19.08, diam=0.524178678275596, peri=1.042381653581642
+2025-12-21 13:58:10 - utils.get_data - DEBUG - Processing 766/2525: 612012
+2025-12-21 13:58:11 - utils.get_data - DEBUG - Parsed 612012: H=19.47, diam=0.4380052856595541, peri=0.7434529704427316
+2025-12-21 13:58:13 - utils.get_data - DEBUG - Processing 767/2525: 612050
+2025-12-21 13:58:13 - utils.get_data - DEBUG - Parsed 612050: H=19.14, diam=0.5098933540556646, peri=0.4896410418411426
+2025-12-21 13:58:15 - utils.get_data - DEBUG - Processing 768/2525: 612098
+2025-12-21 13:58:15 - utils.get_data - DEBUG - Parsed 612098: H=19.82, diam=0.37280295955854414, peri=0.5980736534133864
+2025-12-21 13:58:17 - utils.get_data - DEBUG - Processing 769/2525: 612143
+2025-12-21 13:58:17 - utils.get_data - DEBUG - Parsed 612143: H=19.84, diam=0.36938508148117244, peri=0.6799259752356673
+2025-12-21 13:58:19 - utils.get_data - DEBUG - Processing 770/2525: 612227
+2025-12-21 13:58:19 - utils.get_data - DEBUG - Parsed 612227: H=20.18, diam=0.3158488874107467, peri=0.9168386836707343
+2025-12-21 13:58:19 - utils.get_data - INFO -   Progress: 770/2525 PHAs processed.
+2025-12-21 13:58:21 - utils.get_data - DEBUG - Processing 771/2525: 612267
+2025-12-21 13:58:22 - utils.get_data - DEBUG - Parsed 612267: H=20.91, diam=0.22567286965001698, peri=0.8865729961895014
+2025-12-21 13:58:24 - utils.get_data - DEBUG - Processing 772/2525: 612326
+2025-12-21 13:58:24 - utils.get_data - DEBUG - Parsed 612326: H=20.42, diam=0.2827999650256232, peri=0.7469187838070926
+2025-12-21 13:58:26 - utils.get_data - DEBUG - Processing 773/2525: 612337
+2025-12-21 13:58:26 - utils.get_data - DEBUG - Parsed 612337: H=19.45, diam=0.4420580986687476, peri=0.8862210003414227
+2025-12-21 13:58:28 - utils.get_data - DEBUG - Processing 774/2525: 612342
+2025-12-21 13:58:28 - utils.get_data - DEBUG - Parsed 612342: H=19.16, diam=0.5052186236868706, peri=0.9360517793073471
+2025-12-21 13:58:30 - utils.get_data - DEBUG - Processing 775/2525: 612348
+2025-12-21 13:58:30 - utils.get_data - DEBUG - Parsed 612348: H=18.73, diam=0.6158562474574313, peri=1.0145185256452
+2025-12-21 13:58:32 - utils.get_data - DEBUG - Processing 776/2525: 612356
+2025-12-21 13:58:33 - utils.get_data - DEBUG - Parsed 612356: H=19.99, diam=0.3447302159425513, peri=0.5353946065298945
+2025-12-21 13:58:35 - utils.get_data - DEBUG - Processing 777/2525: 612358
+2025-12-21 13:58:35 - utils.get_data - DEBUG - Parsed 612358: H=21.4, diam=0.18008575104123223, peri=0.6219129881884801
+2025-12-21 13:58:37 - utils.get_data - DEBUG - Processing 778/2525: 612380
+2025-12-21 13:58:37 - utils.get_data - DEBUG - Parsed 612380: H=20.95, diam=0.22155387557432124, peri=1.042046256723858
+2025-12-21 13:58:39 - utils.get_data - DEBUG - Processing 779/2525: 612509
+2025-12-21 13:58:39 - utils.get_data - DEBUG - Parsed 612509: H=21.89, diam=0.14370747258356684, peri=0.5619361546024761
+2025-12-21 13:58:41 - utils.get_data - DEBUG - Processing 780/2525: 612522
+2025-12-21 13:58:41 - utils.get_data - DEBUG - Parsed 612522: H=18.22, diam=0.7788957809766017, peri=0.9547691895930247
+2025-12-21 13:58:41 - utils.get_data - INFO -   Progress: 780/2525 PHAs processed.
+2025-12-21 13:58:43 - utils.get_data - DEBUG - Processing 781/2525: 612536
+2025-12-21 13:58:44 - utils.get_data - DEBUG - Parsed 612536: H=20.32, diam=0.2961279167661263, peri=1.010084572810473
+2025-12-21 13:58:46 - utils.get_data - DEBUG - Processing 782/2525: 612780
+2025-12-21 13:58:46 - utils.get_data - DEBUG - Parsed 612780: H=20.16, diam=0.31877140118340613, peri=0.8888903813672219
+2025-12-21 13:58:48 - utils.get_data - DEBUG - Processing 783/2525: 612786
+2025-12-21 13:58:48 - utils.get_data - DEBUG - Parsed 612786: H=21.57, diam=0.16652496514012088, peri=0.9333741041176705
+2025-12-21 13:58:50 - utils.get_data - DEBUG - Processing 784/2525: 612813
+2025-12-21 13:58:50 - utils.get_data - DEBUG - Parsed 612813: H=18.38, diam=0.7235679993319704, peri=0.8574588398024477
+2025-12-21 13:58:52 - utils.get_data - DEBUG - Processing 785/2525: 612856
+2025-12-21 13:58:52 - utils.get_data - DEBUG - Parsed 612856: H=20.75, diam=0.2429289938382634, peri=0.7886523442933399
+2025-12-21 13:58:54 - utils.get_data - DEBUG - Processing 786/2525: 612901
+2025-12-21 13:58:55 - utils.get_data - DEBUG - Parsed 612901: H=19.79, diam=0.37798916533273896, peri=0.8850769586414183
+2025-12-21 13:58:57 - utils.get_data - DEBUG - Processing 787/2525: 612924
+2025-12-21 13:58:57 - utils.get_data - DEBUG - Parsed 612924: H=20.29, diam=0.30024746644365935, peri=0.4877962588974944
+2025-12-21 13:58:59 - utils.get_data - DEBUG - Processing 788/2525: 612989
+2025-12-21 13:58:59 - utils.get_data - DEBUG - Parsed 612989: H=20.01, diam=0.3415697103256612, peri=0.5653615040942578
+2025-12-21 13:59:01 - utils.get_data - DEBUG - Processing 789/2525: 613286
+2025-12-21 13:59:01 - utils.get_data - DEBUG - Parsed 613286: H=20.63, diam=0.25673161418393375, peri=0.4953610314683866
+2025-12-21 13:59:03 - utils.get_data - DEBUG - Processing 790/2525: 613403
+2025-12-21 13:59:03 - utils.get_data - DEBUG - Parsed 613403: H=20.23, diam=0.30865928897526296, peri=0.7865017003201022
+2025-12-21 13:59:03 - utils.get_data - INFO -   Progress: 790/2525 PHAs processed.
+2025-12-21 13:59:05 - utils.get_data - DEBUG - Processing 791/2525: 613450
+2025-12-21 13:59:06 - utils.get_data - DEBUG - Parsed 613450: H=19.3, diam=0.47367378676019345, peri=0.6816050170517048
+2025-12-21 13:59:08 - utils.get_data - DEBUG - Processing 792/2525: 613569
+2025-12-21 13:59:08 - utils.get_data - DEBUG - Parsed 613569: H=21.95, diam=0.1397910449916691, peri=0.4509223495907909
+2025-12-21 13:59:10 - utils.get_data - DEBUG - Processing 793/2525: 613714
+2025-12-21 13:59:11 - utils.get_data - DEBUG - Parsed 613714: H=20.82, diam=0.23522276537741577, peri=0.7630526579331809
+2025-12-21 13:59:13 - utils.get_data - DEBUG - Processing 794/2525: 613726
+2025-12-21 13:59:13 - utils.get_data - DEBUG - Parsed 613726: H=21.34, diam=0.26, peri=0.4838834052867485
+2025-12-21 13:59:15 - utils.get_data - DEBUG - Processing 795/2525: 613986
+2025-12-21 13:59:15 - utils.get_data - DEBUG - Parsed 613986: H=20.81, diam=0.23630850433110243, peri=0.7403597615158795
+2025-12-21 13:59:17 - utils.get_data - DEBUG - Processing 796/2525: 614134
+2025-12-21 13:59:17 - utils.get_data - DEBUG - Parsed 614134: H=21.65, diam=0.16050159456001842, peri=0.3477080853697411
+2025-12-21 13:59:19 - utils.get_data - DEBUG - Processing 797/2525: 614433
+2025-12-21 13:59:19 - utils.get_data - DEBUG - Parsed 614433: H=20.58, diam=0.2627116616913461, peri=0.8179527869885693
+2025-12-21 13:59:21 - utils.get_data - DEBUG - Processing 798/2525: 614470
+2025-12-21 13:59:22 - utils.get_data - DEBUG - Parsed 614470: H=18.38, diam=0.7235679993319704, peri=0.9544987604148145
+2025-12-21 13:59:24 - utils.get_data - DEBUG - Processing 799/2525: 618350
+2025-12-21 13:59:24 - utils.get_data - DEBUG - Parsed 618350: H=19.9, diam=0.35931831251543855, peri=0.8180460520435642
+2025-12-21 13:59:26 - utils.get_data - DEBUG - Processing 800/2525: 619106
+2025-12-21 13:59:26 - utils.get_data - DEBUG - Parsed 619106: H=20.11, diam=0.3261965409704963, peri=0.7044045098024887
+2025-12-21 13:59:26 - utils.get_data - INFO -   Progress: 800/2525 PHAs processed.
+2025-12-21 13:59:28 - utils.get_data - DEBUG - Processing 801/2525: 619920
+2025-12-21 13:59:28 - utils.get_data - DEBUG - Parsed 619920: H=19.74, diam=0.38679366404304333, peri=0.8052120109066425
+2025-12-21 13:59:30 - utils.get_data - DEBUG - Processing 802/2525: 620055
+2025-12-21 13:59:30 - utils.get_data - DEBUG - Parsed 620055: H=17.76, diam=0.9626742414187877, peri=0.807398949892602
+2025-12-21 13:59:32 - utils.get_data - DEBUG - Processing 803/2525: 620056
+2025-12-21 13:59:33 - utils.get_data - DEBUG - Parsed 620056: H=20.53, diam=0.268831002399186, peri=0.8332309731918551
+2025-12-21 13:59:35 - utils.get_data - DEBUG - Processing 804/2525: 620063
+2025-12-21 13:59:35 - utils.get_data - DEBUG - Parsed 620063: H=18.59, diam=0.6568698847735187, peri=0.7392708398716415
+2025-12-21 13:59:37 - utils.get_data - DEBUG - Processing 805/2525: 620066
+2025-12-21 13:59:37 - utils.get_data - DEBUG - Parsed 620066: H=19.86, diam=0.3659985386983635, peri=0.7329998342594174
+2025-12-21 13:59:39 - utils.get_data - DEBUG - Processing 806/2525: 620071
+2025-12-21 13:59:39 - utils.get_data - DEBUG - Parsed 620071: H=19.64, diam=0.405022687824679, peri=0.1726880375222839
+2025-12-21 13:59:41 - utils.get_data - DEBUG - Processing 807/2525: 620082
+2025-12-21 13:59:41 - utils.get_data - DEBUG - Parsed 620082: H=19.88, diam=0.3626430439264104, peri=0.5943656725880007
+2025-12-21 13:59:43 - utils.get_data - DEBUG - Processing 808/2525: 620084
+2025-12-21 13:59:44 - utils.get_data - DEBUG - Parsed 620084: H=19.29, diam=0.475860165620252, peri=1.041105531263764
+2025-12-21 13:59:46 - utils.get_data - DEBUG - Processing 809/2525: 620085
+2025-12-21 13:59:46 - utils.get_data - DEBUG - Parsed 620085: H=20.12, diam=0.32469780400336146, peri=0.863960340338161
+2025-12-21 13:59:48 - utils.get_data - DEBUG - Processing 810/2525: 620092
+2025-12-21 13:59:48 - utils.get_data - DEBUG - Parsed 620092: H=18.35, diam=0.7336338328773944, peri=0.794221761496265
+2025-12-21 13:59:48 - utils.get_data - INFO -   Progress: 810/2525 PHAs processed.
+2025-12-21 13:59:50 - utils.get_data - DEBUG - Processing 811/2525: 620094
+2025-12-21 13:59:50 - utils.get_data - DEBUG - Parsed 620094: H=18.98, diam=1.374, peri=0.5998916927299124
+2025-12-21 13:59:52 - utils.get_data - DEBUG - Processing 812/2525: 620095
+2025-12-21 13:59:52 - utils.get_data - DEBUG - Parsed 620095: H=17.7, diam=0.9896448099650541, peri=0.9250756567619344
+2025-12-21 13:59:54 - utils.get_data - DEBUG - Processing 813/2525: 620096
+2025-12-21 13:59:55 - utils.get_data - DEBUG - Parsed 620096: H=19.86, diam=0.3659985386983635, peri=0.6963104603897383
+2025-12-21 13:59:57 - utils.get_data - DEBUG - Processing 814/2525: 620099
+2025-12-21 13:59:57 - utils.get_data - DEBUG - Parsed 620099: H=20.95, diam=0.22155387557432124, peri=0.884804275945561
+2025-12-21 13:59:59 - utils.get_data - DEBUG - Processing 815/2525: 620100
+2025-12-21 13:59:59 - utils.get_data - DEBUG - Parsed 620100: H=21.35, diam=0.18428048705010935, peri=0.6656346548182973
+2025-12-21 14:00:01 - utils.get_data - DEBUG - Processing 816/2525: 620103
+2025-12-21 14:00:01 - utils.get_data - DEBUG - Parsed 620103: H=18.8, diam=0.5963199670531791, peri=0.6084007195941104
+2025-12-21 14:00:03 - utils.get_data - DEBUG - Processing 817/2525: 620107
+2025-12-21 14:00:04 - utils.get_data - DEBUG - Parsed 620107: H=19.56, diam=0.42022254766909306, peri=0.8876254775910976
+2025-12-21 14:00:06 - utils.get_data - DEBUG - Processing 818/2525: 621890
+2025-12-21 14:00:06 - utils.get_data - DEBUG - Parsed 621890: H=20.91, diam=0.22567286965001698, peri=0.9200423210106206
+2025-12-21 14:00:08 - utils.get_data - DEBUG - Processing 819/2525: 627157
+2025-12-21 14:00:08 - utils.get_data - DEBUG - Parsed 627157: H=21.5, diam=0.17198055709247903, peri=0.871423166372502
+2025-12-21 14:00:10 - utils.get_data - DEBUG - Processing 820/2525: 657084
+2025-12-21 14:00:10 - utils.get_data - DEBUG - Parsed 657084: H=17.83, diam=0.9321361507589093, peri=0.9968793270857523
+2025-12-21 14:00:10 - utils.get_data - INFO -   Progress: 820/2525 PHAs processed.
+2025-12-21 14:00:12 - utils.get_data - DEBUG - Processing 821/2525: 660096
+2025-12-21 14:00:12 - utils.get_data - DEBUG - Parsed 660096: H=20.23, diam=0.30865928897526296, peri=0.8092585954866001
+2025-12-21 14:00:14 - utils.get_data - DEBUG - Processing 822/2525: 666729
+2025-12-21 14:00:15 - utils.get_data - DEBUG - Parsed 666729: H=18.72, diam=0.6186989107373352, peri=0.8173307310917989
+2025-12-21 14:00:17 - utils.get_data - DEBUG - Processing 823/2525: 667255
+2025-12-21 14:00:17 - utils.get_data - DEBUG - Parsed 667255: H=20.68, diam=0.2508876891766069, peri=0.8021588250912165
+2025-12-21 14:00:19 - utils.get_data - DEBUG - Processing 824/2525: 668949
+2025-12-21 14:00:19 - utils.get_data - DEBUG - Parsed 668949: H=19.27, diam=0.4802632455211684, peri=0.7831921379911184
+2025-12-21 14:00:21 - utils.get_data - DEBUG - Processing 825/2525: 669051
+2025-12-21 14:00:21 - utils.get_data - DEBUG - Parsed 669051: H=20.08, diam=0.33073438687790757, peri=0.8391970102895696
+2025-12-21 14:00:23 - utils.get_data - DEBUG - Processing 826/2525: 669555
+2025-12-21 14:00:23 - utils.get_data - DEBUG - Parsed 669555: H=21.11, diam=0.20581610326936878, peri=0.873012983230932
+2025-12-21 14:00:25 - utils.get_data - DEBUG - Processing 827/2525: 671294
+2025-12-21 14:00:26 - utils.get_data - DEBUG - Parsed 671294: H=17.89, diam=0.9067328528328749, peri=0.2339797061097201
+2025-12-21 14:00:28 - utils.get_data - DEBUG - Processing 828/2525: 671970
+2025-12-21 14:00:28 - utils.get_data - DEBUG - Parsed 671970: H=20.05, diam=0.3353353605101498, peri=0.9731283539219634
+2025-12-21 14:00:30 - utils.get_data - DEBUG - Processing 829/2525: 672457
+2025-12-21 14:00:30 - utils.get_data - DEBUG - Parsed 672457: H=19.8, diam=0.3762524628723901, peri=0.5609213659357981
+2025-12-21 14:00:32 - utils.get_data - DEBUG - Processing 830/2525: 672745
+2025-12-21 14:00:32 - utils.get_data - DEBUG - Parsed 672745: H=19.05, diam=0.5314707300640299, peri=0.8945529114971906
+2025-12-21 14:00:32 - utils.get_data - INFO -   Progress: 830/2525 PHAs processed.
+2025-12-21 14:00:34 - utils.get_data - DEBUG - Processing 831/2525: 673011
+2025-12-21 14:00:34 - utils.get_data - DEBUG - Parsed 673011: H=20.0, diam=0.34314632447397714, peri=0.4138543778269422
+2025-12-21 14:00:36 - utils.get_data - DEBUG - Processing 832/2525: 673713
+2025-12-21 14:00:37 - utils.get_data - DEBUG - Parsed 673713: H=20.87, diam=0.2298684415429666, peri=0.3266141080408095
+2025-12-21 14:00:39 - utils.get_data - DEBUG - Processing 833/2525: 674590
+2025-12-21 14:00:39 - utils.get_data - DEBUG - Parsed 674590: H=22.0, diam=0.1366090123221672, peri=0.8932190074688435
+2025-12-21 14:00:41 - utils.get_data - DEBUG - Processing 834/2525: 675603
+2025-12-21 14:00:41 - utils.get_data - DEBUG - Parsed 675603: H=20.94, diam=0.22257652179933787, peri=0.8157198146244204
+2025-12-21 14:00:43 - utils.get_data - DEBUG - Processing 835/2525: 678413
+2025-12-21 14:00:43 - utils.get_data - DEBUG - Parsed 678413: H=18.76, diam=0.6074063829650825, peri=0.9054295502671337
+2025-12-21 14:00:45 - utils.get_data - DEBUG - Processing 836/2525: 678715
+2025-12-21 14:00:46 - utils.get_data - DEBUG - Parsed 678715: H=18.34, diam=0.737020132791092, peri=0.3448676096689103
+2025-12-21 14:00:48 - utils.get_data - DEBUG - Processing 837/2525: 678927
+2025-12-21 14:00:48 - utils.get_data - DEBUG - Parsed 678927: H=20.56, diam=0.2651425027679923, peri=0.9376029756998371
+2025-12-21 14:00:50 - utils.get_data - DEBUG - Processing 838/2525: 678976
+2025-12-21 14:00:50 - utils.get_data - DEBUG - Parsed 678976: H=21.68, diam=0.158299430125644, peri=0.7983534021989238
+2025-12-21 14:00:52 - utils.get_data - DEBUG - Processing 839/2525: 679440
+2025-12-21 14:00:52 - utils.get_data - DEBUG - Parsed 679440: H=19.1, diam=0.5193729792671287, peri=0.8998424852153905
+2025-12-21 14:00:54 - utils.get_data - DEBUG - Processing 840/2525: 679655
+2025-12-21 14:00:54 - utils.get_data - DEBUG - Parsed 679655: H=20.11, diam=0.3261965409704963, peri=0.3790183468248268
+2025-12-21 14:00:54 - utils.get_data - INFO -   Progress: 840/2525 PHAs processed.
+2025-12-21 14:00:56 - utils.get_data - DEBUG - Processing 841/2525: 679656
+2025-12-21 14:00:57 - utils.get_data - DEBUG - Parsed 679656: H=21.06, diam=0.2106101761740774, peri=1.015571773677329
+2025-12-21 14:00:59 - utils.get_data - DEBUG - Processing 842/2525: 679786
+2025-12-21 14:01:00 - utils.get_data - DEBUG - Parsed 679786: H=21.21, diam=0.1965528527060696, peri=0.9083457353478006
+2025-12-21 14:01:02 - utils.get_data - DEBUG - Processing 843/2525: 679814
+2025-12-21 14:01:02 - utils.get_data - DEBUG - Parsed 679814: H=21.04, diam=0.2125589281408064, peri=0.8567813133503924
+2025-12-21 14:01:04 - utils.get_data - DEBUG - Processing 844/2525: 679885
+2025-12-21 14:01:04 - utils.get_data - DEBUG - Parsed 679885: H=21.14, diam=0.20299220046713304, peri=0.8159270085547539
+2025-12-21 14:01:06 - utils.get_data - DEBUG - Processing 845/2525: 686964
+2025-12-21 14:01:06 - utils.get_data - DEBUG - Parsed 686964: H=19.68, diam=0.3976301906483043, peri=0.375939595284104
+2025-12-21 14:01:08 - utils.get_data - DEBUG - Processing 846/2525: 696513
+2025-12-21 14:01:08 - utils.get_data - DEBUG - Parsed 696513: H=20.91, diam=0.22567286965001698, peri=0.640006155839825
+2025-12-21 14:01:10 - utils.get_data - DEBUG - Processing 847/2525: 712200
+2025-12-21 14:01:11 - utils.get_data - DEBUG - Parsed 712200: H=20.39, diam=0.28673410442541425, peri=0.6960389565645366
+2025-12-21 14:01:13 - utils.get_data - DEBUG - Processing 848/2525: 719194
+2025-12-21 14:01:13 - utils.get_data - DEBUG - Parsed 719194: H=19.87, diam=0.36431692816309336, peri=0.3338328135439921
+2025-12-21 14:01:15 - utils.get_data - DEBUG - Processing 849/2525: 741081
+2025-12-21 14:01:15 - utils.get_data - DEBUG - Parsed 741081: H=21.67, diam=0.15903010709629334, peri=0.7715678843491207
+2025-12-21 14:01:17 - utils.get_data - DEBUG - Processing 850/2525: 741232
+2025-12-21 14:01:17 - utils.get_data - DEBUG - Parsed 741232: H=21.47, diam=0.1743730449614016, peri=0.5751265114080165
+2025-12-21 14:01:17 - utils.get_data - INFO -   Progress: 850/2525 PHAs processed.
+2025-12-21 14:01:19 - utils.get_data - DEBUG - Processing 851/2525: 741491
+2025-12-21 14:01:19 - utils.get_data - DEBUG - Parsed 741491: H=17.99, diam=0.8659231519574621, peri=0.4292323126782708
+2025-12-21 14:01:21 - utils.get_data - DEBUG - Processing 852/2525: 741537
+2025-12-21 14:01:22 - utils.get_data - DEBUG - Parsed 741537: H=19.41, diam=0.307, peri=0.5766150509557139
+2025-12-21 14:01:24 - utils.get_data - DEBUG - Processing 853/2525: 742415
+2025-12-21 14:01:24 - utils.get_data - DEBUG - Parsed 742415: H=20.71, diam=0.2474453810323068, peri=0.5415417833595673
+2025-12-21 14:01:26 - utils.get_data - DEBUG - Processing 854/2525: 744103
+2025-12-21 14:01:26 - utils.get_data - DEBUG - Parsed 744103: H=19.11, diam=0.5169866771885024, peri=1.026756477024388
+2025-12-21 14:01:28 - utils.get_data - DEBUG - Processing 855/2525: 744281
+2025-12-21 14:01:28 - utils.get_data - DEBUG - Parsed 744281: H=18.24, diam=0.7717548215338181, peri=0.8604226776310653
+2025-12-21 14:01:30 - utils.get_data - DEBUG - Processing 856/2525: 745227
+2025-12-21 14:01:30 - utils.get_data - DEBUG - Parsed 745227: H=20.66, diam=0.25320912438260046, peri=0.7955027636672654
+2025-12-21 14:01:32 - utils.get_data - DEBUG - Processing 857/2525: 745311
+2025-12-21 14:01:33 - utils.get_data - DEBUG - Parsed 745311: H=21.48, diam=0.17357187359466025, peri=0.4248613761799275
+2025-12-21 14:01:35 - utils.get_data - DEBUG - Processing 858/2525: 746192
+2025-12-21 14:01:35 - utils.get_data - DEBUG - Parsed 746192: H=20.32, diam=0.2961279167661263, peri=0.4178786851799263
+2025-12-21 14:01:37 - utils.get_data - DEBUG - Processing 859/2525: 746849
+2025-12-21 14:01:37 - utils.get_data - DEBUG - Parsed 746849: H=17.95, diam=0.8820218653005473, peri=0.7876246184996106
+2025-12-21 14:01:39 - utils.get_data - DEBUG - Processing 860/2525: 748147
+2025-12-21 14:01:39 - utils.get_data - DEBUG - Parsed 748147: H=18.88, diam=0.5747504916123446, peri=0.8877615713983508
+2025-12-21 14:01:39 - utils.get_data - INFO -   Progress: 860/2525 PHAs processed.
+2025-12-21 14:01:41 - utils.get_data - DEBUG - Processing 861/2525: 750500
+2025-12-21 14:01:42 - utils.get_data - DEBUG - Parsed 750500: H=21.38, diam=0.242, peri=0.8340807126070343
+2025-12-21 14:01:44 - utils.get_data - DEBUG - Processing 862/2525: 755902
+2025-12-21 14:01:44 - utils.get_data - DEBUG - Parsed 755902: H=19.04, diam=0.5339238874931118, peri=0.855383575202187
+2025-12-21 14:01:46 - utils.get_data - DEBUG - Processing 863/2525: 755919
+2025-12-21 14:01:46 - utils.get_data - DEBUG - Parsed 755919: H=18.79, diam=0.5990724549599166, peri=0.8944821279056975
+2025-12-21 14:01:48 - utils.get_data - DEBUG - Processing 864/2525: 756064
+2025-12-21 14:01:48 - utils.get_data - DEBUG - Parsed 756064: H=18.88, diam=0.5747504916123446, peri=0.3293647813420855
+2025-12-21 14:01:50 - utils.get_data - DEBUG - Processing 865/2525: 756065
+2025-12-21 14:01:50 - utils.get_data - DEBUG - Parsed 756065: H=21.14, diam=0.20299220046713304, peri=0.8316206438185352
+2025-12-21 14:01:52 - utils.get_data - DEBUG - Processing 866/2525: 756316
+2025-12-21 14:01:53 - utils.get_data - DEBUG - Parsed 756316: H=17.71, diam=0.9850978050930368, peri=0.9472908130148511
+2025-12-21 14:01:55 - utils.get_data - DEBUG - Processing 867/2525: 756327
+2025-12-21 14:01:55 - utils.get_data - DEBUG - Parsed 756327: H=21.08, diam=0.20867929047276934, peri=0.9423914426927709
+2025-12-21 14:01:57 - utils.get_data - DEBUG - Processing 868/2525: 756880
+2025-12-21 14:01:57 - utils.get_data - DEBUG - Parsed 756880: H=19.84, diam=0.36938508148117244, peri=0.7376790703238344
+2025-12-21 14:01:59 - utils.get_data - DEBUG - Processing 869/2525: 756955
+2025-12-21 14:01:59 - utils.get_data - DEBUG - Parsed 756955: H=18.14, diam=0.8081265057239874, peri=0.9585316778319497
+2025-12-21 14:02:01 - utils.get_data - DEBUG - Processing 870/2525: 756998
+2025-12-21 14:02:01 - utils.get_data - DEBUG - Parsed 756998: H=19.5, diam=0.43199562784405615, peri=1.060842562174892
+2025-12-21 14:02:01 - utils.get_data - INFO -   Progress: 870/2525 PHAs processed.
+2025-12-21 14:02:03 - utils.get_data - DEBUG - Processing 871/2525: 761121
+2025-12-21 14:02:04 - utils.get_data - DEBUG - Parsed 761121: H=18.79, diam=0.5990724549599166, peri=0.9708743787141509
+2025-12-21 14:02:06 - utils.get_data - DEBUG - Processing 872/2525: 762379
+2025-12-21 14:02:06 - utils.get_data - DEBUG - Parsed 762379: H=21.41, diam=0.17925833217426104, peri=0.9908169465057762
+2025-12-21 14:02:08 - utils.get_data - DEBUG - Processing 873/2525: 771893
+2025-12-21 14:02:08 - utils.get_data - DEBUG - Parsed 771893: H=20.85, diam=0.23199538804518843, peri=0.7931170686499118
+2025-12-21 14:02:10 - utils.get_data - DEBUG - Processing 874/2525: 778852
+2025-12-21 14:02:10 - utils.get_data - DEBUG - Parsed 778852: H=20.47, diam=0.511, peri=1.001452044435774
+2025-12-21 14:02:12 - utils.get_data - DEBUG - Processing 875/2525: 779817
+2025-12-21 14:02:12 - utils.get_data - DEBUG - Parsed 779817: H=19.58, diam=0.41636992419476127, peri=0.8646863946162646
+2025-12-21 14:02:14 - utils.get_data - DEBUG - Processing 876/2525: 784815
+2025-12-21 14:02:15 - utils.get_data - DEBUG - Parsed 784815: H=20.71, diam=0.2474453810323068, peri=0.9445811833384339
+2025-12-21 14:02:17 - utils.get_data - DEBUG - Processing 877/2525: 786479
+2025-12-21 14:02:17 - utils.get_data - DEBUG - Parsed 786479: H=21.38, diam=0.18175206397965107, peri=0.4812641060480794
+2025-12-21 14:02:19 - utils.get_data - DEBUG - Processing 878/2525: 789058
+2025-12-21 14:02:19 - utils.get_data - DEBUG - Parsed 789058: H=18.84, diam=0.5854359010362036, peri=0.5880690886268914
+2025-12-21 14:02:21 - utils.get_data - DEBUG - Processing 879/2525: 789530
+2025-12-21 14:02:21 - utils.get_data - DEBUG - Parsed 789530: H=19.88, diam=0.3626430439264104, peri=1.002813004735301
+2025-12-21 14:02:23 - utils.get_data - DEBUG - Processing 880/2525: 790012
+2025-12-21 14:02:23 - utils.get_data - DEBUG - Parsed 790012: H=21.38, diam=0.18175206397965107, peri=1.026275348487316
+2025-12-21 14:02:23 - utils.get_data - INFO -   Progress: 880/2525 PHAs processed.
+2025-12-21 14:02:25 - utils.get_data - DEBUG - Processing 881/2525: 790747
+2025-12-21 14:02:26 - utils.get_data - DEBUG - Parsed 790747: H=18.58, diam=0.6599018584018272, peri=0.7210563419888386
+2025-12-21 14:02:28 - utils.get_data - DEBUG - Processing 882/2525: 790748
+2025-12-21 14:02:28 - utils.get_data - DEBUG - Parsed 790748: H=19.58, diam=0.41636992419476127, peri=0.7993404203733976
+2025-12-21 14:02:30 - utils.get_data - DEBUG - Processing 883/2525: 791587
+2025-12-21 14:02:30 - utils.get_data - DEBUG - Parsed 791587: H=21.61, diam=0.16348554198778828, peri=0.3982654638274902
+2025-12-21 14:02:32 - utils.get_data - DEBUG - Processing 884/2525: 792156
+2025-12-21 14:02:32 - utils.get_data - DEBUG - Parsed 792156: H=19.68, diam=0.3976301906483043, peri=0.9678969659381507
+2025-12-21 14:02:34 - utils.get_data - DEBUG - Processing 885/2525: 793349
+2025-12-21 14:02:34 - utils.get_data - DEBUG - Parsed 793349: H=19.81, diam=0.37452373983503195, peri=0.7966460520031172
+2025-12-21 14:02:36 - utils.get_data - DEBUG - Processing 886/2525: 793531
+2025-12-21 14:02:37 - utils.get_data - DEBUG - Parsed 793531: H=21.71, diam=0.1561274805200338, peri=0.8409755402345597
+2025-12-21 14:02:39 - utils.get_data - DEBUG - Processing 887/2525: 795994
+2025-12-21 14:02:39 - utils.get_data - DEBUG - Parsed 795994: H=21.25, diam=0.19296535883889382, peri=1.001959459682572
+2025-12-21 14:02:41 - utils.get_data - DEBUG - Processing 888/2525: 797489
+2025-12-21 14:02:41 - utils.get_data - DEBUG - Parsed 797489: H=20.33, diam=0.29476733257802434, peri=0.4523995880157704
+2025-12-21 14:02:43 - utils.get_data - DEBUG - Processing 889/2525: 797684
+2025-12-21 14:02:43 - utils.get_data - DEBUG - Parsed 797684: H=20.48, diam=0.27509288086289807, peri=0.6658340880995604
+2025-12-21 14:02:45 - utils.get_data - DEBUG - Processing 890/2525: 802885
+2025-12-21 14:02:45 - utils.get_data - DEBUG - Parsed 802885: H=17.67, diam=1.0034121406587795, peri=0.8343937846487898
+2025-12-21 14:02:45 - utils.get_data - INFO -   Progress: 890/2525 PHAs processed.
+2025-12-21 14:02:47 - utils.get_data - DEBUG - Processing 891/2525: 803308
+2025-12-21 14:02:48 - utils.get_data - DEBUG - Parsed 803308: H=18.93, diam=0.5616675731662333, peri=1.05047508297151
+2025-12-21 14:02:50 - utils.get_data - DEBUG - Processing 892/2525: 804323
+2025-12-21 14:02:50 - utils.get_data - DEBUG - Parsed 804323: H=20.23, diam=0.30865928897526296, peri=0.6814208712168032
+2025-12-21 14:02:52 - utils.get_data - DEBUG - Processing 893/2525: 808588
+2025-12-21 14:02:52 - utils.get_data - DEBUG - Parsed 808588: H=18.83, diam=0.5881381503768303, peri=1.049378247569339
+2025-12-21 14:02:54 - utils.get_data - DEBUG - Processing 894/2525: 808862
+2025-12-21 14:02:54 - utils.get_data - DEBUG - Parsed 808862: H=20.7, diam=0.24858753701650987, peri=0.5852615876016197
+2025-12-21 14:02:56 - utils.get_data - DEBUG - Processing 895/2525: 809875
+2025-12-21 14:02:57 - utils.get_data - DEBUG - Parsed 809875: H=20.63, diam=0.25673161418393375, peri=0.7566789629410672
+2025-12-21 14:02:59 - utils.get_data - DEBUG - Processing 896/2525: 812769
+2025-12-21 14:02:59 - utils.get_data - DEBUG - Parsed 812769: H=19.89, diam=0.3609768504891964, peri=0.8820638414721723
+2025-12-21 14:03:01 - utils.get_data - DEBUG - Processing 897/2525: 813899
+2025-12-21 14:03:01 - utils.get_data - DEBUG - Parsed 813899: H=19.91, diam=0.3576673948314763, peri=0.728084870645151
+2025-12-21 14:03:03 - utils.get_data - DEBUG - Processing 898/2525: 815335
+2025-12-21 14:03:03 - utils.get_data - DEBUG - Parsed 815335: H=20.78, diam=0.23959588308770985, peri=0.9330020244740496
+2025-12-21 14:03:05 - utils.get_data - DEBUG - Processing 899/2525: 817966
+2025-12-21 14:03:05 - utils.get_data - DEBUG - Parsed 817966: H=20.26, diam=0.3044243247658174, peri=1.051856213753137
+2025-12-21 14:03:07 - utils.get_data - DEBUG - Processing 900/2525: 826387
+2025-12-21 14:03:08 - utils.get_data - DEBUG - Parsed 826387: H=20.19, diam=0.3143976935931099, peri=0.9252732345028907
+2025-12-21 14:03:08 - utils.get_data - INFO -   Progress: 900/2525 PHAs processed.
+2025-12-21 14:03:10 - utils.get_data - DEBUG - Processing 901/2525: 826663
+2025-12-21 14:03:10 - utils.get_data - DEBUG - Parsed 826663: H=21.87, diam=0.14503718145575067, peri=0.9238506321114754
+2025-12-21 14:03:12 - utils.get_data - DEBUG - Processing 902/2525: 826799
+2025-12-21 14:03:12 - utils.get_data - DEBUG - Parsed 826799: H=19.85, diam=0.3676879111951937, peri=0.8893780402669668
+2025-12-21 14:03:14 - utils.get_data - DEBUG - Processing 903/2525: 826936
+2025-12-21 14:03:14 - utils.get_data - DEBUG - Parsed 826936: H=21.37, diam=0.1825909933896465, peri=0.7732818651249228
+2025-12-21 14:03:16 - utils.get_data - DEBUG - Processing 904/2525: 826941
+2025-12-21 14:03:16 - utils.get_data - DEBUG - Parsed 826941: H=19.54, diam=0.42411081902952935, peri=0.9852129930305521
+2025-12-21 14:03:18 - utils.get_data - DEBUG - Processing 905/2525: 827146
+2025-12-21 14:03:19 - utils.get_data - DEBUG - Parsed 827146: H=19.37, diam=0.45864783881130794, peri=1.047797107581371
+2025-12-21 14:03:21 - utils.get_data - DEBUG - Processing 906/2525: 828534
+2025-12-21 14:03:21 - utils.get_data - DEBUG - Parsed 828534: H=19.47, diam=1.316, peri=0.3107146650379909
+2025-12-21 14:03:23 - utils.get_data - DEBUG - Processing 907/2525: 835579
+2025-12-21 14:03:23 - utils.get_data - DEBUG - Parsed 835579: H=19.62, diam=0.40877031661359325, peri=0.4686654531643777
+2025-12-21 14:03:25 - utils.get_data - DEBUG - Processing 908/2525: 836356
+2025-12-21 14:03:25 - utils.get_data - DEBUG - Parsed 836356: H=21.88, diam=0.14437079613845072, peri=0.7201186318897003
+2025-12-21 14:03:27 - utils.get_data - DEBUG - Processing 909/2525: 837253
+2025-12-21 14:03:27 - utils.get_data - DEBUG - Parsed 837253: H=21.67, diam=0.15903010709629334, peri=0.7155852328493593
+2025-12-21 14:03:29 - utils.get_data - DEBUG - Processing 910/2525: 837449
+2025-12-21 14:03:30 - utils.get_data - DEBUG - Parsed 837449: H=18.36, diam=0.7302630915985235, peri=0.875500559939595
+2025-12-21 14:03:30 - utils.get_data - INFO -   Progress: 910/2525 PHAs processed.
+2025-12-21 14:03:32 - utils.get_data - DEBUG - Processing 911/2525: 839444
+2025-12-21 14:03:32 - utils.get_data - DEBUG - Parsed 839444: H=19.86, diam=0.3659985386983635, peri=0.5648152863008127
+2025-12-21 14:03:34 - utils.get_data - DEBUG - Processing 912/2525: 847431
+2025-12-21 14:03:34 - utils.get_data - DEBUG - Parsed 847431: H=21.51, diam=0.17119037820898694, peri=1.005210350728004
+2025-12-21 14:03:36 - utils.get_data - DEBUG - Processing 913/2525: 850338
+2025-12-21 14:03:36 - utils.get_data - DEBUG - Parsed 850338: H=19.99, diam=0.3447302159425513, peri=1.008635874710858
+2025-12-21 14:03:38 - utils.get_data - DEBUG - Processing 914/2525: 853424
+2025-12-21 14:03:38 - utils.get_data - DEBUG - Parsed 853424: H=17.84, diam=0.9278533741746176, peri=0.9194035351605998
