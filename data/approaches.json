@@ -1,0 +1,1694 @@
+[
+  {
+    "approach_time": "2029-04-13 21:46:00",
+    "distance_au": 0.000254090910419299,
+    "distance_km": 38011.45916295157,
+    "velocity_km_s": 7.42253895678452,
+    "asteroid_number": "99942",
+    "asteroid_name": " 99942 Apophis (2004 MN4)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-10-15 17:32:00",
+    "distance_au": 0.00147416836963833,
+    "distance_km": 220532.44915118467,
+    "velocity_km_s": 9.65106591503865,
+    "asteroid_number": "2024 QP2",
+    "asteroid_name": "       (2024 QP2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-06-26 05:23:00",
+    "distance_au": 0.00166252990918888,
+    "distance_km": 248710.9343897208,
+    "velocity_km_s": 10.2426026274904,
+    "asteroid_number": "153814",
+    "asteroid_name": "153814 (2001 WN5)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-08-07 07:11:00",
+    "distance_au": 0.0026060207695371,
+    "distance_km": 389855.15812272555,
+    "velocity_km_s": 26.2840539548859,
+    "asteroid_number": "137108",
+    "asteroid_name": "137108 (1999 AN10)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-11-21 14:41:00",
+    "distance_au": 0.00435183830950327,
+    "distance_km": 651025.7447323767,
+    "velocity_km_s": 8.82600291769473,
+    "asteroid_number": "2023 QP8",
+    "asteroid_name": "       (2023 QP8)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-10-26 06:44:00",
+    "distance_au": 0.00621150368988311,
+    "distance_km": 929227.7258517063,
+    "velocity_km_s": 13.9196802286336,
+    "asteroid_number": "35396",
+    "asteroid_name": " 35396 (1997 XF11)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-11-13 16:39:00",
+    "distance_au": 0.00712721940763838,
+    "distance_km": 1066216.8473944168,
+    "velocity_km_s": 20.9022193703225,
+    "asteroid_number": "2024 TW17",
+    "asteroid_name": "       (2024 TW17)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-05-04 14:24:00",
+    "distance_au": 0.00746767059449298,
+    "distance_km": 1117147.6200251528,
+    "velocity_km_s": 12.3249150384881,
+    "asteroid_number": "2021 TG4",
+    "asteroid_name": "       (2021 TG4)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-10-06 08:39:00",
+    "distance_au": 0.00748119287490652,
+    "distance_km": 1119170.5243820266,
+    "velocity_km_s": 10.8212959319422,
+    "asteroid_number": "536531",
+    "asteroid_name": "536531 (2015 DV215)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-01-28 04:24:00",
+    "distance_au": 0.00819149783333892,
+    "distance_km": 1225430.6337111657,
+    "velocity_km_s": 4.90382461760456,
+    "asteroid_number": "292220",
+    "asteroid_name": "292220 (2006 SU49)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-07-25 18:27:00",
+    "distance_au": 0.00850325102468403,
+    "distance_km": 1272068.247320324,
+    "velocity_km_s": 9.80196702325942,
+    "asteroid_number": "2011 LJ19",
+    "asteroid_name": "       (2011 LJ19)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-11-16 13:34:00",
+    "distance_au": 0.0101544500776024,
+    "distance_km": 1519084.1097387688,
+    "velocity_km_s": 21.460287928239,
+    "asteroid_number": "2023 GQ2",
+    "asteroid_name": "       (2023 GQ2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-09-16 04:19:00",
+    "distance_au": 0.0107807558734309,
+    "distance_km": 1612778.1232017812,
+    "velocity_km_s": 18.0291962416966,
+    "asteroid_number": "2021 PC7",
+    "asteroid_name": "       (2021 PC7)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-05-13 22:57:00",
+    "distance_au": 0.0119335641030772,
+    "distance_km": 1785235.7796823042,
+    "velocity_km_s": 8.49171104168455,
+    "asteroid_number": "2000 SL10",
+    "asteroid_name": "       (2000 SL10)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-10-05 15:31:00",
+    "distance_au": 0.0132887462202123,
+    "distance_km": 1987968.1388164333,
+    "velocity_km_s": 15.6247341456953,
+    "asteroid_number": "2023 VS3",
+    "asteroid_name": "       (2023 VS3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-09-11 16:00:00",
+    "distance_au": 0.0146885632794115,
+    "distance_km": 2197377.7902421695,
+    "velocity_km_s": 15.2646896013099,
+    "asteroid_number": "445305",
+    "asteroid_name": "445305 (2010 DM56)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-04-03 22:10:00",
+    "distance_au": 0.0147407148799979,
+    "distance_km": 2205179.5586434915,
+    "velocity_km_s": 29.4775539223128,
+    "asteroid_number": "2018 GG2",
+    "asteroid_name": "       (2018 GG2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-09-30 14:23:00",
+    "distance_au": 0.0149911514085992,
+    "distance_km": 2242644.330067746,
+    "velocity_km_s": 7.35925937713113,
+    "asteroid_number": "440212",
+    "asteroid_name": "440212 (2004 OB)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-11-23 16:38:00",
+    "distance_au": 0.0150288185957507,
+    "distance_km": 2248279.2610608684,
+    "velocity_km_s": 14.0961784618056,
+    "asteroid_number": "2021 XL6",
+    "asteroid_name": "       (2021 XL6)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-09-22 14:58:00",
+    "distance_au": 0.0153874671502552,
+    "distance_km": 2301932.321144375,
+    "velocity_km_s": 23.7619416492051,
+    "asteroid_number": "2002 HP11",
+    "asteroid_name": "       (2002 HP11)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-03-01 03:53:00",
+    "distance_au": 0.0159972682263089,
+    "distance_km": 2393157.263672577,
+    "velocity_km_s": 25.7399644422131,
+    "asteroid_number": "462550",
+    "asteroid_name": "462550 (2009 CB3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-08-10 01:56:00",
+    "distance_au": 0.0167769088191853,
+    "distance_km": 2509789.8362781717,
+    "velocity_km_s": 9.60376183739096,
+    "asteroid_number": "2019 NY2",
+    "asteroid_name": "       (2019 NY2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-06-24 00:07:00",
+    "distance_au": 0.0167873180547546,
+    "distance_km": 2511347.035754954,
+    "velocity_km_s": 17.5541792854644,
+    "asteroid_number": "172678",
+    "asteroid_name": "172678 (2003 YM137)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-07-11 21:06:00",
+    "distance_au": 0.0168408875673188,
+    "distance_km": 2519360.920768995,
+    "velocity_km_s": 15.340555101587,
+    "asteroid_number": "437844",
+    "asteroid_name": "437844 (1999 MN)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-06-27 11:16:00",
+    "distance_au": 0.0171515820325058,
+    "distance_km": 2565840.1511992454,
+    "velocity_km_s": 8.88667846771247,
+    "asteroid_number": "152637",
+    "asteroid_name": "152637 (1997 NC1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-02-07 13:46:00",
+    "distance_au": 0.0177051374598337,
+    "distance_km": 2648650.8644419285,
+    "velocity_km_s": 13.7826702482513,
+    "asteroid_number": "2008 PF1",
+    "asteroid_name": "       (2008 PF1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-11-17 10:12:00",
+    "distance_au": 0.0186532102297081,
+    "distance_km": 2790480.5320837894,
+    "velocity_km_s": 7.76655784686915,
+    "asteroid_number": "2010 RF181",
+    "asteroid_name": "       (2010 RF181)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-07-04 16:10:00",
+    "distance_au": 0.0187430357362333,
+    "distance_km": 2803918.2365945084,
+    "velocity_km_s": 18.4928266982457,
+    "asteroid_number": "839444",
+    "asteroid_name": "839444 (2014 QX432)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-11-24 23:16:00",
+    "distance_au": 0.0188347326236792,
+    "distance_km": 2817635.895706232,
+    "velocity_km_s": 16.2308186396909,
+    "asteroid_number": "418416",
+    "asteroid_name": "418416 (2008 LV16)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-08-04 10:27:00",
+    "distance_au": 0.0193385853272963,
+    "distance_km": 2893011.1873137886,
+    "velocity_km_s": 22.697451657019,
+    "asteroid_number": "2003 CG11",
+    "asteroid_name": "       (2003 CG11)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-01-28 23:33:00",
+    "distance_au": 0.0195088943371906,
+    "distance_km": 2918489.0525550013,
+    "velocity_km_s": 16.8575074216894,
+    "asteroid_number": "2020 OP3",
+    "asteroid_name": "       (2020 OP3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-11-28 01:32:00",
+    "distance_au": 0.0202348944659362,
+    "distance_km": 3027097.1259432686,
+    "velocity_km_s": 7.74565930583872,
+    "asteroid_number": "415713",
+    "asteroid_name": "415713 (1998 XX2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-09-10 17:17:00",
+    "distance_au": 0.020508194672912,
+    "distance_km": 3067982.254968718,
+    "velocity_km_s": 18.3387037302125,
+    "asteroid_number": "2008 EM7",
+    "asteroid_name": "       (2008 EM7)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-11-02 16:17:00",
+    "distance_au": 0.020793470278873,
+    "distance_km": 3110658.8781831358,
+    "velocity_km_s": 7.82147350888493,
+    "asteroid_number": "2017 QL33",
+    "asteroid_name": "       (2017 QL33)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-05-01 22:37:00",
+    "distance_au": 0.0209904824335198,
+    "distance_km": 3140131.4770203163,
+    "velocity_km_s": 18.8549139244981,
+    "asteroid_number": "144898",
+    "asteroid_name": "144898 (2004 VD17)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-03-04 03:58:00",
+    "distance_au": 0.0210040045818588,
+    "distance_km": 3142154.36161912,
+    "velocity_km_s": 20.2161027001439,
+    "asteroid_number": "458116",
+    "asteroid_name": "458116 (2010 DA)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-10-20 03:25:00",
+    "distance_au": 0.0210081353795983,
+    "distance_km": 3142772.320165242,
+    "velocity_km_s": 12.4347514994287,
+    "asteroid_number": "2020 HJ4",
+    "asteroid_name": "       (2020 HJ4)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-06-17 13:43:00",
+    "distance_au": 0.0211839021211037,
+    "distance_km": 3169066.650434327,
+    "velocity_km_s": 16.6005092855443,
+    "asteroid_number": "2022 LB1",
+    "asteroid_name": "       (2022 LB1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-01-13 19:25:00",
+    "distance_au": 0.0215609504075115,
+    "distance_km": 3225472.2712320173,
+    "velocity_km_s": 8.04874620314355,
+    "asteroid_number": "2024 RR14",
+    "asteroid_name": "       (2024 RR14)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-03-21 09:55:00",
+    "distance_au": 0.0227637951398017,
+    "distance_km": 3405415.2819653433,
+    "velocity_km_s": 10.343527780226,
+    "asteroid_number": "523775",
+    "asteroid_name": "523775 (2014 YB35)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-07-21 11:34:00",
+    "distance_au": 0.0229556661846644,
+    "distance_km": 3434118.781725787,
+    "velocity_km_s": 13.6031588133671,
+    "asteroid_number": "175729",
+    "asteroid_name": "175729 (1998 BB10)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-05-05 20:44:00",
+    "distance_au": 0.0229900489944769,
+    "distance_km": 3439262.37686242,
+    "velocity_km_s": 11.6386987528714,
+    "asteroid_number": "467460",
+    "asteroid_name": "467460 (2006 JF42)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-07-04 19:53:00",
+    "distance_au": 0.0232416020853053,
+    "distance_km": 3476894.1836183527,
+    "velocity_km_s": 16.7646461916883,
+    "asteroid_number": "523808",
+    "asteroid_name": "523808 (2007 ML24)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-03-04 20:59:00",
+    "distance_au": 0.0235812249401552,
+    "distance_km": 3527701.0395449526,
+    "velocity_km_s": 8.02204506747225,
+    "asteroid_number": "535844",
+    "asteroid_name": "535844 (2015 BY310)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-04-30 15:42:00",
+    "distance_au": 0.0237199930897884,
+    "distance_km": 3548460.4592510583,
+    "velocity_km_s": 17.7952548391837,
+    "asteroid_number": "2013 JL22",
+    "asteroid_name": "       (2013 JL22)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-08-28 15:47:00",
+    "distance_au": 0.0239631539893376,
+    "distance_km": 3584836.812061115,
+    "velocity_km_s": 19.0032050309435,
+    "asteroid_number": "221455",
+    "asteroid_name": "221455 (2006 BC10)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-10-27 02:35:00",
+    "distance_au": 0.0245117363220708,
+    "distance_km": 3666903.5609416408,
+    "velocity_km_s": 9.21164445831718,
+    "asteroid_number": "1999 UR",
+    "asteroid_name": "       (1999 UR)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-03-16 07:03:00",
+    "distance_au": 0.0245771494710857,
+    "distance_km": 3676689.228750052,
+    "velocity_km_s": 12.2882833798935,
+    "asteroid_number": "496013",
+    "asteroid_name": "496013 (2008 EL6)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-01-04 18:20:00",
+    "distance_au": 0.0251996337805602,
+    "distance_km": 3769811.5559915965,
+    "velocity_km_s": 13.182071229254,
+    "asteroid_number": "2003 MK4",
+    "asteroid_name": "       (2003 MK4)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-03-02 11:10:00",
+    "distance_au": 0.0252759937911379,
+    "distance_km": 3781234.8509806497,
+    "velocity_km_s": 8.34351516904831,
+    "asteroid_number": "535844",
+    "asteroid_name": "535844 (2015 BY310)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-11-18 15:39:00",
+    "distance_au": 0.0256467622657082,
+    "distance_km": 3836701.0252990536,
+    "velocity_km_s": 13.0826883665609,
+    "asteroid_number": "2001 XP31",
+    "asteroid_name": "       (2001 XP31)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-04-06 05:53:00",
+    "distance_au": 0.0257283475110176,
+    "distance_km": 3848906.004277877,
+    "velocity_km_s": 17.1888325560827,
+    "asteroid_number": "2004 HF12",
+    "asteroid_name": "       (2004 HF12)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-06-21 03:58:00",
+    "distance_au": 0.0260587143253081,
+    "distance_km": 3898328.1762456787,
+    "velocity_km_s": 19.1815123971541,
+    "asteroid_number": "2025 WC4",
+    "asteroid_name": "       (2025 WC4)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-03-21 15:38:00",
+    "distance_au": 0.0261239416255516,
+    "distance_km": 3908086.041473616,
+    "velocity_km_s": 9.96667667707385,
+    "asteroid_number": "2001 FC58",
+    "asteroid_name": "       (2001 FC58)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-09-30 00:23:00",
+    "distance_au": 0.0261444328350768,
+    "distance_km": 3911151.4827866536,
+    "velocity_km_s": 18.5849635147854,
+    "asteroid_number": "152664",
+    "asteroid_name": "152664 (1998 FW4)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-10-05 15:18:00",
+    "distance_au": 0.026226548800406,
+    "distance_km": 3923435.8563503767,
+    "velocity_km_s": 16.3148488383802,
+    "asteroid_number": "2007 TH1",
+    "asteroid_name": "       (2007 TH1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-10-31 19:44:00",
+    "distance_au": 0.0265883213347264,
+    "distance_km": 3977556.2571624513,
+    "velocity_km_s": 34.9896112430399,
+    "asteroid_number": "374158",
+    "asteroid_name": "374158 (2004 UL)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-10-03 06:50:00",
+    "distance_au": 0.0271692157111952,
+    "distance_km": 4064456.8189837877,
+    "velocity_km_s": 9.33381822581861,
+    "asteroid_number": "2014 EQ49",
+    "asteroid_name": "       (2014 EQ49)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-02-05 14:02:00",
+    "distance_au": 0.0272791176124822,
+    "distance_km": 4080897.909402204,
+    "velocity_km_s": 15.6446680446739,
+    "asteroid_number": "2019 CC5",
+    "asteroid_name": "       (2019 CC5)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-08-27 11:10:00",
+    "distance_au": 0.0278515419678342,
+    "distance_km": 4166531.3740996835,
+    "velocity_km_s": 9.09533971046669,
+    "asteroid_number": "2018 LB1",
+    "asteroid_name": "       (2018 LB1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-03-27 13:53:00",
+    "distance_au": 0.0279807170698569,
+    "distance_km": 4185855.694309735,
+    "velocity_km_s": 14.0210384396978,
+    "asteroid_number": "2006 HD2",
+    "asteroid_name": "       (2006 HD2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-12-07 23:32:00",
+    "distance_au": 0.0281473635947383,
+    "distance_km": 4210785.659591547,
+    "velocity_km_s": 9.58662023925026,
+    "asteroid_number": "2010 BV132",
+    "asteroid_name": "       (2010 BV132)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-08-28 23:43:00",
+    "distance_au": 0.0286031801680693,
+    "distance_km": 4278974.848391635,
+    "velocity_km_s": 20.4503389429059,
+    "asteroid_number": "2017 BP31",
+    "asteroid_name": "       (2017 BP31)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-11-25 08:05:00",
+    "distance_au": 0.028878335149809,
+    "distance_km": 4320137.447772391,
+    "velocity_km_s": 16.4747814759218,
+    "asteroid_number": "813899",
+    "asteroid_name": "813899 (2007 VD12)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-12-25 10:40:00",
+    "distance_au": 0.0289231072855448,
+    "distance_km": 4326835.263945159,
+    "velocity_km_s": 19.959531572574,
+    "asteroid_number": "2021 YJ",
+    "asteroid_name": "       (2021 YJ)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-10-14 20:32:00",
+    "distance_au": 0.0292082986850715,
+    "distance_km": 4369499.290056306,
+    "velocity_km_s": 20.9237298630008,
+    "asteroid_number": "2009 UY17",
+    "asteroid_name": "       (2009 UY17)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-11-04 18:05:00",
+    "distance_au": 0.029252503252686,
+    "distance_km": 4376112.19924665,
+    "velocity_km_s": 18.0121654267808,
+    "asteroid_number": "2009 VW",
+    "asteroid_name": "       (2009 VW)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-12-20 14:20:00",
+    "distance_au": 0.0293261901170438,
+    "distance_km": 4387135.597253136,
+    "velocity_km_s": 6.94145849008225,
+    "asteroid_number": "452807",
+    "asteroid_name": "452807 (2006 KV89)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-08-08 17:00:00",
+    "distance_au": 0.0295559314272886,
+    "distance_km": 4421504.408077586,
+    "velocity_km_s": 14.5776690050929,
+    "asteroid_number": "162979",
+    "asteroid_name": "162979 (2001 RA12)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-02-21 17:02:00",
+    "distance_au": 0.0297975153949553,
+    "distance_km": 4457644.855235782,
+    "velocity_km_s": 28.9947773596855,
+    "asteroid_number": "1995 CR",
+    "asteroid_name": "       (1995 CR)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-09-08 14:41:00",
+    "distance_au": 0.0303122571844478,
+    "distance_km": 4534649.130904168,
+    "velocity_km_s": 23.3621483894747,
+    "asteroid_number": "8566",
+    "asteroid_name": "  8566 (1996 EN)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-10-31 19:38:00",
+    "distance_au": 0.0305583368127707,
+    "distance_km": 4571462.11932392,
+    "velocity_km_s": 10.9924806230126,
+    "asteroid_number": "260141",
+    "asteroid_name": "260141 (2004 QT24)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-09-23 18:26:00",
+    "distance_au": 0.0306336530156185,
+    "distance_km": 4582729.262899161,
+    "velocity_km_s": 33.4078559517493,
+    "asteroid_number": "2012 TO139",
+    "asteroid_name": "       (2012 TO139)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-06-06 22:43:00",
+    "distance_au": 0.0308301893759281,
+    "distance_km": 4612130.683916605,
+    "velocity_km_s": 23.8171162441246,
+    "asteroid_number": "4953",
+    "asteroid_name": "  4953 (1990 MU)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-04-04 16:10:00",
+    "distance_au": 0.0310166585905385,
+    "distance_km": 4640026.081373422,
+    "velocity_km_s": 20.7926278377714,
+    "asteroid_number": "267221",
+    "asteroid_name": "267221 (2001 AD2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-10-04 00:12:00",
+    "distance_au": 0.0310357864361902,
+    "distance_km": 4642887.566353995,
+    "velocity_km_s": 16.453412698184,
+    "asteroid_number": "2004 RE84",
+    "asteroid_name": "       (2004 RE84)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-06-30 08:59:00",
+    "distance_au": 0.0311608239831727,
+    "distance_km": 4661592.917140128,
+    "velocity_km_s": 9.727533612705,
+    "asteroid_number": "2023 DP1",
+    "asteroid_name": "       (2023 DP1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-09-04 23:30:00",
+    "distance_au": 0.0314928161204335,
+    "distance_km": 4711258.233963487,
+    "velocity_km_s": 9.49156523403153,
+    "asteroid_number": "2022 UU11",
+    "asteroid_name": "       (2022 UU11)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-01-23 19:09:00",
+    "distance_au": 0.0315450691043881,
+    "distance_km": 4719075.169100815,
+    "velocity_km_s": 32.4491161341493,
+    "asteroid_number": "2025 AD3",
+    "asteroid_name": "       (2025 AD3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-05-03 23:16:00",
+    "distance_au": 0.0316527043699361,
+    "distance_km": 4735177.175639025,
+    "velocity_km_s": 4.43212228946522,
+    "asteroid_number": "89136",
+    "asteroid_name": " 89136 (2001 US16)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-01-02 19:44:00",
+    "distance_au": 0.0316692111603266,
+    "distance_km": 4737646.556333535,
+    "velocity_km_s": 10.020630886425,
+    "asteroid_number": "435548",
+    "asteroid_name": "435548 (2008 QT3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-01-12 19:45:00",
+    "distance_au": 0.0317086659998346,
+    "distance_km": 4743548.916312742,
+    "velocity_km_s": 16.9505738140255,
+    "asteroid_number": "2022 BA",
+    "asteroid_name": "       (2022 BA)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-12-14 02:16:00",
+    "distance_au": 0.0319601665981658,
+    "distance_km": 4781172.870302866,
+    "velocity_km_s": 6.20470345234432,
+    "asteroid_number": "490581",
+    "asteroid_name": "490581 (2009 WZ104)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-09-01 19:00:00",
+    "distance_au": 0.0321322086135402,
+    "distance_km": 4806909.989473813,
+    "velocity_km_s": 21.4890482964139,
+    "asteroid_number": "2023 RC8",
+    "asteroid_name": "       (2023 RC8)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-02-04 03:55:00",
+    "distance_au": 0.0324403159853022,
+    "distance_km": 4853002.196236381,
+    "velocity_km_s": 9.84141084013416,
+    "asteroid_number": "2018 YH",
+    "asteroid_name": "       (2018 YH)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-02-13 15:18:00",
+    "distance_au": 0.0325352265745554,
+    "distance_km": 4867200.618295542,
+    "velocity_km_s": 18.3371373726859,
+    "asteroid_number": "162882",
+    "asteroid_name": "162882 (2001 FD58)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-08-09 05:12:00",
+    "distance_au": 0.033562430207548,
+    "distance_km": 5020868.094566539,
+    "velocity_km_s": 16.1940390661027,
+    "asteroid_number": "173561",
+    "asteroid_name": "173561 (2000 YV137)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-08-29 12:19:00",
+    "distance_au": 0.0338571303860264,
+    "distance_km": 5064954.613761818,
+    "velocity_km_s": 17.7906768736888,
+    "asteroid_number": "2009 DM45",
+    "asteroid_name": "       (2009 DM45)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-11-28 19:23:00",
+    "distance_au": 0.0339870793703242,
+    "distance_km": 5084394.705112397,
+    "velocity_km_s": 11.7942089480138,
+    "asteroid_number": "2019 UT6",
+    "asteroid_name": "       (2019 UT6)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-11-10 10:17:00",
+    "distance_au": 0.0340390235370162,
+    "distance_km": 5092165.441844805,
+    "velocity_km_s": 16.4476157323446,
+    "asteroid_number": "1999 TT16",
+    "asteroid_name": "       (1999 TT16)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-07-29 03:34:00",
+    "distance_au": 0.0340634078703489,
+    "distance_km": 5095813.286189817,
+    "velocity_km_s": 8.84373822921291,
+    "asteroid_number": "153958",
+    "asteroid_name": "153958 (2002 AM31)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-01-21 00:47:00",
+    "distance_au": 0.0343956099428381,
+    "distance_km": 5145510.008876328,
+    "velocity_km_s": 22.3714272550096,
+    "asteroid_number": "2023 XW14",
+    "asteroid_name": "       (2023 XW14)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-04-07 19:11:00",
+    "distance_au": 0.0344179369928226,
+    "distance_km": 5148850.088013021,
+    "velocity_km_s": 9.24189221143193,
+    "asteroid_number": "2002 TB70",
+    "asteroid_name": "       (2002 TB70)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-06-27 23:12:00",
+    "distance_au": 0.0344652380342124,
+    "distance_km": 5155926.223086828,
+    "velocity_km_s": 7.80678123904061,
+    "asteroid_number": "467336",
+    "asteroid_name": "467336 (2002 LT38)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-05-28 21:13:00",
+    "distance_au": 0.0346219229122334,
+    "distance_km": 5179365.947209659,
+    "velocity_km_s": 29.2026737563574,
+    "asteroid_number": "2007 BJ29",
+    "asteroid_name": "       (2007 BJ29)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-09-17 18:38:00",
+    "distance_au": 0.0349539717797471,
+    "distance_km": 5229039.750758056,
+    "velocity_km_s": 8.24337573851901,
+    "asteroid_number": "2018 SX2",
+    "asteroid_name": "       (2018 SX2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-12-04 06:09:00",
+    "distance_au": 0.0352245672426241,
+    "distance_km": 5269520.255825535,
+    "velocity_km_s": 15.6191731078415,
+    "asteroid_number": "357594",
+    "asteroid_name": "357594 (2004 XL35)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-10-02 01:06:00",
+    "distance_au": 0.0357129186915226,
+    "distance_km": 5342576.592734011,
+    "velocity_km_s": 7.16226310960637,
+    "asteroid_number": "329437",
+    "asteroid_name": "329437 (2002 OA22)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-12-20 13:35:00",
+    "distance_au": 0.0359592648529951,
+    "distance_km": 5379429.453945415,
+    "velocity_km_s": 7.30898928876557,
+    "asteroid_number": "2021 PD24",
+    "asteroid_name": "       (2021 PD24)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-04-06 06:42:00",
+    "distance_au": 0.0360025459167249,
+    "distance_km": 5385904.208921025,
+    "velocity_km_s": 5.42997000458745,
+    "asteroid_number": "2011 UV63",
+    "asteroid_name": "       (2011 UV63)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-01-30 10:37:00",
+    "distance_au": 0.0361776046710426,
+    "distance_km": 5412092.625814347,
+    "velocity_km_s": 29.9908244775064,
+    "asteroid_number": "2022 CV",
+    "asteroid_name": "       (2022 CV)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-09-23 04:11:00",
+    "distance_au": 0.0362498217566804,
+    "distance_km": 5422896.148053921,
+    "velocity_km_s": 13.985850072804,
+    "asteroid_number": "2013 TT135",
+    "asteroid_name": "       (2013 TT135)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-02-26 20:34:00",
+    "distance_au": 0.0364942367639058,
+    "distance_km": 5459460.1127019655,
+    "velocity_km_s": 24.5887078687076,
+    "asteroid_number": "679655",
+    "asteroid_name": "679655 (2020 BS12)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-12-08 18:43:00",
+    "distance_au": 0.0366181913977769,
+    "distance_km": 5478003.461992481,
+    "velocity_km_s": 10.4160196914343,
+    "asteroid_number": "2016 NV",
+    "asteroid_name": "       (2016 NV)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-08-13 01:33:00",
+    "distance_au": 0.0370563574296346,
+    "distance_km": 5543552.16737146,
+    "velocity_km_s": 18.9730323203744,
+    "asteroid_number": "2013 QC11",
+    "asteroid_name": "       (2013 QC11)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-10-23 12:29:00",
+    "distance_au": 0.037108865003779,
+    "distance_km": 5551407.188659086,
+    "velocity_km_s": 15.5258636710542,
+    "asteroid_number": "267729",
+    "asteroid_name": "267729 (2003 FC5)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-10-11 09:56:00",
+    "distance_au": 0.0371986536372956,
+    "distance_km": 5564839.377046232,
+    "velocity_km_s": 8.95455551129066,
+    "asteroid_number": "2020 WG",
+    "asteroid_name": "       (2020 WG)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-07-29 18:14:00",
+    "distance_au": 0.0372397715035351,
+    "distance_km": 5570990.522283388,
+    "velocity_km_s": 11.4036374800565,
+    "asteroid_number": "423709",
+    "asteroid_name": "423709 (2006 BQ6)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-10-23 10:05:00",
+    "distance_au": 0.0373820824479202,
+    "distance_km": 5592279.936540705,
+    "velocity_km_s": 16.8022596674521,
+    "asteroid_number": "2015 HR11",
+    "asteroid_name": "       (2015 HR11)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-11-11 12:48:00",
+    "distance_au": 0.0375163418039856,
+    "distance_km": 5612364.850329642,
+    "velocity_km_s": 9.60681183091254,
+    "asteroid_number": "138175",
+    "asteroid_name": "138175 (2000 EE104)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-04-17 22:43:00",
+    "distance_au": 0.0376323148281721,
+    "distance_km": 5629714.1678065825,
+    "velocity_km_s": 18.7172621358458,
+    "asteroid_number": "2024 JX17",
+    "asteroid_name": "       (2024 JX17)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-12-19 12:36:00",
+    "distance_au": 0.0381922783502322,
+    "distance_km": 5713483.518376445,
+    "velocity_km_s": 27.7603411822309,
+    "asteroid_number": "2019 XQ3",
+    "asteroid_name": "       (2019 XQ3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-06-24 01:27:00",
+    "distance_au": 0.0384378137175162,
+    "distance_km": 5750215.086503674,
+    "velocity_km_s": 11.3812391311219,
+    "asteroid_number": "367248",
+    "asteroid_name": "367248 (2007 MK13)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-07-05 07:20:00",
+    "distance_au": 0.0390144897550759,
+    "distance_km": 5836484.593806318,
+    "velocity_km_s": 10.8568114059324,
+    "asteroid_number": "2015 BN311",
+    "asteroid_name": "       (2015 BN311)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-09-03 03:33:00",
+    "distance_au": 0.0391698906341574,
+    "distance_km": 5859732.234421819,
+    "velocity_km_s": 13.3948441092767,
+    "asteroid_number": "359170",
+    "asteroid_name": "359170 (2009 CN5)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-09-08 23:39:00",
+    "distance_au": 0.0394316804308976,
+    "distance_km": 5898895.4305851385,
+    "velocity_km_s": 19.901460175054,
+    "asteroid_number": "2016 EJ56",
+    "asteroid_name": "       (2016 EJ56)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-07-04 14:06:00",
+    "distance_au": 0.0395279409548008,
+    "distance_km": 5913295.799993524,
+    "velocity_km_s": 18.6362026525407,
+    "asteroid_number": "331876",
+    "asteroid_name": "331876 (2004 CL)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-03-16 06:32:00",
+    "distance_au": 0.0396699325799879,
+    "distance_km": 5934537.444778747,
+    "velocity_km_s": 18.5719453321899,
+    "asteroid_number": "455184",
+    "asteroid_name": "455184 (2000 ED14)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-03-19 12:17:00",
+    "distance_au": 0.0401112509264274,
+    "distance_km": 6000557.729706941,
+    "velocity_km_s": 14.243705688581,
+    "asteroid_number": "2001 SQ3",
+    "asteroid_name": "       (2001 SQ3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-04-17 18:46:00",
+    "distance_au": 0.0401257024133145,
+    "distance_km": 6002719.6413737,
+    "velocity_km_s": 17.4338508439224,
+    "asteroid_number": "2024 JX17",
+    "asteroid_name": "       (2024 JX17)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-11-02 19:10:00",
+    "distance_au": 0.040231030395144,
+    "distance_km": 6018476.483180522,
+    "velocity_km_s": 8.71731354084156,
+    "asteroid_number": "524522",
+    "asteroid_name": "524522 Zoozve (2002 VE68)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-08-09 14:42:00",
+    "distance_au": 0.0403249408079103,
+    "distance_km": 6032525.280966918,
+    "velocity_km_s": 32.3990826478378,
+    "asteroid_number": "2016 NT22",
+    "asteroid_name": "       (2016 NT22)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-01-06 06:38:00",
+    "distance_au": 0.0405031318670873,
+    "distance_km": 6059182.283997576,
+    "velocity_km_s": 7.74508451387536,
+    "asteroid_number": "264357",
+    "asteroid_name": "264357 (2000 AZ93)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-11-12 12:05:00",
+    "distance_au": 0.0406020126871069,
+    "distance_km": 6073974.644125577,
+    "velocity_km_s": 10.1237806729825,
+    "asteroid_number": "138175",
+    "asteroid_name": "138175 (2000 EE104)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-02-15 13:11:00",
+    "distance_au": 0.0406113918489232,
+    "distance_km": 6075377.746762246,
+    "velocity_km_s": 7.4092564917689,
+    "asteroid_number": "462238",
+    "asteroid_name": "462238 (2008 CN1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-03-18 21:05:00",
+    "distance_au": 0.0409007028357384,
+    "distance_km": 6118658.054359916,
+    "velocity_km_s": 9.81364950346705,
+    "asteroid_number": "138404",
+    "asteroid_name": "138404 (2000 HA24)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-06-12 18:59:00",
+    "distance_au": 0.0411455082739921,
+    "distance_km": 6155280.42665845,
+    "velocity_km_s": 14.5695060369184,
+    "asteroid_number": "530520",
+    "asteroid_name": "530520 (2011 LT17)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-06-18 20:09:00",
+    "distance_au": 0.0412345080365399,
+    "distance_km": 6168594.601628406,
+    "velocity_km_s": 15.3621010996929,
+    "asteroid_number": "2005 AV27",
+    "asteroid_name": "       (2005 AV27)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-05-31 14:14:00",
+    "distance_au": 0.0414660592489673,
+    "distance_km": 6203234.169965548,
+    "velocity_km_s": 8.19106792763409,
+    "asteroid_number": "2004 FJ11",
+    "asteroid_name": "       (2004 FJ11)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-06-11 14:19:00",
+    "distance_au": 0.0414729824390179,
+    "distance_km": 6204269.86445557,
+    "velocity_km_s": 5.85955108684643,
+    "asteroid_number": "2020 JU",
+    "asteroid_name": "       (2020 JU)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-11-10 15:19:00",
+    "distance_au": 0.0416176143825561,
+    "distance_km": 6225906.495244088,
+    "velocity_km_s": 9.14981786186826,
+    "asteroid_number": "138175",
+    "asteroid_name": "138175 (2000 EE104)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-12-23 01:16:00",
+    "distance_au": 0.041970719868374,
+    "distance_km": 6278730.324054934,
+    "velocity_km_s": 29.4717372912582,
+    "asteroid_number": "488789",
+    "asteroid_name": "488789 (2004 XK50)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-04-04 17:17:00",
+    "distance_au": 0.0420921248214801,
+    "distance_km": 6296892.246532041,
+    "velocity_km_s": 16.2356284313369,
+    "asteroid_number": "2023 LZ1",
+    "asteroid_name": "       (2023 LZ1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-03-18 06:50:00",
+    "distance_au": 0.042199011450501,
+    "distance_km": 6312882.258639867,
+    "velocity_km_s": 25.2552369327505,
+    "asteroid_number": "2017 SG14",
+    "asteroid_name": "       (2017 SG14)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-03-29 22:54:00",
+    "distance_au": 0.0422661821492289,
+    "distance_km": 6322930.852142992,
+    "velocity_km_s": 9.41545208290875,
+    "asteroid_number": "350751",
+    "asteroid_name": "350751 (2002 AW)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-03-04 05:01:00",
+    "distance_au": 0.0424499583727731,
+    "distance_km": 6350423.383870492,
+    "velocity_km_s": 6.62761981139731,
+    "asteroid_number": "474158",
+    "asteroid_name": "474158 (1999 FA)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-03-01 17:08:00",
+    "distance_au": 0.0424556682614292,
+    "distance_km": 6351277.571055379,
+    "velocity_km_s": 8.12922722599381,
+    "asteroid_number": "85585",
+    "asteroid_name": " 85585 Mjolnir (1998 FG2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-12-17 12:58:00",
+    "distance_au": 0.0425288602468567,
+    "distance_km": 6362226.936227638,
+    "velocity_km_s": 10.0709032625771,
+    "asteroid_number": "2005 XT77",
+    "asteroid_name": "       (2005 XT77)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-10-26 15:29:00",
+    "distance_au": 0.0425313591651385,
+    "distance_km": 6362600.769081648,
+    "velocity_km_s": 9.68157067249139,
+    "asteroid_number": "413260",
+    "asteroid_name": "413260 (2003 TL4)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-03-20 04:31:00",
+    "distance_au": 0.0427078467669037,
+    "distance_km": 6389002.938510672,
+    "velocity_km_s": 32.5807532104443,
+    "asteroid_number": "2015 DC200",
+    "asteroid_name": "       (2015 DC200)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-08-29 05:50:00",
+    "distance_au": 0.0429131086355578,
+    "distance_km": 6419709.6769972285,
+    "velocity_km_s": 25.2131897731093,
+    "asteroid_number": "826799",
+    "asteroid_name": "826799 (2023 OE6)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-11-23 03:28:00",
+    "distance_au": 0.043117206830939,
+    "distance_km": 6450242.332439969,
+    "velocity_km_s": 14.7693731126443,
+    "asteroid_number": "2000 KA",
+    "asteroid_name": "       (2000 KA)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-10-31 23:59:00",
+    "distance_au": 0.0431996399694946,
+    "distance_km": 6462574.154443005,
+    "velocity_km_s": 8.82762656184387,
+    "asteroid_number": "524522",
+    "asteroid_name": "524522 Zoozve (2002 VE68)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-04-25 08:28:00",
+    "distance_au": 0.0432483850817563,
+    "distance_km": 6469866.319444388,
+    "velocity_km_s": 18.2902186065246,
+    "asteroid_number": "791587",
+    "asteroid_name": "791587 (2020 AD3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-02-14 14:11:00",
+    "distance_au": 0.0434384594901147,
+    "distance_km": 6498301.046209366,
+    "velocity_km_s": 19.161946929588,
+    "asteroid_number": "162882",
+    "asteroid_name": "162882 (2001 FD58)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-05-05 14:12:00",
+    "distance_au": 0.0434584566681265,
+    "distance_km": 6501292.58145994,
+    "velocity_km_s": 14.9253411763438,
+    "asteroid_number": "2021 TA8",
+    "asteroid_name": "       (2021 TA8)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-04-01 19:23:00",
+    "distance_au": 0.0437505578381911,
+    "distance_km": 6544990.294530584,
+    "velocity_km_s": 17.2603548835154,
+    "asteroid_number": "2022 JA2",
+    "asteroid_name": "       (2022 JA2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-12-10 08:43:00",
+    "distance_au": 0.0440310679979026,
+    "distance_km": 6586954.017133141,
+    "velocity_km_s": 7.11084207051065,
+    "asteroid_number": "517103",
+    "asteroid_name": "517103 (2013 EM20)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-03-04 05:14:00",
+    "distance_au": 0.0440619745428892,
+    "distance_km": 6591577.57045383,
+    "velocity_km_s": 8.92656559313176,
+    "asteroid_number": "154019",
+    "asteroid_name": "154019 (2002 CZ9)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-12-01 04:39:00",
+    "distance_au": 0.0440831371120532,
+    "distance_km": 6594743.445739306,
+    "velocity_km_s": 13.5292759927503,
+    "asteroid_number": "2006 HD2",
+    "asteroid_name": "       (2006 HD2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-05-13 14:56:00",
+    "distance_au": 0.044942524532683,
+    "distance_km": 6723305.973971888,
+    "velocity_km_s": 14.2239092428867,
+    "asteroid_number": "2012 HZ33",
+    "asteroid_name": "       (2012 HZ33)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-09-06 08:59:00",
+    "distance_au": 0.0449745317344638,
+    "distance_km": 6728094.1832053615,
+    "velocity_km_s": 16.8736524163699,
+    "asteroid_number": "612326",
+    "asteroid_name": "612326 (2002 CD14)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-02-27 03:32:00",
+    "distance_au": 0.0450428101670555,
+    "distance_km": 6738308.491335813,
+    "velocity_km_s": 16.2126179165679,
+    "asteroid_number": "613450",
+    "asteroid_name": "613450 (2006 PY17)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-04-20 15:14:00",
+    "distance_au": 0.0450900512732673,
+    "distance_km": 6745375.660234611,
+    "velocity_km_s": 21.8633725854397,
+    "asteroid_number": "2005 GU",
+    "asteroid_name": "       (2005 GU)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-04-04 21:30:00",
+    "distance_au": 0.045099503647456,
+    "distance_km": 6746789.7152863005,
+    "velocity_km_s": 19.6375229902378,
+    "asteroid_number": "2025 BW2",
+    "asteroid_name": "       (2025 BW2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2030-10-10 04:10:00",
+    "distance_au": 0.045118522133765,
+    "distance_km": 6749634.840342064,
+    "velocity_km_s": 14.3408001563334,
+    "asteroid_number": "2004 TL10",
+    "asteroid_name": "       (2004 TL10)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-08-19 04:37:00",
+    "distance_au": 0.0456768145061475,
+    "distance_km": 6833154.190478538,
+    "velocity_km_s": 19.8648838799601,
+    "asteroid_number": "2017 QW17",
+    "asteroid_name": "       (2017 QW17)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-10-07 10:46:00",
+    "distance_au": 0.0458717991019846,
+    "distance_km": 6862323.470835067,
+    "velocity_km_s": 21.7978200074897,
+    "asteroid_number": "235756",
+    "asteroid_name": "235756 (2004 VC)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-05-29 14:19:00",
+    "distance_au": 0.0459229253370109,
+    "distance_km": 6869971.8467319105,
+    "velocity_km_s": 8.61834088577808,
+    "asteroid_number": "2010 ON101",
+    "asteroid_name": "       (2010 ON101)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-07-08 05:44:00",
+    "distance_au": 0.0459466846660143,
+    "distance_km": 6873526.19176008,
+    "velocity_km_s": 20.0725842573439,
+    "asteroid_number": "2011 YH28",
+    "asteroid_name": "       (2011 YH28)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-07-29 14:13:00",
+    "distance_au": 0.0459646925137812,
+    "distance_km": 6876220.127441897,
+    "velocity_km_s": 25.1559649910977,
+    "asteroid_number": "2020 PY4",
+    "asteroid_name": "       (2020 PY4)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-07-25 02:35:00",
+    "distance_au": 0.0460530464116169,
+    "distance_km": 6889437.682426164,
+    "velocity_km_s": 18.1453784970562,
+    "asteroid_number": "2010 PK9",
+    "asteroid_name": "       (2010 PK9)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-05-20 12:35:00",
+    "distance_au": 0.0460889671535625,
+    "distance_km": 6894811.348935189,
+    "velocity_km_s": 27.1646103933822,
+    "asteroid_number": "2005 YU3",
+    "asteroid_name": "       (2005 YU3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-06-21 23:02:00",
+    "distance_au": 0.0465440251442357,
+    "distance_km": 6962887.055384921,
+    "velocity_km_s": 13.4562532619534,
+    "asteroid_number": "308242",
+    "asteroid_name": "308242 (2005 GO21)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-03-07 21:11:00",
+    "distance_au": 0.0466773432400326,
+    "distance_km": 6982831.158641916,
+    "velocity_km_s": 12.150937042121,
+    "asteroid_number": "2007 LU19",
+    "asteroid_name": "       (2007 LU19)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-07-15 18:05:00",
+    "distance_au": 0.0471267001405042,
+    "distance_km": 7050053.994136819,
+    "velocity_km_s": 23.2854071900377,
+    "asteroid_number": "242450",
+    "asteroid_name": "242450 (2004 QY2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-08-27 02:01:00",
+    "distance_au": 0.0473091900636416,
+    "distance_km": 7077354.09806238,
+    "velocity_km_s": 22.7495730204783,
+    "asteroid_number": "523609",
+    "asteroid_name": "523609 (2005 PJ2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-07-17 20:27:00",
+    "distance_au": 0.0473736259459472,
+    "distance_km": 7086993.568851974,
+    "velocity_km_s": 16.9463888912355,
+    "asteroid_number": "348314",
+    "asteroid_name": "348314 (2005 BC)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2033-12-21 05:53:00",
+    "distance_au": 0.047444265724354,
+    "distance_km": 7097561.129288351,
+    "velocity_km_s": 4.07845864063032,
+    "asteroid_number": "162173",
+    "asteroid_name": "162173 Ryugu (1999 JU3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-02-06 16:16:00",
+    "distance_au": 0.0474980721834201,
+    "distance_km": 7105610.460994546,
+    "velocity_km_s": 11.8555603316033,
+    "asteroid_number": "2024 RP14",
+    "asteroid_name": "       (2024 RP14)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-05-15 17:09:00",
+    "distance_au": 0.0477276359227823,
+    "distance_km": 7139952.707593061,
+    "velocity_km_s": 11.057388664589,
+    "asteroid_number": "612267",
+    "asteroid_name": "612267 (2001 SG286)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-10-29 12:12:00",
+    "distance_au": 0.047998480245163,
+    "distance_km": 7180470.4415123975,
+    "velocity_km_s": 18.0285455813199,
+    "asteroid_number": "453707",
+    "asteroid_name": "453707 (2010 XY72)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-06-25 10:03:00",
+    "distance_au": 0.0480034426713717,
+    "distance_km": 7181212.809906726,
+    "velocity_km_s": 24.0837196328328,
+    "asteroid_number": "494999",
+    "asteroid_name": "494999 (2010 JU39)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2028-12-28 01:15:00",
+    "distance_au": 0.048292838648982,
+    "distance_km": 7224505.831946371,
+    "velocity_km_s": 19.9330761215484,
+    "asteroid_number": "2021 YJ",
+    "asteroid_name": "       (2021 YJ)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-11-06 03:38:00",
+    "distance_au": 0.0484217131856833,
+    "distance_km": 7243785.188224335,
+    "velocity_km_s": 16.4249120805188,
+    "asteroid_number": "2001 KF54",
+    "asteroid_name": "       (2001 KF54)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-10-27 00:27:00",
+    "distance_au": 0.0486169260369311,
+    "distance_km": 7272988.615104282,
+    "velocity_km_s": 10.8809651001557,
+    "asteroid_number": "250680",
+    "asteroid_name": "250680 (2005 QC5)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-04-02 00:04:00",
+    "distance_au": 0.0486662744129074,
+    "distance_km": 7280371.0270728385,
+    "velocity_km_s": 17.5358801803465,
+    "asteroid_number": "2013 JN7",
+    "asteroid_name": "       (2013 JN7)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2027-03-18 19:29:00",
+    "distance_au": 0.0488517530091559,
+    "distance_km": 7308118.230132041,
+    "velocity_km_s": 22.4124563133785,
+    "asteroid_number": "506074",
+    "asteroid_name": "506074 Svarog (2015 UM67)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2026-08-10 09:41:00",
+    "distance_au": 0.0488686249085284,
+    "distance_km": 7310642.23035283,
+    "velocity_km_s": 21.0773170713279,
+    "asteroid_number": "2016 BV14",
+    "asteroid_name": "       (2016 BV14)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-07-25 09:12:00",
+    "distance_au": 0.048987024367438,
+    "distance_km": 7328354.537297739,
+    "velocity_km_s": 5.30934554814686,
+    "asteroid_number": "417419",
+    "asteroid_name": "417419 (2006 KL21)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-04-28 12:29:00",
+    "distance_au": 0.0490942685869294,
+    "distance_km": 7344398.044178535,
+    "velocity_km_s": 2.71852001284806,
+    "asteroid_number": "762379",
+    "asteroid_name": "762379 (2011 CG2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2031-06-25 17:24:00",
+    "distance_au": 0.0490948112674066,
+    "distance_km": 7344479.228022395,
+    "velocity_km_s": 21.9027074980983,
+    "asteroid_number": "2022 YN2",
+    "asteroid_name": "       (2022 YN2)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-12-30 17:27:00",
+    "distance_au": 0.0492081273180662,
+    "distance_km": 7361431.067917205,
+    "velocity_km_s": 15.3816924385704,
+    "asteroid_number": "477465",
+    "asteroid_name": "477465 (2009 XZ1)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2032-04-29 14:09:00",
+    "distance_au": 0.0494096046740669,
+    "distance_km": 7391571.651369176,
+    "velocity_km_s": 11.4320871972263,
+    "asteroid_number": "378358",
+    "asteroid_name": "378358 (2007 LD)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2034-11-01 05:41:00",
+    "distance_au": 0.0494980059024936,
+    "distance_km": 7404796.286909074,
+    "velocity_km_s": 16.4775096420467,
+    "asteroid_number": "2009 BE58",
+    "asteroid_name": "       (2009 BE58)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-11-26 03:33:00",
+    "distance_au": 0.0495658688945254,
+    "distance_km": 7414948.446016362,
+    "velocity_km_s": 8.49872261550504,
+    "asteroid_number": "33342",
+    "asteroid_name": " 33342 (1998 WT24)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2035-10-21 01:21:00",
+    "distance_au": 0.0498438675123819,
+    "distance_km": 7456536.447305238,
+    "velocity_km_s": 15.6125266531322,
+    "asteroid_number": "853531",
+    "asteroid_name": "853531 (2009 KE3)",
+    "data_source": "NASA CAD API"
+  },
+  {
+    "approach_time": "2029-11-07 15:43:00",
+    "distance_au": 0.0498793047431904,
+    "distance_km": 7461837.781577693,
+    "velocity_km_s": 12.3395791887592,
+    "asteroid_number": "2015 UR51",
+    "asteroid_name": "       (2015 UR51)",
+    "data_source": "NASA CAD API"
+  }
+]

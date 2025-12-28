@@ -76,7 +76,7 @@ class AsteroidModel(Base):
     )
     
     # Связи с другими таблицами
-    close_approaches: Mapped[List['CloseApproachModel']] = relationship(
+    close_approaches: Mapped[List['CloseApproachModel']] = relationship( # type: ignore
         back_populates='asteroid',
         cascade='all, delete-orphan',
         lazy='selectin',
