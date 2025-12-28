@@ -1,10 +1,11 @@
 """
-Контроллер для работы с оценками угроз сближений.
+Контроллер для работы с оценками угроз из NASA Sentry API.
 Использует общие методы BaseController.
 """
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc, func
+from sqlalchemy import select, func, and_, or_
+from datetime import datetime
 import logging
 
 from models.threat_assessment import ThreatAssessmentModel
@@ -22,117 +23,286 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
         super().__init__(ThreatAssessmentModel)
         logger.info("Инициализирован ThreatController")
     
-    async def get_by_approach_id(
+    async def get_by_designation(self, session: AsyncSession, designation: str) -> Optional[ThreatAssessmentModel]:
+        """
+        Получает оценку угрозы по обозначению астероида.
+        
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            designation: Обозначение астероида
+            
+        Returns:
+            Объект ThreatAssessmentModel или None, если не найден
+        """
+        return await self._find_by_fields(session, {"designation": designation})
+    
+    async def get_by_asteroid_id(
         self, 
         session: AsyncSession, 
-        approach_id: int
+        asteroid_id: int
     ) -> Optional[ThreatAssessmentModel]:
         """
-        Получает оценку угрозы для конкретного сближения.
+        Получает оценку угрозы для конкретного астероида.
         """
-        return await self._find_by_fields(session, {"approach_id": approach_id})
+        return await self._find_by_fields(session, {"asteroid_id": asteroid_id})
     
-    async def get_high_threats(
+    async def get_high_risk_threats(
         self, 
         session: AsyncSession, 
         limit: int = 20
     ) -> List[ThreatAssessmentModel]:
         """
-        Получает сближения с высоким уровнем угрозы.
+        Получает угрозы с высоким уровнем риска (ts_max >= 5).
         """
         return await self.filter(
             session=session,
-            filters={"threat_level__in": ["высокий", "критический"]},
+            filters={"ts_max__ge": 5},
+            limit=limit,
+            order_by="ts_max",
+            order_desc=True
+        )
+    
+    async def get_threats_by_risk_level(
+        self,
+        session: AsyncSession,
+        min_ts: int = 0,
+        max_ts: int = 10,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[ThreatAssessmentModel]:
+        """
+        Получает угрозы по диапазону значений Туринской шкалы.
+        
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            min_ts: Минимальное значение по Туринской шкале
+            max_ts: Максимальное значение по Туринской шкале
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+            
+        Returns:
+            Список угроз
+        """
+        filters = {
+            "ts_max__ge": min_ts,
+            "ts_max__le": max_ts
+        }
+        
+        return await self.filter(
+            session=session,
+            filters=filters,
+            skip=skip,
+            limit=limit,
+            order_by="ts_max",
+            order_desc=True
+        )
+    
+    async def get_threats_by_probability(
+        self,
+        session: AsyncSession,
+        min_probability: float = 0.0,
+        max_probability: float = 1.0,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[ThreatAssessmentModel]:
+        """
+        Получает угрозы по диапазону вероятности столкновения.
+        
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            min_probability: Минимальная вероятность (0.0 - 1.0)
+            max_probability: Максимальная вероятность (0.0 - 1.0)
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+            
+        Returns:
+            Список угроз
+        """
+        filters = {
+            "ip__ge": min_probability,
+            "ip__le": max_probability
+        }
+        
+        return await self.filter(
+            session=session,
+            filters=filters,
+            skip=skip,
+            limit=limit,
+            order_by="ip",
+            order_desc=True
+        )
+    
+    async def get_threats_by_energy(
+        self,
+        session: AsyncSession,
+        min_energy: float = 0.0,
+        max_energy: Optional[float] = None,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[ThreatAssessmentModel]:
+        """
+        Получает угрозы по диапазону энергии воздействия.
+        
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            min_energy: Минимальная энергия в мегатоннах
+            max_energy: Максимальная энергия в мегатоннах
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+            
+        Returns:
+            Список угроз
+        """
+        filters = {"energy_megatons__ge": min_energy}
+        
+        if max_energy is not None:
+            filters["energy_megatons__le"] = max_energy
+        
+        return await self.filter(
+            session=session,
+            filters=filters,
+            skip=skip,
             limit=limit,
             order_by="energy_megatons",
             order_desc=True
         )
     
-    async def update_assessment(
+    async def get_threats_by_impact_category(
         self,
         session: AsyncSession,
-        approach_id: int,
+        category: str,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[ThreatAssessmentModel]:
+        """
+        Получает угрозы по категории воздействия.
+        
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            category: Категория воздействия ('локальный', 'региональный', 'глобальный')
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+            
+        Returns:
+            Список угроз
+        """
+        return await self.filter(
+            session=session,
+            filters={"impact_category": category},
+            skip=skip,
+            limit=limit,
+            order_by="energy_megatons",
+            order_desc=True
+        )
+    
+    async def update_threat_assessment(
+        self,
+        session: AsyncSession,
+        designation: str,
         new_data: Dict[str, Any]
     ) -> Optional[ThreatAssessmentModel]:
         """
-        Обновляет оценку угрозы для сближения.
+        Обновляет оценку угрозы для астероида.
         """
-        threat = await self.get_by_approach_id(session, approach_id)
+        threat = await self.get_by_designation(session, designation)
         
         if not threat:
-            logger.warning(f"Попытка обновления несуществующей оценки для сближения ID {approach_id}")
+            logger.warning(f"Попытка обновления несуществующей оценки угрозы для {designation}")
             return None
         
         threat = await self.update(session, threat.id, new_data)
         
-        # Пересчитываем хеш входных данных
-        if threat:
-            threat.calculation_input_hash = threat._calculate_input_hash()
-            await session.flush()
-        
         return threat
     
-    async def bulk_create_assessments(
+    async def bulk_create_threats(
         self,
         session: AsyncSession,
-        assessments_data: List[Dict[str, Any]]
-    ) -> int:
+        threats_data: List[Dict[str, Any]]
+    ) -> Tuple[int, int]:
         """
         Массовое создание оценок угроз.
         """
         created, updated = await self.bulk_create(
             session=session,
-            data_list=assessments_data,
+            data_list=threats_data,
             conflict_action="update",
-            conflict_fields=["approach_id"]  # Уникальное поле
+            conflict_fields=["designation"]  # Уникальное поле
         )
         
-        return created + updated
+        return created, updated
     
     async def get_statistics(self, session: AsyncSession) -> Dict[str, Any]:
         """
         Возвращает статистику по оценкам угроз.
         """
         try:
+            # Общее количество
             total = await self.count(session)
             
-            # Распределение по уровням угроз
-            threat_levels = ['низкий', 'средний', 'высокий', 'критический']
-            level_stats = {}
+            # Распределение по уровням Туринской шкалы
+            ts_stats = {}
+            for ts in range(0, 11):
+                ts_query = select(func.count()).where(self.model.ts_max == ts)
+                ts_result = await session.execute(ts_query)
+                count = ts_result.scalar() or 0
+                ts_stats[f"ts_{ts}"] = {
+                    'count': count,
+                    'percent': round((count / total * 100) if total > 0 else 0, 1)
+                }
             
-            for level in threat_levels:
-                level_query = select(func.count()).where(self.model.threat_level == level)
-                level_result = await session.execute(level_query)
-                count = level_result.scalar() or 0
-                percent = round((count / total * 100) if total > 0 else 0, 1)
-                level_stats[level] = {'count': count, 'percent': percent}
+            # Распределение по категориям воздействия
+            category_stats = {}
+            for category in ['локальный', 'региональный', 'глобальный']:
+                cat_query = select(func.count()).where(self.model.impact_category == category)
+                cat_result = await session.execute(cat_query)
+                count = cat_result.scalar() or 0
+                category_stats[category] = {
+                    'count': count,
+                    'percent': round((count / total * 100) if total > 0 else 0, 1)
+                }
             
-            # Средняя энергия
-            avg_energy_query = select(func.avg(self.model.energy_megatons))
-            avg_energy_result = await session.execute(avg_energy_query)
-            avg_energy = round(avg_energy_result.scalar() or 0, 1)
+            # Средняя вероятность
+            avg_prob_query = select(func.avg(self.model.ip))
+            avg_prob_result = await session.execute(avg_prob_query)
+            avg_probability = avg_prob_result.scalar() or 0
             
             # Максимальная энергия
             max_energy_query = select(func.max(self.model.energy_megatons))
             max_energy_result = await session.execute(max_energy_query)
             max_energy = max_energy_result.scalar() or 0
             
+            # Средняя энергия
+            avg_energy_query = select(func.avg(self.model.energy_megatons))
+            avg_energy_result = await session.execute(avg_energy_query)
+            avg_energy = round(avg_energy_result.scalar() or 0, 1)
+            
+            # Количество угроз с ненулевой вероятностью
+            non_zero_query = select(func.count()).where(self.model.ip > 0)
+            non_zero_result = await session.execute(non_zero_query)
+            non_zero_count = non_zero_result.scalar() or 0
+            
+            # Количество угроз с высоким риском (ts_max >= 5)
+            high_risk_query = select(func.count()).where(self.model.ts_max >= 5)
+            high_risk_result = await session.execute(high_risk_query)
+            high_risk_count = high_risk_result.scalar() or 0
+            
             return {
-                "total_assessments": total,
-                "threat_levels": level_stats,
+                "total_threats": total,
+                "torino_scale_distribution": ts_stats,
+                "impact_category_distribution": category_stats,
+                "average_probability": avg_probability,
                 "average_energy_mt": avg_energy,
                 "max_energy_mt": max_energy,
-                "high_threat_count": (
-                    level_stats.get('высокий', {}).get('count', 0) +
-                    level_stats.get('критический', {}).get('count', 0)
-                )
+                "non_zero_probability_count": non_zero_count,
+                "high_risk_count": high_risk_count,
+                "last_updated": datetime.now().isoformat()
             }
             
         except Exception as e:
             logger.error(f"Ошибка получения статистики оценок угроз: {e}")
             raise
     
-    async def get_threats_by_asteroid(
+    async def get_threats_by_asteroid_id(
         self,
         session: AsyncSession,
         asteroid_id: int
@@ -140,14 +310,36 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
         """
         Получает все оценки угроз для конкретного астероида.
         """
-        from models.close_approach import CloseApproachModel
-        
-        query = (
-            select(self.model)
-            .join(CloseApproachModel)
-            .where(CloseApproachModel.asteroid_id == asteroid_id)
-            .order_by(CloseApproachModel.approach_time)
+        return await self.filter(
+            session=session,
+            filters={"asteroid_id": asteroid_id},
+            order_by="ip",
+            order_desc=True
         )
+    
+    async def search_threats(
+        self,
+        session: AsyncSession,
+        search_term: str,
+        skip: int = 0,
+        limit: int = 50
+    ) -> List[ThreatAssessmentModel]:
+        """
+        Ищет угрозы по обозначению или полному названию астероида.
         
-        result = await session.execute(query)
-        return result.scalars().all()
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            search_term: Строка для поиска
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+            
+        Returns:
+            Список найденных угроз
+        """
+        return await self.search(
+            session=session,
+            search_term=search_term,
+            search_fields=["designation", "fullname"],
+            skip=skip,
+            limit=limit
+        )

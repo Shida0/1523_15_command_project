@@ -5,8 +5,7 @@
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, func
 import logging
 
 from models.close_approach import CloseApproachModel
@@ -41,6 +40,24 @@ class ApproachController(BaseController[CloseApproachModel]):
             order_by="approach_time"
         )
     
+    async def get_by_asteroid_designation(
+        self,
+        session: AsyncSession,
+        designation: str,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[CloseApproachModel]:
+        """
+        Получает все сближения для астероида с указанным обозначением.
+        """
+        return await self.filter(
+            session=session,
+            filters={"asteroid_designation": designation},
+            skip=skip,
+            limit=limit,
+            order_by="approach_time"
+        )
+    
     async def get_approaches_in_period(
         self,
         session: AsyncSession,
@@ -69,7 +86,7 @@ class ApproachController(BaseController[CloseApproachModel]):
             order_by="approach_time"
         )
     
-    async def get_closest_approaches(
+    async def get_upcoming_approaches(
         self, 
         session: AsyncSession, 
         limit: int = 10
@@ -77,7 +94,7 @@ class ApproachController(BaseController[CloseApproachModel]):
         """
         Получает ближайшие по времени сближения.
         """
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         
         return await self.filter(
             session=session,
@@ -86,7 +103,7 @@ class ApproachController(BaseController[CloseApproachModel]):
             order_by="approach_time"
         )
     
-    async def get_closest_by_distance(
+    async def get_closest_approaches_by_distance(
         self, 
         session: AsyncSession, 
         limit: int = 10
@@ -99,6 +116,22 @@ class ApproachController(BaseController[CloseApproachModel]):
             filters={},
             limit=limit,
             order_by="distance_au"
+        )
+    
+    async def get_fastest_approaches(
+        self,
+        session: AsyncSession,
+        limit: int = 10
+    ) -> List[CloseApproachModel]:
+        """
+        Получает сближения с наибольшей скоростью.
+        """
+        return await self.filter(
+            session=session,
+            filters={},
+            limit=limit,
+            order_by="velocity_km_s",
+            order_desc=True
         )
     
     async def bulk_create_approaches(
@@ -137,47 +170,46 @@ class ApproachController(BaseController[CloseApproachModel]):
             filters={"approach_time__lt": cutoff_date}
         )
     
-    async def get_approaches_with_threats(
-        self,
-        session: AsyncSession,
-        threat_level: Optional[str] = None,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
-        skip: int = 0,
-        limit: int = 100
-    ) -> List[CloseApproachModel]:
+    async def get_statistics(self, session: AsyncSession) -> Dict[str, Any]:
         """
-        Получает сближения с оценками угроз.
+        Возвращает статистику по сближениям.
         """
-        from models.threat_assessment import ThreatAssessmentModel
-        
         try:
-            query = (
-                select(self.model)
-                .join(ThreatAssessmentModel, self.model.threat_assessment)
-                .options(joinedload(self.model.threat_assessment))  # Используем joinedload
-            )
+            # Общее количество
+            total = await self.count(session)
             
-            # Собираем условия
-            conditions = []
+            # Количество будущих сближений
+            now = datetime.now(timezone.utc)
+            future_query = select(func.count()).where(self.model.approach_time >= now)
+            future_result = await session.execute(future_query)
+            future_count = future_result.scalar() or 0
             
-            if threat_level:
-                conditions.append(ThreatAssessmentModel.threat_level == threat_level)
+            # Среднее расстояние
+            avg_distance_query = select(func.avg(self.model.distance_au))
+            avg_distance_result = await session.execute(avg_distance_query)
+            avg_distance_au = round(avg_distance_result.scalar() or 0, 6)
             
-            if start_date:
-                conditions.append(self.model.approach_time >= start_date)
+            # Средняя скорость
+            avg_velocity_query = select(func.avg(self.model.velocity_km_s))
+            avg_velocity_result = await session.execute(avg_velocity_query)
+            avg_velocity = round(avg_velocity_result.scalar() or 0, 2)
             
-            if end_date:
-                conditions.append(self.model.approach_time <= end_date)
+            # Ближайшее сближение
+            closest_query = select(func.min(self.model.distance_au))
+            closest_result = await session.execute(closest_query)
+            closest_au = closest_result.scalar() or 0
             
-            if conditions:
-                query = query.where(and_(*conditions))
-            
-            query = query.order_by(self.model.approach_time).offset(skip).limit(limit)
-            
-            result = await session.execute(query)
-            return result.unique().scalars().all()  # Используем unique() для избежания дубликатов
+            return {
+                "total_approaches": total,
+                "future_approaches": future_count,
+                "past_approaches": total - future_count,
+                "average_distance_au": avg_distance_au,
+                "average_velocity_km_s": avg_velocity,
+                "closest_distance_au": closest_au,
+                "closest_distance_km": closest_au * 149597870.7,
+                "last_updated": datetime.now().isoformat()
+            }
             
         except Exception as e:
-            logger.error(f"Ошибка получения сближений с оценками угроз: {e}")
+            logger.error(f"Ошибка получения статистики сближений: {e}")
             raise

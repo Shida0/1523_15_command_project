@@ -1,10 +1,6 @@
-"""
-Контроллер для работы с данными астероидов.
-Использует общие методы BaseController для устранения дублирования.
-"""
 from typing import List, Dict, Any, Optional, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, and_
 from datetime import datetime
 import logging
 
@@ -22,45 +18,20 @@ class AsteroidController(BaseController[AsteroidModel]):
         super().__init__(AsteroidModel)
         logger.info("Инициализирован AsteroidController")
     
-    async def get_by_mpc_number(self, session: AsyncSession, mpc_number: int) -> Optional[AsteroidModel]:
+    async def get_by_designation(self, session: AsyncSession, designation: str) -> Optional[AsteroidModel]:
         """
-        Находит астероид по номеру MPC.
+        Находит астероид по обозначению NASA.
         
         Args:
             session: Асинхронная сессия SQLAlchemy
-            mpc_number: Уникальный номер из каталога MPC
+            designation: Обозначение NASA (например, "2023 DW")
             
         Returns:
             Объект AsteroidModel или None, если не найден
         """
-        return await self._find_by_fields(session, {"mpc_number": mpc_number})
+        return await self._find_by_fields(session, {"designation": designation})
     
-    async def get_pha_asteroids(
-        self, 
-        session: AsyncSession, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[AsteroidModel]:
-        """
-        Получает только потенциально опасные астероиды (PHA).
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список потенциально опасных астероидов
-        """
-        return await self.filter(
-            session=session,
-            filters={"is_pha": True},
-            skip=skip,
-            limit=limit,
-            order_by="earth_moid_au"  # Сначала самые опасные
-        )
-    
-    async def search_by_name(
+    async def search_by_name_or_designation(
         self, 
         session: AsyncSession, 
         search_term: str,
@@ -122,6 +93,85 @@ class AsteroidController(BaseController[AsteroidModel]):
             order_by="estimated_diameter_km"
         )
     
+    async def get_asteroids_by_earth_moid(
+        self,
+        session: AsyncSession,
+        max_moid: float,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[AsteroidModel]:
+        """
+        Получает астероиды с MOID (минимальное расстояние орбиты) меньше указанного значения.
+        
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            max_moid: Максимальное значение MOID в а.е.
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+            
+        Returns:
+            Список астероидов
+        """
+        return await self.filter(
+            session=session,
+            filters={"earth_moid_au__le": max_moid},
+            skip=skip,
+            limit=limit,
+            order_by="earth_moid_au"
+        )
+    
+    async def get_asteroids_with_accurate_diameter(
+        self,
+        session: AsyncSession,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[AsteroidModel]:
+        """
+        Получает астероиды с точными данными о диаметре.
+        
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+            
+        Returns:
+            Список астероидов с accurate_diameter = True
+        """
+        return await self.filter(
+            session=session,
+            filters={"accurate_diameter": True},
+            skip=skip,
+            limit=limit,
+            order_by="estimated_diameter_km"
+        )
+    
+    async def get_asteroids_by_orbit_class(
+        self,
+        session: AsyncSession,
+        orbit_class: str,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[AsteroidModel]:
+        """
+        Получает астероиды по классу орбиты.
+        
+        Args:
+            session: Асинхронная сессия SQLAlchemy
+            orbit_class: Класс орбиты (Apollo, Aten, Amor и т.д.)
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+            
+        Returns:
+            Список астероидов
+        """
+        return await self.filter(
+            session=session,
+            filters={"orbit_class": orbit_class},
+            skip=skip,
+            limit=limit,
+            order_by="designation"
+        )
+    
     async def get_statistics(self, session: AsyncSession) -> Dict[str, Any]:
         """
         Возвращает статистику по астероидам.
@@ -129,11 +179,6 @@ class AsteroidController(BaseController[AsteroidModel]):
         try:
             # Общее количество
             total = await self.count(session)
-            
-            # Количество PHA
-            pha_query = select(func.count()).select_from(self.model).where(self.model.is_pha == True)
-            pha_result = await session.execute(pha_query)
-            pha_count = pha_result.scalar() or 0
             
             # Средний диаметр
             avg_diameter_query = select(func.avg(self.model.estimated_diameter_km))
@@ -145,15 +190,45 @@ class AsteroidController(BaseController[AsteroidModel]):
             min_moid_result = await session.execute(min_moid_query)
             min_moid = min_moid_result.scalar() or 0
             
+            # Количество астероидов с точными диаметрами
+            accurate_count_query = select(func.count()).where(self.model.accurate_diameter == True)
+            accurate_count_result = await session.execute(accurate_count_query)
+            accurate_count = accurate_count_result.scalar() or 0
+            
+            # Количество астероидов по источникам диаметра
+            source_stats = {}
+            for source in ['measured', 'computed', 'calculated']:
+                source_query = select(func.count()).where(self.model.diameter_source == source)
+                source_result = await session.execute(source_query)
+                source_stats[source] = source_result.scalar() or 0
+            
             return {
                 "total_asteroids": total,
-                "pha_count": pha_count,
-                "percent_pha": round((pha_count / total * 100) if total > 0 else 0, 1),
                 "average_diameter_km": avg_diameter,
-                "min_moid_au": min_moid,
+                "min_earth_moid_au": min_moid,
+                "accurate_diameter_count": accurate_count,
+                "percent_accurate": round((accurate_count / total * 100) if total > 0 else 0, 1),
+                "diameter_source_stats": source_stats,
                 "last_updated": datetime.now().isoformat()
             }
             
         except Exception as e:
             logger.error(f"Ошибка получения статистики астероидов: {e}")
             raise
+    
+    async def bulk_create_asteroids(
+        self,
+        session: AsyncSession,
+        asteroids_data: List[Dict[str, Any]]
+    ) -> Tuple[int, int]:
+        """
+        Массовое создание астероидов.
+        """
+        created, updated = await self.bulk_create(
+            session=session,
+            data_list=asteroids_data,
+            conflict_action="update",
+            conflict_fields=["designation"]  # Уникальное поле
+        )
+        
+        return created, updated

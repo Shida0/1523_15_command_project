@@ -1,4 +1,4 @@
-from sqlalchemy import CheckConstraint, Float, String, Boolean, UniqueConstraint
+from sqlalchemy import CheckConstraint, Float, String, Boolean, UniqueConstraint, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, Optional
 
@@ -7,16 +7,16 @@ from .base import Base
 class AsteroidModel(Base):
     """
     Модель для хранения данных о потенциально опасных астероидах (PHA).
-    Соответствует таблице 'asteroid_models' (автоматически из Base).
+    Соответствует таблице 'asteroid_models'.
     """
     
-    # Основные идентификаторы NASA
+    # Основные идентификаторы
     designation: Mapped[str] = mapped_column(
         String(50),
         unique=True,
         nullable=False,
         index=True,
-        comment="Обозначение NASA (напр., '99942', '2025 XN4') - первичный идентификатор"
+        comment="Обозначение NASA (напр., '99942', '2025 XN4')"
     )
     name: Mapped[Optional[str]] = mapped_column(
         String(100), 
@@ -24,16 +24,16 @@ class AsteroidModel(Base):
         comment="Собственное название астероида (напр., 'Apophis')"
     )
     
-    # Орбитальные параметры (могут отсутствовать в данных NASA)
+    # Орбитальные параметры
     perihelion_au: Mapped[Optional[float]] = mapped_column(
         Float, 
         nullable=True,
-        comment="Расстояние перигелия в астрономических единицах (может быть NULL)"
+        comment="Расстояние перигелия в астрономических единицах"
     )
     aphelion_au: Mapped[Optional[float]] = mapped_column(
         Float, 
         nullable=True,
-        comment="Расстояние афелия в астрономических единицах (может быть NULL)"
+        comment="Расстояние афелия в астрономических единицах"
     )
     earth_moid_au: Mapped[Optional[float]] = mapped_column(
         Float, 
@@ -55,12 +55,18 @@ class AsteroidModel(Base):
     accurate_diameter: Mapped[bool] = mapped_column(
         Boolean,
         nullable=False,
-        comment="Диаметр точный или же расчитан нами по стандартному альбедо"
+        comment="Диаметр точный или же рассчитан по стандартному альбедо"
     )
     albedo: Mapped[float] = mapped_column(
         Float,
         nullable=False,
         comment="Альбедо (отражательная способность), если известно"
+    )
+    diameter_source: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False,
+        default='calculated',
+        comment="Источник данных о диаметре: 'measured', 'computed', 'calculated'"
     )
     
     # Дополнительные данные NASA
@@ -76,14 +82,20 @@ class AsteroidModel(Base):
     )
     
     # Связи с другими таблицами
-    close_approaches: Mapped[List['CloseApproachModel']] = relationship( # type: ignore
+    close_approaches: Mapped[List['CloseApproachModel']] = relationship(
         back_populates='asteroid',
         cascade='all, delete-orphan',
         lazy='selectin',
         order_by='CloseApproachModel.approach_time'
     )
+    threat_assessments: Mapped[List['ThreatAssessmentModel']] = relationship(
+        back_populates='asteroid',
+        cascade='all, delete-orphan',
+        lazy='selectin',
+        order_by='ThreatAssessmentModel.ip.desc()'
+    )
     
-    # Обновленные CheckConstraint для поддержки NULL значений
+    # Обновленные CheckConstraint с добавленными полями (УБРАН UniqueConstraint на mpc_number)
     __table_args__ = (
         UniqueConstraint('designation', name='uq_asteroid_designation'),
         CheckConstraint(
@@ -102,6 +114,10 @@ class AsteroidModel(Base):
             "albedo > 0 AND albedo <= 1",
             name='check_albedo_range'
         ),
+        CheckConstraint(
+            "diameter_source IN ('measured', 'computed', 'calculated')",
+            name='check_diameter_source'
+        ),
     )
     
     def __init__(self, **kwargs):
@@ -110,7 +126,10 @@ class AsteroidModel(Base):
         # Проверка альбедо
         if self.albedo <= 0 or self.albedo > 1:
             raise ValueError(f"Альбедо должно быть в диапазоне (0, 1]. Получено: {self.albedo}")
+        
+        # Проверка диаметра
+        if not hasattr(self, 'diameter_source') or not self.diameter_source:
+            self.diameter_source = 'calculated'
     
     def __repr__(self) -> str:
         return f"AsteroidModel(id={self.id}, designation={self.designation}, name={self.name})"
-        

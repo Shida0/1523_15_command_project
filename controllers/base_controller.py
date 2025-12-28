@@ -34,11 +34,11 @@ class BaseController(Generic[ModelType]):
         model_name = self.model.__name__
         
         if model_name == "AsteroidModel":
-            return ["mpc_number"]
+            return ["designation"]  # БЫЛО ["mpc_number"], СТАЛО ["designation"]
         elif model_name == "CloseApproachModel":
             return ["asteroid_id", "approach_time"]
         elif model_name == "ThreatAssessmentModel":
-            return ["approach_id"]
+            return ["designation"]  # Уникальное поле - обозначение астероида
         else:
             # По умолчанию пустой список
             return []
