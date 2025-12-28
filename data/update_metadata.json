@@ -1,6 +1,6 @@
 {
-  "update_timestamp": "2025-12-28T19:33:41.869948",
-  "duration_seconds": 72.825796,
+  "update_timestamp": "2025-12-28T19:57:11.276810",
+  "duration_seconds": 71.565306,
   "results": {
     "asteroids": {
       "success": true,
@@ -15,5 +15,5 @@
       "count": 0
     }
   },
-  "status": "С ОШИБКАМИ"
+  "status": "С ОШИБКАМИ ЛИБО С ПРЕДУПРЕЖДЕНИЯМИ"
 }

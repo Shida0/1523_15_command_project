@@ -1,11 +1,11 @@
-# sentry_api.py
+# sentry_api.py (исправленная версия)
 """
 Асинхронный клиент для NASA Sentry API (Sentry-II).
 Получает данные об объектах с ненулевой вероятностью столкновения с Землей.
 """
 import logging
 import aiohttp
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
@@ -70,14 +70,22 @@ class SentryClient:
                 response.raise_for_status()
                 data = await response.json()
                 
+                # Проверяем структуру ответа перед обработкой
+                if 'data' not in data:
+                    logger.warning("Ответ Sentry API не содержит ключа 'data'")
+                    return []
+                
                 risks = []
                 for item in data.get('data', []):
                     try:
                         risk = self._parse_sentry_item(item)
                         if risk.ts_max > 0:
                             risks.append(risk)
+                    except (ValueError, KeyError) as e:
+                        logger.warning(f"Ошибка парсинга объекта {item.get('des', 'N/A')}: {e}. Пропускаем.")
+                        continue
                     except Exception as e:
-                        logger.warning(f"Ошибка парсинга объекта: {e}")
+                        logger.error(f"Неожиданная ошибка парсинга: {e}. Пропускаем объект.")
                         continue
                         
                 logger.info(f"Найдено {len(risks)} объектов с ts_max > 0")
@@ -96,6 +104,7 @@ class SentryClient:
             url = f"{self.SENTRY_API_URL}?des={designation}"
             async with self.session.get(url) as response:
                 if response.status == 404:
+                    logger.info(f"Объект {designation} не найден в Sentry API.")
                     return None
                     
                 response.raise_for_status()
@@ -103,29 +112,48 @@ class SentryClient:
                 
                 if 'error' in data or not data.get('data'):
                     return None
-                    
-                return self._parse_sentry_item(data['data'][0])
                 
-        except aiohttp.ClientError:
+                if data.get('data'):
+                    return self._parse_sentry_item(data['data'][0])
+                return None
+                
+        except aiohttp.ClientError as e:
+            logger.error(f"Сетевая ошибка при запросе объекта {designation}: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Неожиданная ошибка при запросе объекта {designation}: {e}")
             return None
             
     def _parse_sentry_item(self, item: Dict[str, Any]) -> SentryImpactRisk:
         """Парсит элемент данных из Sentry API в объект SentryImpactRisk."""
-        safe_float = lambda k, d: self._safe_extract(item, k, d, float)
-        safe_int = lambda k, d: self._safe_extract(item, k, d, int)
+        # Безопасное извлечение данных с правильными типами
+        designation = self._safe_extract_str(item, 'des', 'Неизвестно')
+        fullname = self._safe_extract_str(item, 'fullname', designation)
+        last_obs = self._safe_extract_str(item, 'last_obs', 'Неизвестно')
         
-        designation = safe_float('des', 'Неизвестно')
-        fullname = safe_float('fullname', designation)
-        ip = safe_float('ip', 0.0)
-        ts_max = safe_int('ts_max', 0)
-        ps_max = safe_float('ps_max', -10.0)
-        diameter = safe_float('diameter', 0.05)
-        v_inf = safe_float('v_inf', 20.0)
-        h_mag = safe_float('h', 22.0)
-        last_obs = safe_float('last_obs', 'Неизвестно')
+        # Извлечение числовых значений. Сначала пробуем 'max', затем 'cum'[citation:2][citation:4]
+        ip = self._safe_extract_float(item, 'ip', 0.0)
         
-        n_imp, impact_years = self._extract_impact_scenarios(item)
+        ts_max = self._safe_extract_int(item, 'ts_max', 0)
+        if ts_max == 0:
+            ts_cum = self._safe_extract_int(item, 'ts', 0)  # Попытка получить cumulative
+            if ts_cum != 0:
+                logger.debug(f"Для объекта {designation} используется ts_cum={ts_cum}, так как ts_max=0")
         
+        ps_max = self._safe_extract_float(item, 'ps_max', -10.0)
+        if ps_max <= -10.0:  # Значение по умолчанию, возможно поле отсутствует
+            ps_cum = self._safe_extract_float(item, 'ps', -10.0)
+            if ps_cum > -10.0:
+                ps_max = ps_cum
+                logger.debug(f"Для объекта {designation} используется ps_cum={ps_cum} как ps_max")
+        
+        diameter = self._safe_extract_float(item, 'diameter', 0.05)
+        v_inf = self._safe_extract_float(item, 'v_inf', 20.0)
+        h_mag = self._safe_extract_float(item, 'h', 22.0)
+        
+        n_imp, impact_years = self._extract_impact_scenarios(item.get('data', []))
+        
+        # Локализация данных
         threat_level_ru = self._assess_threat_level(ts_max, ps_max, ip)
         torino_scale_ru = self._translate_torino_scale(ts_max)
         impact_probability_text_ru = self._format_probability_text(ip)
@@ -148,17 +176,37 @@ class SentryClient:
             last_update=datetime.now()
         )
     
-    def _safe_extract(self, item: Dict, key: str, default: Any, type_func) -> Any:
-        """Безопасно извлекает и преобразует значение из словаря."""
+    def _safe_extract_str(self, item: Dict, key: str, default: str) -> str:
+        """Безопасно извлекает строковое значение из словаря."""
         value = item.get(key, default)
+        if value is None:
+            return default
+        return str(value)
+    
+    def _safe_extract_float(self, item: Dict, key: str, default: float) -> float:
+        """Безопасно извлекает и преобразует значение в float."""
+        value = item.get(key)
+        if value is None:
+            return default
         try:
-            return type_func(value)
+            return float(value)
         except (ValueError, TypeError):
+            logger.debug(f"Не удалось преобразовать '{value}' в float для ключа '{key}'. Используется значение по умолчанию {default}.")
             return default
     
-    def _extract_impact_scenarios(self, item: Dict) -> tuple:
+    def _safe_extract_int(self, item: Dict, key: str, default: int) -> int:
+        """Безопасно извлекает и преобразует значение в int."""
+        value = item.get(key)
+        if value is None:
+            return default
+        try:
+            return int(float(value))  # Сначала в float, если строка "22.5"
+        except (ValueError, TypeError):
+            logger.debug(f"Не удалось преобразовать '{value}' в int для ключа '{key}'. Используется значение по умолчанию {default}.")
+            return default
+    
+    def _extract_impact_scenarios(self, impact_data: List[Dict]) -> Tuple[int, List[int]]:
         """Извлекает информацию о сценариях столкновений."""
-        impact_data = item.get('data', [])
         impact_years = []
         
         for impact in impact_data:
@@ -169,8 +217,9 @@ class SentryClient:
                     impact_years.append(year)
                 except ValueError:
                     continue
-                    
-        return len(impact_data), sorted(set(impact_years))
+        # Удаляем дубликаты и сортируем
+        unique_years = sorted(set(impact_years))
+        return len(impact_data), unique_years
         
     def _translate_torino_scale(self, ts_value: int) -> str:
         """Переводит значение Туринской шкалы на русский язык."""
@@ -190,9 +239,12 @@ class SentryClient:
         return translations.get(ts_value, f"{ts_value} — Неизвестное значение")
         
     def _assess_threat_level(self, ts_max: int, ps_max: float, ip: float) -> str:
-        """Оценивает уровень угрозы на основе шкал Турина и Палермо."""
+        """Оценивает уровень угрозы на основе шкал Турина и Палермо.[citation:4]"""
         if ts_max == 0:
-            return "НУЛЕВОЙ (безопасен)" if ps_max <= -2 else "ОЧЕНЬ НИЗКИЙ"
+            if ps_max < -2:
+                return "НУЛЕВОЙ (ниже фонового уровня)"
+            else:
+                return "ОЧЕНЬ НИЗКИЙ"
         elif 1 <= ts_max <= 4:
             return "НИЗКИЙ (требует наблюдения)"
         elif ts_max == 5:
@@ -201,18 +253,30 @@ class SentryClient:
             return "ПОВЫШЕННЫЙ (серьёзная угроза)"
         elif ts_max == 7:
             return "ВЫСОКИЙ (очень серьёзная угроза)"
-        else:
+        elif ts_max >= 8:
             return "КРИТИЧЕСКИЙ (непосредственная угроза)"
+        else:
+            return "НЕОПРЕДЕЛЕН"
             
     def _format_probability_text(self, probability: float) -> str:
         """Форматирует вероятность в читаемый русский текст."""
         if probability <= 0:
             return "Вероятность отсутствует"
-        elif probability >= 0.01:
-            return f"{probability*100:.2f}% (1 к {int(1/probability):,})"
-        elif probability >= 1e-4:
-            return f"{probability*100:.4f}% (1 к {int(1/probability):,})"
-        elif probability >= 1e-6:
-            return f"{probability*100:.6f}% (1 к {int(1/probability):,})"
+        # Защита от деления на ноль
+        if probability > 0:
+            try:
+                odds = int(1/probability)
+                odds_formatted = f"{odds:,}".replace(",", " ")
+            except (ZeroDivisionError, ValueError, OverflowError):
+                odds_formatted = "очень большое"
         else:
-            return f"{probability:.2e} (чрезвычайно малая вероятность)"
+            odds_formatted = "N/A"
+            
+        if probability >= 0.01:  # 1% и выше
+            return f"{probability*100:.2f}% (1 к {odds_formatted})"
+        elif probability >= 1e-4:  # 0.01% и выше
+            return f"{probability*100:.4f}% (1 к {odds_formatted})"
+        elif probability >= 1e-6:  # 0.0001% и выше
+            return f"{probability*100:.6f}% (1 к {odds_formatted})"
+        else:
+            return f"{probability:.2e} (чрезвычайно малая вероятность, 1 к {odds_formatted})"

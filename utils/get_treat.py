@@ -1,11 +1,11 @@
-# get_treat.py
+# get_treat.py (исправленная версия)
 """
 Асинхронные функции для получения данных об угрозах.
 Основной интерфейс для работы с NASA Sentry API.
 """
 import logging
 from typing import List, Dict, Any, Optional
-from external_apis.sentry_api import SentryClient
+from external_apis.sentry_api import SentryClient, SentryImpactRisk
 
 logger = logging.getLogger(__name__)
 
@@ -13,53 +13,44 @@ async def get_all_treats() -> List[Dict[str, Any]]:
     """Получает все актуальные угрозы столкновения с Землей.
     
     Returns:
-        Список объектов с данными об угрозах
-        
-    Example:
-        threats = await get_all_treats()
-        
-    Note:
-        Возвращает только объекты с ненулевой оценкой по Туринской шкале (ts_max > 0)
+        Список словарей с данными об угрозах.
+        Возвращает пустой список в случае ошибки или отсутствия данных.
     """
     try:
         async with SentryClient() as client:
+            # Этот метод может выбросить исключение, поэтому оборачиваем
             risks = await client.fetch_current_impact_risks()
             
-            # ФИКС: Проверяем, есть ли данные перед преобразованием
             if not risks:
-                logger.info("Нет данных об угрозах от Sentry API")
+                logger.info("Нет данных об угрозах от Sentry API (список пуст)")
                 return []
                 
             # Преобразуем в словари
             result = []
             for risk in risks:
-                # ФИКС: Проверяем, есть ли метод to_dict
-                if hasattr(risk, 'to_dict'):
-                    result.append(risk.to_dict())
+                # Убеждаемся, что risk - это экземпляр SentryImpactRisk
+                if isinstance(risk, SentryImpactRisk):
+                    try:
+                        result.append(risk.to_dict())
+                    except AttributeError:
+                        # Резервное создание словаря, если метод to_dict отсутствует
+                        logger.warning(f"У объекта угрозы отсутствует метод to_dict, создаем словарь вручную")
+                        result.append(_impact_risk_to_dict(risk))
                 else:
-                    # Альтернативное преобразование для отладки
-                    logger.debug(f"Угроза без метода to_dict: {risk}")
-                    # Создаем словарь вручную
-                    risk_dict = {
-                        'designation': getattr(risk, 'designation', 'Неизвестно'),
-                        'fullname': getattr(risk, 'fullname', ''),
-                        'impact_probability': getattr(risk, 'ip', 0.0),
-                        'torino_scale': getattr(risk, 'ts_max', 0),
-                        'diameter_km': getattr(risk, 'diameter', 0.05),
-                        'velocity_km_s': getattr(risk, 'v_inf', 20.0),
-                        'absolute_magnitude': getattr(risk, 'h', 22.0),
-                    }
-                    result.append(risk_dict)
+                    logger.warning(f"Получен объект неожиданного типа {type(risk)}. Пропускаем.")
                     
-            logger.info(f"Получено {len(result)} угроз от Sentry API")
+            logger.info(f"Успешно получено и преобразовано {len(result)} угроз от Sentry API")
             return result
             
+    except RuntimeError as e:
+        # Ошибка клиента Sentry (например, проблема сети или API)
+        logger.error(f"Ошибка при работе с SentryClient: {e}")
+        return []
     except IndexError as e:
-        # ФИКС: Конкретная обработка ошибки индекса
-        logger.error(f"Ошибка индекса при получении угроз: {e}. Возможно, Sentry API вернул пустой список.")
+        logger.error(f"Ошибка индекса при обработке данных от Sentry API: {e}. Возможно, структура ответа неожиданная.")
         return []
     except Exception as e:
-        logger.error(f"Ошибка получения данных об угрозах: {e}")
+        logger.error(f"Неожиданная ошибка получения данных об угрозах: {e}", exc_info=True)
         return []
         
 async def get_treat_details(designation: str) -> Optional[Dict[str, Any]]:
@@ -69,15 +60,54 @@ async def get_treat_details(designation: str) -> Optional[Dict[str, Any]]:
         designation: Обозначение астероида (например, "2023 DW")
         
     Returns:
-        Словарь с детальной информацией или None, если объект не найден
-        
-    Example:
-        details = await get_treat_details("2023 DW")
+        Словарь с детальной информацией или None, если объект не найден или произошла ошибка.
     """
     try:
         async with SentryClient() as client:
             risk = await client.fetch_object_details(designation)
-            return risk.to_dict() if risk and hasattr(risk, 'to_dict') else risk
-    except Exception as e:
-        logger.error(f"Ошибка получения деталей угрозы: {e}")
+            
+            # Явная проверка на None и корректный тип
+            if risk is None:
+                logger.info(f"Объект {designation} не найден или отсутствует в Sentry")
+                return None
+                
+            if not isinstance(risk, SentryImpactRisk):
+                logger.warning(f"Для объекта {designation} получен неожиданный тип данных: {type(risk)}")
+                return None
+                
+            try:
+                return risk.to_dict()
+            except AttributeError:
+                logger.warning(f"У объекта {designation} отсутствует метод to_dict, создаем словарь вручную")
+                return _impact_risk_to_dict(risk)
+                
+    except RuntimeError as e:
+        logger.error(f"Ошибка SentryClient при запросе объекта {designation}: {e}")
         return None
+    except Exception as e:
+        logger.error(f"Неожиданная ошибка получения деталей угрозы для {designation}: {e}")
+        return None
+
+def _impact_risk_to_dict(risk: SentryImpactRisk) -> Dict[str, Any]:
+    """Создает словарь из объекта SentryImpactRisk (резервный метод).
+    
+    Используется, если у объекта отсутствует метод to_dict.
+    """
+    # Простой способ, использующий публичные атрибуты датакласса
+    return {
+        'designation': risk.designation,
+        'fullname': risk.fullname,
+        'impact_probability': risk.ip,
+        'torino_scale': risk.ts_max,
+        'palermo_scale': risk.ps_max,
+        'diameter_km': risk.diameter,
+        'velocity_km_s': risk.v_inf,
+        'absolute_magnitude': risk.h,
+        'n_imp': risk.n_imp,
+        'impact_years': risk.impact_years,
+        'last_obs': risk.last_obs,
+        'threat_level_ru': risk.threat_level_ru,
+        'torino_scale_ru': risk.torino_scale_ru,
+        'impact_probability_text_ru': risk.impact_probability_text_ru,
+        'last_update': risk.last_update.isoformat() if hasattr(risk.last_update, 'isoformat') else str(risk.last_update)
+    }
