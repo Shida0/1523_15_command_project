@@ -48,7 +48,7 @@ class ThreatAssessmentModel(Base):
     )
     
     # Связи
-    close_approach: Mapped['CloseApproachModel'] = relationship(
+    close_approach: Mapped['CloseApproachModel'] = relationship( # type: ignore
         back_populates='threat_assessment',
         lazy='selectin'
     )

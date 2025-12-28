@@ -60,11 +60,11 @@ class CloseApproachModel(Base):
     )
     
     # Связи
-    asteroid: Mapped['AsteroidModel'] = relationship(
+    asteroid: Mapped['AsteroidModel'] = relationship( # type: ignore
         back_populates='close_approaches',
         lazy='selectin'
     )
-    threat_assessment: Mapped['ThreatAssessmentModel'] = relationship(
+    threat_assessment: Mapped['ThreatAssessmentModel'] = relationship( # type: ignore
         back_populates='close_approach',
         cascade='all, delete-orphan',
         uselist=False,

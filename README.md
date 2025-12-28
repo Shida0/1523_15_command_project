@@ -82,7 +82,6 @@ POSTGRES_PORT=5432
 POSTGRES_DB=asteroid_watch
 ```
 
-<<<<<<< HEAD
 3. Создайте базу данных:
 
 ``` bash
@@ -136,5 +135,3 @@ python -c "from utils.cad_api import CombinedCADClient; client = CombinedCADClie
     
 - [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
 
-=======
->>>>>>> b7f0b5f (асинхронный сбор данных)
