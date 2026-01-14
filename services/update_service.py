@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .asteroid_service import AsteroidService
 from .approach_service import ApproachService
 from .threat_service import ThreatService
-from api_functions import get_asteroid_data, get_current_close_approaches, get_all_treats
+from api_wrappers import get_asteroid_data, get_current_close_approaches, get_all_treats
 
 logger = logging.getLogger(__name__)
 

@@ -1,4 +1,3 @@
-# sentry_api.py (исправленная версия)
 """
 Асинхронный клиент для NASA Sentry API (Sentry-II).
 Получает данные об объектах с ненулевой вероятностью столкновения с Землей.
@@ -8,8 +7,8 @@ import aiohttp
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, asdict
 from datetime import datetime
-
 from pydantic import BaseModel, validator
+from utils.error_handlers import nasa_api_endpoint, validate_response, log_execution_time
 
 logger = logging.getLogger(__name__)
 
@@ -73,48 +72,44 @@ class SentryClient:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.session:
             await self.session.close()
-            
+    
+    @nasa_api_endpoint(max_retries=3, rate_limit_delay=2.0)
+    @validate_response(required_fields=['data'])
+    @log_execution_time
     async def fetch_current_impact_risks(self) -> List[SentryImpactRisk]:
         """Получает все актуальные риски столкновений с ts_max > 0."""
         if not self.session:
             raise RuntimeError("Сессия не инициализирована. Используйте контекстный менеджер.")
             
-        try:
-            logger.info("Запрос актуальных данных о рисках из NASA Sentry API...")
-            params = {'ip-min': '1e-10'}
+        logger.info("Запрос актуальных данных о рисках из NASA Sentry API...")
+        params = {'ip-min': '1e-10'}
+        
+        async with self.session.get(self.SENTRY_API_URL, params=params) as response:
+            response.raise_for_status()
+            raw_data = await response.json()
             
-            async with self.session.get(self.SENTRY_API_URL, params=params) as response:
-                response.raise_for_status()
-                raw_data = await response.json()
-                
-                # Валидация структуры ответа
+            # Валидация структуры ответа
+            try:
+                validated_data = SentryAPIResponse(**raw_data)
+            except ValueError as e:
+                logger.error(f"Invalid Sentry API response structure: {e}")
+                return []
+            
+            risks = []
+            for item in validated_data.data:
                 try:
-                    validated_data = SentryAPIResponse(**raw_data)
-                except ValueError as e:
-                    logger.error(f"Invalid Sentry API response structure: {e}")
-                    # Возвращаем данные с предупреждением
-                    return []
-                
-                risks = []
-                for item in validated_data.data:
-                    try:
-                        risk = self._parse_sentry_item(item)
-                        if risk.ts_max > 0:
-                            risks.append(risk)
-                    except (ValueError, KeyError) as e:
-                        logger.warning(f"Ошибка парсинга объекта {item.get('des', 'N/A')}: {e}. Пропускаем.")
-                        continue
-                    except Exception as e:
-                        logger.error(f"Неожиданная ошибка парсинга: {e}. Пропускаем объект.")
-                        continue
-                        
-                logger.info(f"Найдено {len(risks)} объектов с ts_max > 0")
-                return risks
-                
-        except (aiohttp.ClientError, ValueError) as e:
-            logger.error(f"Ошибка получения данных Sentry: {e}")
-            raise RuntimeError(f"Не удалось получить данные NASA Sentry: {e}")
-            
+                    risk = self._parse_sentry_item(item)
+                    if risk.ts_max > 0:
+                        risks.append(risk)
+                except Exception as e:
+                    logger.warning(f"Ошибка парсинга объекта {item.get('des', 'N/A')}: {e}. Пропускаем.")
+                    continue
+                    
+            logger.info(f"Найдено {len(risks)} объектов с ts_max > 0")
+            return risks
+    
+    @nasa_api_endpoint(max_retries=3)
+    @log_execution_time
     async def fetch_object_details(self, designation: str) -> Optional[SentryImpactRisk]:
         """Получает детальную информацию о конкретном объекте."""
         if not self.session:
@@ -137,11 +132,8 @@ class SentryClient:
                     return self._parse_sentry_item(data['data'][0])
                 return None
                 
-        except aiohttp.ClientError as e:
-            logger.error(f"Сетевая ошибка при запросе объекта {designation}: {e}")
-            return None
         except Exception as e:
-            logger.error(f"Неожиданная ошибка при запросе объекта {designation}: {e}")
+            logger.error(f"Ошибка при запросе объекта {designation}: {e}")
             return None
             
     def _parse_sentry_item(self, item: Dict[str, Any]) -> SentryImpactRisk:

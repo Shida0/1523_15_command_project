@@ -1,10 +1,9 @@
-import asyncio
 import logging
 import aiohttp
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
-from utils.get_date import GetDate  # Импортируем базовый класс для парсинга дат
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from utils.get_date import GetDate
+from utils.error_handlers import nasa_api_endpoint, validate_response, log_execution_time
 
 logger = logging.getLogger(__name__)
 
@@ -14,12 +13,6 @@ class CADClient(GetDate):
     CAD_API_URL = "https://ssd-api.jpl.nasa.gov/cad.api"
     
     def __init__(self, timeout: int = 30):
-        """
-        Инициализация асинхронного клиента CAD.
-        
-        Args:
-            timeout: Таймаут HTTP-запросов в секундах
-        """
         super().__init__()
         self.timeout = timeout
         self.session: Optional[aiohttp.ClientSession] = None
@@ -38,11 +31,9 @@ class CADClient(GetDate):
         if self.session:
             await self.session.close()
     
-    @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type((aiohttp.ClientError, asyncio.TimeoutError))
-    )      
+    @nasa_api_endpoint(max_retries=3, rate_limit_delay=2.0)
+    @validate_response(required_fields=['fields', 'data'])
+    @log_execution_time
     async def get_close_approaches(
         self,
         asteroid_ids: Optional[List[str]] = None,
@@ -50,64 +41,29 @@ class CADClient(GetDate):
         end_date: Optional[datetime] = None,
         max_distance_au: float = 0.05
     ) -> Dict[str, List[Dict[str, Any]]]:
-        """Получает данные о сближениях астероидов с Землей.
-        
-        Args:
-            asteroid_ids: Список ID астероидов для фильтрации (опционально)
-            start_date: Начальная дата периода (по умолчанию - сегодня)
-            end_date: Конечная дата периода (по умолчанию +10 лет)
-            max_distance_au: Максимальное расстояние в а.е. (по умолчанию 0.05)
-            
-        Returns:
-            Словарь {designation: [список сближений]}
-            
-        Raises:
-            RuntimeError: При ошибке получения данных
-        """
+        """Получает данные о сближениях астероидов с Землей."""
         if not self.session:
             raise RuntimeError("Сессия не инициализирована. Используйте контекстный менеджер.")
             
-        try:
-            start_date = start_date or datetime.now()
-            end_date = end_date or start_date + timedelta(days=3650)
+        start_date = start_date or datetime.now()
+        end_date = end_date or start_date + timedelta(days=3650)
+        
+        params = {
+            'date-min': start_date.strftime('%Y-%m-%d'),
+            'date-max': end_date.strftime('%Y-%m-%d'),
+            'dist-max': str(max_distance_au),
+            'body': 'Earth',
+            'sort': 'dist',
+            'fullname': 'true'
+        }
+        
+        async with self.session.get(self.CAD_API_URL, params=params) as response:
+            response.raise_for_status()
+            data = await response.json()
             
-            params = {
-                'date-min': start_date.strftime('%Y-%m-%d'),
-                'date-max': end_date.strftime('%Y-%m-%d'),
-                'dist-max': str(max_distance_au),
-                'body': 'Earth',
-                'sort': 'dist',
-                'fullname': 'true'
-            }
-            
-            logger.info(f"Запрос сближений за период {params['date-min']} - {params['date-max']}")
-            
-            async with self.session.get(self.CAD_API_URL, params=params) as response:
-                if response.status == 429:  # Too Many Requests
-                    retry_after = response.headers.get('Retry-After', 65)
-                    await asyncio.sleep(int(retry_after))
-                    raise aiohttp.ClientResponseError(
-                        request_info=response.request_info,
-                        history=response.history,
-                        status=response.status
-                    )
-                response.raise_for_status()
-                data = await response.json()
-                
-                approaches = await self._process_cad_response(data, asteroid_ids)
-                logger.info(f"Получено {len(approaches)} уникальных сближений")
-                return approaches
-                
-        except aiohttp.ClientResponseError as e:
-            if e.status == 404:
-                logger.warning(f"CAD API endpoint not found: {e}")
-                return {}
-            elif e.status == 429:
-                logger.warning("Rate limit exceeded for CAD API")
-                raise  # Для retry декоратора
-            else:
-                logger.error(f"CAD API error {e.status}: {e}")
-                raise
+            approaches = await self._process_cad_response(data, asteroid_ids)
+            logger.info(f"Получено {len(approaches)} уникальных сближений")
+            return approaches
             
     async def _process_cad_response(
         self,

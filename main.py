@@ -11,6 +11,6 @@ logging.basicConfig(
 )
 
 # write data to DB
-import api_functions
+import api_wrappers
 
-api_functions.write_data()
+api_wrappers.write_data()

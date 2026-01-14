@@ -1,11 +1,17 @@
 import logging
 import aiohttp
 import asyncio
-import traceback
 import re
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Dict, Any, Optional
 from utils.space_math import get_size_by_albedo, get_size_by_h_mag
+from utils.error_handlers import (
+    nasa_api_endpoint, 
+    retry_with_exponential_backoff, 
+    fallback_on_error,
+    log_execution_time,
+    NetworkError
+)
 
 logger = logging.getLogger(__name__)
 
@@ -34,52 +40,49 @@ class NASASBDBClient:
         if self.session:
             await self.session.close()
         self.executor.shutdown(wait=True)
-            
+    
+    @nasa_api_endpoint(max_retries=3)
+    @log_execution_time
     async def get_asteroids(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         """Основной метод получения данных об астероидах."""
         if not self.session:
             raise RuntimeError("Сессия не инициализирована")
             
-        try:
-            logger.info("Получение списка потенциально опасных астероидов...")
-            designations = await self._get_pha_list(limit)
-            
-            if not designations:
-                logger.warning("Не получено обозначений PHA")
-                return []
-                
-            logger.info(f"Получено {len(designations)} обозначений")
-            logger.info(f"Запрос данных для {len(designations)} астероидов...")
-            
-            results = []
-            failed = 0
-            
-            for i in range(0, len(designations), self.batch_size):
-                batch = designations[i:i + self.batch_size]
-                batch_results = await self._process_batch(batch)
-                
-                for result in batch_results:
-                    if isinstance(result, dict):
-                        results.append(result)
-                    else:
-                        failed += 1
-                        if failed <= 10:
-                            logger.warning(f"Ошибка обработки: {type(result).__name__}")
-                
-                if i + self.batch_size < len(designations):
-                    await asyncio.sleep(self.delay_between_batches)
-                    
-                processed = min(i + self.batch_size, len(designations))
-                logger.info(f"Обработано {processed}/{len(designations)} астероидов")
-            
-            self._log_diameter_statistics(results)
-            logger.info(f"Успешно получено {len(results)} астероидов, не удалось: {failed}")
-            
-            return results
-            
-        except Exception as e:
-            logger.error(f"Ошибка получения астероидов: {e}\n{traceback.format_exc()}")
+        logger.info("Получение списка потенциально опасных астероидов...")
+        designations = await self._get_pha_list(limit)
+        
+        if not designations:
+            logger.warning("Не получено обозначений PHA")
             return []
+            
+        logger.info(f"Получено {len(designations)} обозначений")
+        logger.info(f"Запрос данных для {len(designations)} астероидов...")
+        
+        results = []
+        failed = 0
+        
+        for i in range(0, len(designations), self.batch_size):
+            batch = designations[i:i + self.batch_size]
+            batch_results = await self._process_batch(batch)
+            
+            for result in batch_results:
+                if isinstance(result, dict):
+                    results.append(result)
+                else:
+                    failed += 1
+                    if failed <= 10:
+                        logger.warning(f"Ошибка обработки: {type(result).__name__}")
+            
+            if i + self.batch_size < len(designations):
+                await asyncio.sleep(self.delay_between_batches)
+                
+            processed = min(i + self.batch_size, len(designations))
+            logger.info(f"Обработано {processed}/{len(designations)} астероидов")
+        
+        self._log_diameter_statistics(results)
+        logger.info(f"Успешно получено {len(results)} астероидов, не удалось: {failed}")
+        
+        return results
     
     async def _process_batch(self, batch: List[str]) -> List:
         """Обрабатывает батч астероидов."""
@@ -120,6 +123,8 @@ class NASASBDBClient:
         
         return processed_results
     
+    @retry_with_exponential_backoff(max_attempts=3, retry_exceptions=(Exception,))
+    @fallback_on_error(fallback_func=lambda self, designation: self._create_fallback_asteroid(designation))
     def _fetch_with_astroquery(self, designation: str) -> Optional[Dict[str, Any]]:
         """Синхронный запрос через astroquery для одного астероида."""
         try:
@@ -137,7 +142,7 @@ class NASASBDBClient:
             
         except Exception as e:
             logger.error(f"Astroquery ошибка для {designation}: {e}")
-            return None
+            raise NetworkError(f"Ошибка при запросе астероида {designation}: {e}")
 
     def _parse_astroquery_result(self, data: Dict, designation: str) -> Dict[str, Any]:
         """Парсит результат astroquery в формат AsteroidModel."""
@@ -386,6 +391,7 @@ class NASASBDBClient:
         logger.info(f"  Вычисленные NASA: {computed_count} ({computed_count/total*100:.1f}%)")
         logger.info(f"  Рассчитанные программой: {calculated_count} ({calculated_count/total*100:.1f}%)")
     
+    @nasa_api_endpoint(max_retries=3)
     async def _get_pha_list(self, limit: Optional[int]) -> List[str]:
         """Асинхронно получает список обозначений PHA."""
         params = {
@@ -394,17 +400,12 @@ class NASASBDBClient:
             'limit': limit or 3000
         }
         
-        try:
-            async with self.session.get(self.SBDB_QUERY_URL, params=params) as response:
-                response.raise_for_status()
-                data = await response.json()
+        async with self.session.get(self.SBDB_QUERY_URL, params=params) as response:
+            response.raise_for_status()
+            data = await response.json()
+            
+            if 'data' not in data:
+                return []
                 
-                if 'data' not in data:
-                    return []
-                    
-                return [item[0] for item in data.get('data', [])]
-                
-        except Exception as e:
-            logger.error(f"Ошибка получения списка PHA: {e}")
-            return []
+            return [item[0] for item in data.get('data', [])]
         
