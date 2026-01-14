@@ -3,7 +3,7 @@
 """
 import pytest
 import math
-from external_apis.space_math import (
+from utils.space_math import (
     get_size_by_albedo,
     get_size_by_h_mag,
     count_danger

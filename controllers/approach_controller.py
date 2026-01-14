@@ -5,11 +5,11 @@
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, func
+from sqlalchemy import select, func
 import logging
 
 from models.close_approach import CloseApproachModel
-from controllers.base_controller import BaseController
+from .base_controller import BaseController
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +31,7 @@ class ApproachController(BaseController[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает все сближения для конкретного астероида.
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -49,6 +50,7 @@ class ApproachController(BaseController[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает все сближения для астероида с указанным обозначением.
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -69,6 +71,7 @@ class ApproachController(BaseController[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает сближения в указанном временном периоде.
+        Без коммита (чтение).
         """
         filters = {
             "approach_time__ge": start_date,
@@ -93,6 +96,7 @@ class ApproachController(BaseController[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает ближайшие по времени сближения.
+        Без коммита (чтение).
         """
         now = datetime.now(timezone.utc)
         
@@ -110,6 +114,7 @@ class ApproachController(BaseController[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает самые близкие по расстоянию сближения.
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -125,6 +130,7 @@ class ApproachController(BaseController[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает сближения с наибольшей скоростью.
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -141,7 +147,7 @@ class ApproachController(BaseController[CloseApproachModel]):
         calculation_batch_id: str
     ) -> int:
         """
-        Массовое создание сближений.
+        Массовое создание сближений с коммитом.
         """
         # Добавляем batch_id к каждому элементу
         for data in approaches_data:
@@ -163,7 +169,7 @@ class ApproachController(BaseController[CloseApproachModel]):
         cutoff_date: datetime
     ) -> int:
         """
-        Удаляет устаревшие сближения (которые уже произошли).
+        Удаляет устаревшие сближения (которые уже произошли) с коммитом.
         """
         return await self.bulk_delete(
             session=session,
@@ -173,6 +179,7 @@ class ApproachController(BaseController[CloseApproachModel]):
     async def get_statistics(self, session: AsyncSession) -> Dict[str, Any]:
         """
         Возвращает статистику по сближениям.
+        Без коммита (чтение).
         """
         try:
             # Общее количество
@@ -213,3 +220,4 @@ class ApproachController(BaseController[CloseApproachModel]):
         except Exception as e:
             logger.error(f"Ошибка получения статистики сближений: {e}")
             raise
+        

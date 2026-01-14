@@ -5,7 +5,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 import time
 from datetime import datetime, timedelta
-from utils.get_approaches import get_current_close_approaches
+from api_functions.get_approaches import get_current_close_approaches
 
 class MockEph:
     def __init__(self, data, has_delta_rate=True):

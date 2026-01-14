@@ -4,35 +4,28 @@
 """
 from typing import List, Dict, Any, Optional, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_, or_
+from sqlalchemy import select, func, and_
 from datetime import datetime
 import logging
 
 from models.threat_assessment import ThreatAssessmentModel
-from controllers.base_controller import BaseController
+from .base_controller import BaseController
 
 logger = logging.getLogger(__name__)
 
 
 class ThreatController(BaseController[ThreatAssessmentModel]):
-    """Контроллер для операций с оценками угроз."""
-    
+    """Контроллер для операций с оценками угроз (One-to-One)."""
     
     def __init__(self):
         """Инициализирует контроллер для модели ThreatAssessmentModel."""
         super().__init__(ThreatAssessmentModel)
-        logger.info("Инициализирован ThreatController")
+        logger.info("Инициализирован ThreatController (One-to-One)")
     
     async def get_by_designation(self, session: AsyncSession, designation: str) -> Optional[ThreatAssessmentModel]:
         """
         Получает оценку угрозы по обозначению астероида.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            designation: Обозначение астероида
-            
-        Returns:
-            Объект ThreatAssessmentModel или None, если не найден
+        Без коммита (чтение).
         """
         return await self._find_by_fields(session, {"designation": designation})
     
@@ -42,7 +35,8 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
         asteroid_id: int
     ) -> Optional[ThreatAssessmentModel]:
         """
-        Получает оценку угрозы для конкретного астероида.
+        Получает оценку угрозы для конкретного астероида (One-to-One).
+        Без коммита (чтение).
         """
         return await self._find_by_fields(session, {"asteroid_id": asteroid_id})
     
@@ -53,6 +47,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы с высоким уровнем риска (ts_max >= 5).
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -72,16 +67,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы по диапазону значений Туринской шкалы.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            min_ts: Минимальное значение по Туринской шкале
-            max_ts: Максимальное значение по Туринской шкале
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список угроз
+        Без коммита (чтение).
         """
         filters = {
             "ts_max__ge": min_ts,
@@ -107,16 +93,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы по диапазону вероятности столкновения.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            min_probability: Минимальная вероятность (0.0 - 1.0)
-            max_probability: Максимальная вероятность (0.0 - 1.0)
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список угроз
+        Без коммита (чтение).
         """
         filters = {
             "ip__ge": min_probability,
@@ -142,16 +119,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы по диапазону энергии воздействия.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            min_energy: Минимальная энергия в мегатоннах
-            max_energy: Максимальная энергия в мегатоннах
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список угроз
+        Без коммита (чтение).
         """
         filters = {"energy_megatons__ge": min_energy}
         
@@ -176,15 +144,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы по категории воздействия.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            category: Категория воздействия ('локальный', 'региональный', 'глобальный')
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список угроз
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -202,7 +162,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
         new_data: Dict[str, Any]
     ) -> Optional[ThreatAssessmentModel]:
         """
-        Обновляет оценку угрозы для астероида.
+        Обновляет оценку угрозы для астероида с коммитом.
         """
         threat = await self.get_by_designation(session, designation)
         
@@ -220,13 +180,13 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
         threats_data: List[Dict[str, Any]]
     ) -> Tuple[int, int]:
         """
-        Массовое создание оценок угроз.
+        Массовое создание оценок угроз (One-to-One) с коммитом.
         """
         created, updated = await self.bulk_create(
             session=session,
             data_list=threats_data,
             conflict_action="update",
-            conflict_fields=["designation"]  # Уникальное поле
+            conflict_fields=["asteroid_id"]  # Уникальное поле для One-to-One
         )
         
         return created, updated
@@ -234,6 +194,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     async def get_statistics(self, session: AsyncSession) -> Dict[str, Any]:
         """
         Возвращает статистику по оценкам угроз.
+        Без коммита (чтение).
         """
         try:
             # Общее количество
@@ -302,21 +263,6 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
             logger.error(f"Ошибка получения статистики оценок угроз: {e}")
             raise
     
-    async def get_threats_by_asteroid_id(
-        self,
-        session: AsyncSession,
-        asteroid_id: int
-    ) -> List[ThreatAssessmentModel]:
-        """
-        Получает все оценки угроз для конкретного астероида.
-        """
-        return await self.filter(
-            session=session,
-            filters={"asteroid_id": asteroid_id},
-            order_by="ip",
-            order_desc=True
-        )
-    
     async def search_threats(
         self,
         session: AsyncSession,
@@ -326,15 +272,7 @@ class ThreatController(BaseController[ThreatAssessmentModel]):
     ) -> List[ThreatAssessmentModel]:
         """
         Ищет угрозы по обозначению или полному названию астероида.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            search_term: Строка для поиска
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список найденных угроз
+        Без коммита (чтение).
         """
         return await self.search(
             session=session,

@@ -1,11 +1,14 @@
+"""
+Контроллер для работы с астероидами.
+"""
 from typing import List, Dict, Any, Optional, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func
 from datetime import datetime
 import logging
 
 from models.asteroid import AsteroidModel
-from controllers.base_controller import BaseController
+from .base_controller import BaseController
 
 logger = logging.getLogger(__name__)
 
@@ -21,13 +24,7 @@ class AsteroidController(BaseController[AsteroidModel]):
     async def get_by_designation(self, session: AsyncSession, designation: str) -> Optional[AsteroidModel]:
         """
         Находит астероид по обозначению NASA.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            designation: Обозначение NASA (например, "2023 DW")
-            
-        Returns:
-            Объект AsteroidModel или None, если не найден
+        Без коммита (чтение).
         """
         return await self._find_by_fields(session, {"designation": designation})
     
@@ -40,15 +37,7 @@ class AsteroidController(BaseController[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Ищет астероиды по названию или обозначению.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            search_term: Строка для поиска
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список найденных астероидов
+        Без коммита (чтение).
         """
         return await self.search(
             session=session,
@@ -68,16 +57,7 @@ class AsteroidController(BaseController[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Фильтрует астероиды по диапазону диаметров.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            min_diameter: Минимальный диаметр (км)
-            max_diameter: Максимальный диаметр (км)
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список отфильтрованных астероидов
+        Без коммита (чтение).
         """
         filters = {}
         if min_diameter is not None:
@@ -101,16 +81,8 @@ class AsteroidController(BaseController[AsteroidModel]):
         limit: int = 100
     ) -> List[AsteroidModel]:
         """
-        Получает астероиды с MOID (минимальное расстояние орбиты) меньше указанного значения.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            max_moid: Максимальное значение MOID в а.е.
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список астероидов
+        Получает астероиды с MOID меньше указанного значения.
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -128,14 +100,7 @@ class AsteroidController(BaseController[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Получает астероиды с точными данными о диаметре.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список астероидов с accurate_diameter = True
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -154,15 +119,7 @@ class AsteroidController(BaseController[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Получает астероиды по классу орбиты.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            orbit_class: Класс орбиты (Apollo, Aten, Amor и т.д.)
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список астероидов
+        Без коммита (чтение).
         """
         return await self.filter(
             session=session,
@@ -175,6 +132,7 @@ class AsteroidController(BaseController[AsteroidModel]):
     async def get_statistics(self, session: AsyncSession) -> Dict[str, Any]:
         """
         Возвращает статистику по астероидам.
+        Без коммита (чтение).
         """
         try:
             # Общее количество
@@ -222,7 +180,7 @@ class AsteroidController(BaseController[AsteroidModel]):
         asteroids_data: List[Dict[str, Any]]
     ) -> Tuple[int, int]:
         """
-        Массовое создание астероидов.
+        Массовое создание астероидов с коммитом.
         """
         created, updated = await self.bulk_create(
             session=session,
@@ -232,3 +190,4 @@ class AsteroidController(BaseController[AsteroidModel]):
         )
         
         return created, updated
+    

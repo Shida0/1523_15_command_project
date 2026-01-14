@@ -1,8 +1,11 @@
-from sqlalchemy import CheckConstraint, Float, String, Boolean, UniqueConstraint, Integer
+import logging
+from sqlalchemy import CheckConstraint, Float, String, Boolean, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, Optional
 
 from .base import Base
+
+logger = logging.getLogger(__name__)
 
 class AsteroidModel(Base):
     """
@@ -82,17 +85,18 @@ class AsteroidModel(Base):
     )
     
     # Связи с другими таблицами
-    close_approaches: Mapped[List['CloseApproachModel']] = relationship(
+    close_approaches: Mapped[List['CloseApproachModel']] = relationship( # type: ignore
         back_populates='asteroid',
         cascade='all, delete-orphan',
         lazy='selectin',
         order_by='CloseApproachModel.approach_time'
     )
-    threat_assessments: Mapped[List['ThreatAssessmentModel']] = relationship(
+    # В класс AsteroidModel добавляем/изменяем связь:
+    threat_assessment: Mapped[Optional['ThreatAssessmentModel']] = relationship( # type: ignore
         back_populates='asteroid',
         cascade='all, delete-orphan',
         lazy='selectin',
-        order_by='ThreatAssessmentModel.ip.desc()'
+        uselist=False  # КРИТИЧЕСКИ ВАЖНО: Один объект, не список!
     )
     
     # Обновленные CheckConstraint с добавленными полями (УБРАН UniqueConstraint на mpc_number)
@@ -123,13 +127,56 @@ class AsteroidModel(Base):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-        # Проверка альбедо
-        if self.albedo <= 0 or self.albedo > 1:
-            raise ValueError(f"Альбедо должно быть в диапазоне (0, 1]. Получено: {self.albedo}")
+        # валидация альбедо
+        if self.albedo is None:
+            # Значение не было передано - используем по умолчанию
+            self.albedo = 0.15
+            logger.debug(f"Albedo not provided for {self.designation}, using default 0.15")
+        elif isinstance(self.albedo, (int, float)):
+            # Значение передано как число - проверяем диапазон
+            self.albedo = float(self.albedo)
+            if not (0 < self.albedo <= 1):
+                logger.warning(f"Albedo {self.albedo} out of range (0,1] for {self.designation}, using 0.15")
+                self.albedo = 0.15
+        else:
+            # Пытаемся преобразовать строку или другой тип
+            try:
+                self.albedo = float(self.albedo)
+                if not (0 < self.albedo <= 1):
+                    logger.warning(f"Albedo {self.albedo} out of range for {self.designation}, using 0.15")
+                    self.albedo = 0.15
+            except (ValueError, TypeError):
+                logger.warning(f"Cannot convert albedo '{self.albedo}' to float for {self.designation}, using 0.15")
+                self.albedo = 0.15
         
-        # Проверка диаметра
-        if not hasattr(self, 'diameter_source') or not self.diameter_source:
+        # валидация diameter_source
+        valid_sources = {'measured', 'computed', 'calculated'}
+        if self.diameter_source not in valid_sources:
+            logger.warning(f"Invalid diameter_source '{self.diameter_source}' for {self.designation}, using 'calculated'")
             self.diameter_source = 'calculated'
+        
+        # Диаметр
+        if not hasattr(self, 'estimated_diameter_km') or self.estimated_diameter_km is None:
+            self.estimated_diameter_km = 0.05
+        else:
+            try:
+                self.estimated_diameter_km = float(self.estimated_diameter_km)
+                if self.estimated_diameter_km <= 0:
+                    logger.warning(f"Invalid diameter {self.estimated_diameter_km} for {self.designation}, using 0.05")
+                    self.estimated_diameter_km = 0.05
+            except (TypeError, ValueError):
+                logger.warning(f"Cannot convert diameter '{self.estimated_diameter_km}' to float for {self.designation}, using 0.05")
+                self.estimated_diameter_km = 0.05
+        
+        # Абсолютная величина
+        if not hasattr(self, 'absolute_magnitude') or self.absolute_magnitude is None:
+            self.absolute_magnitude = 18.0
+        else:
+            try:
+                self.absolute_magnitude = float(self.absolute_magnitude)
+            except (TypeError, ValueError):
+                logger.warning(f"Cannot convert absolute_magnitude '{self.absolute_magnitude}' for {self.designation}, using 18.0")
+                self.absolute_magnitude = 18.0
     
     def __repr__(self) -> str:
         return f"AsteroidModel(id={self.id}, designation={self.designation}, name={self.name})"

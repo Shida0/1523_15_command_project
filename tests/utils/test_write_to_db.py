@@ -4,7 +4,7 @@
 import pytest
 import asyncio
 from unittest.mock import patch, AsyncMock, MagicMock
-from utils.write_to_db import async_write_data, write_data
+from api_functions.write_to_db import async_write_data, write_data
 
 class TestWriteToDB:
     """Тесты для записи данных в БД."""

@@ -4,7 +4,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 import logging
-from utils.sbdb_api import get_neo
+from api_functions.sbdb_api import get_neo
 
 class TestGetData:
     """Тесты для получения данных."""

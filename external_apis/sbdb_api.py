@@ -5,7 +5,7 @@ import traceback
 import re
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Dict, Any, Optional
-from .space_math import get_size_by_albedo, get_size_by_h_mag
+from utils.space_math import get_size_by_albedo, get_size_by_h_mag
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +93,21 @@ class NASASBDBClient:
         ]
         
         batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # Обработка конкретных ошибок NASA
+        for i, result in enumerate(batch_results):
+            if isinstance(result, Exception):
+                if "rate limit" in str(result).lower():
+                    await asyncio.sleep(65)  # Ждем чуть больше минуты
+                    # Повторяем запрос для этого астероида
+                    try:
+                        retry_result = await asyncio.get_event_loop().run_in_executor(
+                            self.executor, self._fetch_with_astroquery, batch[i]
+                        )
+                        batch_results[i] = retry_result
+                    except:
+                        batch_results[i] = self._create_fallback_asteroid(batch[i])
+        
         processed_results = []
         
         for des, result in zip(batch, batch_results):

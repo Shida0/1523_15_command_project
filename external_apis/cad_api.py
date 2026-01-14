@@ -1,8 +1,10 @@
+import asyncio
 import logging
 import aiohttp
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
-from .get_date import GetDate  # Импортируем базовый класс для парсинга дат
+from utils.get_date import GetDate  # Импортируем базовый класс для парсинга дат
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +37,12 @@ class CADClient(GetDate):
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.session:
             await self.session.close()
-            
+    
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type((aiohttp.ClientError, asyncio.TimeoutError))
+    )      
     async def get_close_approaches(
         self,
         asteroid_ids: Optional[List[str]] = None,
@@ -76,6 +83,14 @@ class CADClient(GetDate):
             logger.info(f"Запрос сближений за период {params['date-min']} - {params['date-max']}")
             
             async with self.session.get(self.CAD_API_URL, params=params) as response:
+                if response.status == 429:  # Too Many Requests
+                    retry_after = response.headers.get('Retry-After', 65)
+                    await asyncio.sleep(int(retry_after))
+                    raise aiohttp.ClientResponseError(
+                        request_info=response.request_info,
+                        history=response.history,
+                        status=response.status
+                    )
                 response.raise_for_status()
                 data = await response.json()
                 
@@ -83,9 +98,16 @@ class CADClient(GetDate):
                 logger.info(f"Получено {len(approaches)} уникальных сближений")
                 return approaches
                 
-        except (aiohttp.ClientError, ValueError) as e:
-            logger.error(f"Ошибка получения данных CAD: {e}")
-            raise RuntimeError(f"Не удалось получить данные NASA CAD: {e}")
+        except aiohttp.ClientResponseError as e:
+            if e.status == 404:
+                logger.warning(f"CAD API endpoint not found: {e}")
+                return {}
+            elif e.status == 429:
+                logger.warning("Rate limit exceeded for CAD API")
+                raise  # Для retry декоратора
+            else:
+                logger.error(f"CAD API error {e.status}: {e}")
+                raise
             
     async def _process_cad_response(
         self,

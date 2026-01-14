@@ -1,12 +1,14 @@
 """
 Базовый контроллер с общими методами для работы с базой данных.
 Содержит CRUD-операции и методы фильтрации, которые наследуют все контроллеры.
+Включает управление транзакциями (коммиты) внутри методов.
 """
 from typing import Tuple, Type, TypeVar, Generic, Optional, List, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import and_, or_, select, update, delete, func
-from sqlalchemy.sql import Select
+from sqlalchemy import and_, or_, select, func
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 import logging
+import time
 
 from models.base import Base
 
@@ -14,8 +16,38 @@ from models.base import Base
 ModelType = TypeVar('ModelType', bound=Base)
 logger = logging.getLogger(__name__)
 
+
+def handle_controller_errors(default_return=None):
+    """
+    Декоратор для унифицированной обработки ошибок в контроллерах.
+    
+    Args:
+        default_return: Значение, возвращаемое при возникновении ошибки
+    
+    Returns:
+        Декоратор для обертывания методов контроллера
+    
+    Пример:
+        @handle_controller_errors(default_return=[])
+        async def get_all(self, session: AsyncSession, ...):
+            ...
+    """
+    def decorator(func):
+        async def wrapper(self, *args, **kwargs):
+            try:
+                return await func(self, *args, **kwargs)
+            except Exception as e:
+                logger.error(
+                    f"Ошибка в методе {func.__name__} контроллера {self.__class__.__name__}: {e}",
+                    exc_info=True
+                )
+                return default_return
+        return wrapper
+    return decorator
+
+
 class BaseController(Generic[ModelType]):
-    """Базовый класс контроллера с общими CRUD-операциями."""
+    """Базовый класс контроллера с оптимизированными CRUD-операциями."""
     
     def __init__(self, model: Type[ModelType]):
         """
@@ -25,99 +57,82 @@ class BaseController(Generic[ModelType]):
             model: Класс модели SQLAlchemy
         """
         self.model = model
-        logger.debug(f"Инициализирован контроллер для модели {model.__name__}")
+        
+        # КЕШИРОВАНИЕ: Сохраняем метаданные модели один раз
+        self._model_columns = {c.name for c in self.model.__table__.columns}
+        self._model_column_types = {c.name: c.type for c in self.model.__table__.columns}
+        
+        logger.debug(f"Инициализирован контроллер для модели {model.__name__} с кешированием")
     
     @property
     def _unique_fields(self):
-        """Определяет уникальные поля модели."""
-        # Определяем уникальные поля в зависимости от модели
-        model_name = self.model.__name__
+        """Определяет уникальные поля модели (кешируется)."""
+        if not hasattr(self, '_cached_unique_fields'):
+            model_name = self.model.__name__
+            
+            if model_name == "AsteroidModel":
+                self._cached_unique_fields = ["designation"]
+            elif model_name == "CloseApproachModel":
+                self._cached_unique_fields = ["asteroid_id", "approach_time"]
+            elif model_name == "ThreatAssessmentModel":
+                self._cached_unique_fields = ["asteroid_id"]  # One-to-One
+            else:
+                self._cached_unique_fields = []
         
-        if model_name == "AsteroidModel":
-            return ["designation"]  # БЫЛО ["mpc_number"], СТАЛО ["designation"]
-        elif model_name == "CloseApproachModel":
-            return ["asteroid_id", "approach_time"]
-        elif model_name == "ThreatAssessmentModel":
-            return ["designation"]  # Уникальное поле - обозначение астероида
-        else:
-            # По умолчанию пустой список
-            return []
+        return self._cached_unique_fields
     
+    @handle_controller_errors(default_return=None)
     async def create(self, session: AsyncSession, data: Dict[str, Any]) -> ModelType:
         """
-        Создает новую запись в базе данных.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            data: Словарь с данными для создания записи
-            
-        Returns:
-            Созданный объект модели
-            
-        Raises:
-            ValueError: Если данные некорректны
+        Создает новую запись в базе данных и выполняет коммит.
         """
         try:
-            # Создаем экземпляр модели
-            instance = self.model(**data)
+            # Используем кеш: быстрая проверка полей
+            filtered_data = {k: v for k, v in data.items() if k in self._model_columns}
             
-            # Добавляем в сессию и сохраняем
+            if len(filtered_data) != len(data):
+                extra_fields = set(data.keys()) - self._model_columns
+                logger.warning(f"Extra fields ignored in create: {extra_fields}")
+            
+            instance = self.model(**filtered_data)
+            
             session.add(instance)
-            await session.flush()  # Получаем ID без коммита
-            await session.refresh(instance)  # Обновляем данные из БД
+            await session.flush()
+            await session.refresh(instance)
+            
+            # КОММИТ транзакции
+            await session.commit()
             
             logger.info(f"Создана запись {self.model.__name__} с ID {instance.id}")
             return instance
             
         except Exception as e:
-            logger.error(f"Ошибка создания записи {self.model.__name__}: {e}")
             await session.rollback()
+            logger.error(f"Ошибка создания записи {self.model.__name__}: {e}")
             raise
     
+    @handle_controller_errors(default_return=None)
     async def get_by_id(self, session: AsyncSession, id: int) -> Optional[ModelType]:
-        """
-        Получает запись по её ID.
+        """Получает запись по её ID. Без коммита (чтение)."""
+        query = select(self.model).where(self.model.id == id)
+        result = await session.execute(query)
+        instance = result.scalar_one_or_none()
         
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            id: Идентификатор записи
+        if instance:
+            logger.debug(f"Найдена запись {self.model.__name__} с ID {id}")
+        else:
+            logger.debug(f"Запись {self.model.__name__} с ID {id} не найдена")
             
-        Returns:
-            Объект модели или None, если запись не найдена
-        """
-        try:
-            query = select(self.model).where(self.model.id == id)
-            result = await session.execute(query)
-            instance = result.scalar_one_or_none()
-            
-            if instance:
-                logger.debug(f"Найдена запись {self.model.__name__} с ID {id}")
-            else:
-                logger.debug(f"Запись {self.model.__name__} с ID {id} не найдена")
-                
-            return instance
-            
-        except Exception as e:
-            logger.error(f"Ошибка получения записи {self.model.__name__} по ID {id}: {e}")
-            raise
+        return instance
     
+    @handle_controller_errors(default_return=None)
     async def update(
         self, 
         session: AsyncSession, 
         id: int, 
         update_data: Dict[str, Any]
     ) -> Optional[ModelType]:
-        """
-        Обновляет запись по ID.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            id: Идентификатор записи
-            update_data: Словарь с данными для обновления
-            
-        Returns:
-            Обновленный объект модели или None, если запись не найдена
-        """
+        """Обновляет запись по ID и выполняет коммит."""
         try:
             # Проверяем существование записи
             instance = await self.get_by_id(session, id)
@@ -133,25 +148,20 @@ class BaseController(Generic[ModelType]):
             await session.flush()
             await session.refresh(instance)
             
+            # КОММИТ транзакции
+            await session.commit()
+            
             logger.info(f"Обновлена запись {self.model.__name__} с ID {id}")
             return instance
             
         except Exception as e:
-            logger.error(f"Ошибка обновления записи {self.model.__name__} с ID {id}: {e}")
             await session.rollback()
+            logger.error(f"Ошибка обновления записи {self.model.__name__} с ID {id}: {e}")
             raise
     
+    @handle_controller_errors(default_return=False)
     async def delete(self, session: AsyncSession, id: int) -> bool:
-        """
-        Удаляет запись по ID.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            id: Идентификатор записи
-            
-        Returns:
-            True, если запись удалена, False если запись не найдена
-        """
+        """Удаляет запись по ID и выполняет коммит."""
         try:
             # Проверяем существование записи
             instance = await self.get_by_id(session, id)
@@ -163,65 +173,46 @@ class BaseController(Generic[ModelType]):
             await session.delete(instance)
             await session.flush()
             
+            # КОММИТ транзакции
+            await session.commit()
+            
             logger.info(f"Удалена запись {self.model.__name__} с ID {id}")
             return True
             
         except Exception as e:
-            logger.error(f"Ошибка удаления записи {self.model.__name__} с ID {id}: {e}")
             await session.rollback()
+            logger.error(f"Ошибка удаления записи {self.model.__name__} с ID {id}: {e}")
             raise
     
+    @handle_controller_errors(default_return=[])
     async def get_all(
         self, 
         session: AsyncSession, 
         skip: int = 0, 
-        limit: int|None = 100
+        limit: Optional[int] = 100
     ) -> List[ModelType]:
-        """
-        Получает все записи с пагинацией.
+        """Получает все записи с пагинацией. Без коммита (чтение)."""
+        query = select(self.model).offset(skip)
+        if limit:
+            query = query.limit(limit)
         
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список объектов модели
-        """
-        try:
-            query = select(self.model).offset(skip).limit(limit)
-            result = await session.execute(query)
-            instances = result.scalars().all()
-            
-            logger.debug(f"Получено {len(instances)} записей {self.model.__name__}")
-            return instances
-            
-        except Exception as e:
-            logger.error(f"Ошибка получения всех записей {self.model.__name__}: {e}")
-            raise
+        result = await session.execute(query)
+        instances = result.scalars().all()
+        
+        logger.debug(f"Получено {len(instances)} записей {self.model.__name__}")
+        return instances
     
+    @handle_controller_errors(default_return=0)
     async def count(self, session: AsyncSession) -> int:
-        """
-        Подсчитывает общее количество записей.
+        """Подсчитывает общее количество записей. Без коммита (чтение)."""
+        query = select(func.count()).select_from(self.model)
+        result = await session.execute(query)
+        count = result.scalar()
         
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            
-        Returns:
-            Количество записей
-        """
-        try:
-            query = select(func.count()).select_from(self.model)
-            result = await session.execute(query)
-            count = result.scalar()
-            
-            logger.debug(f"Количество записей {self.model.__name__}: {count}")
-            return count
-            
-        except Exception as e:
-            logger.error(f"Ошибка подсчета записей {self.model.__name__}: {e}")
-            raise
-        
+        logger.debug(f"Количество записей {self.model.__name__}: {count}")
+        return count
+    
+    @handle_controller_errors(default_return=[])
     async def filter(
         self,
         session: AsyncSession,
@@ -231,66 +222,30 @@ class BaseController(Generic[ModelType]):
         order_by: Optional[str] = None,
         order_desc: bool = False
     ) -> List[ModelType]:
-        """
-        Универсальный метод фильтрации записей.
+        """Универсальный метод фильтрации записей. Без коммита (чтение)."""
+        query = select(self.model)
         
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            filters: Словарь условий {поле: значение}
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            order_by: Поле для сортировки
-            order_desc: Сортировка по убыванию
-            
-        Returns:
-            Отфильтрованный список записей
-            
-        Примеры:
-            await controller.filter(session, {"is_pha": True})
-            await controller.filter(session, {"diameter__gt": 100, "diameter__lt": 500})
-        """
-        try:
-            query = select(self.model)
-            
-            # Применяем фильтры
-            conditions = self._build_filter_conditions(filters)
-            if conditions:
-                query = query.where(and_(*conditions))
-            
-            # Применяем сортировку
-            if order_by:
-                field = getattr(self.model, order_by, None)
-                if field:
-                    query = query.order_by(field.desc() if order_desc else field)
-            
-            # Применяем пагинацию
-            if limit:
-                query = query.offset(skip).limit(limit)
-            else:
-                query = query.offset(skip)
-            
-            result = await session.execute(query)
-            return result.scalars().all()
-            
-        except Exception as e:
-            logger.error(f"Ошибка фильтрации записей {self.model.__name__}: {e}")
-            raise
+        conditions = self._build_filter_conditions(filters)
+        if conditions:
+            query = query.where(and_(*conditions))
+        
+        if order_by:
+            field = getattr(self.model, order_by, None)
+            if field:
+                query = query.order_by(field.desc() if order_desc else field)
+        
+        query = query.offset(skip)
+        if limit:
+            query = query.limit(limit)
+        
+        result = await session.execute(query)
+        return result.scalars().all()
     
     def _build_filter_conditions(self, filters: Dict[str, Any]) -> list:
-        """
-        Преобразует словарь фильтров в условия SQLAlchemy.
-        Поддерживает расширенный синтаксис: поле__оператор
-        
-        Args:
-            filters: Словарь условий
-            
-        Returns:
-            Список условий SQLAlchemy
-        """
+        """Преобразует словарь фильтров в условия SQLAlchemy."""
         conditions = []
         
         for key, value in filters.items():
-            # Поддержка операторов: field__operator
             if "__" in key:
                 field_name, operator = key.split("__", 1)
                 field = getattr(self.model, field_name, None)
@@ -302,7 +257,6 @@ class BaseController(Generic[ModelType]):
             if not field:
                 continue
             
-            # Применяем операторы
             if operator == "eq":
                 conditions.append(field == value)
             elif operator == "ne":
@@ -338,52 +292,137 @@ class BaseController(Generic[ModelType]):
         conflict_fields: Optional[List[str]] = None
     ) -> Tuple[int, int]:
         """
-        Универсальный метод массового создания записей.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            data_list: Список словарей с данными для создания
-            conflict_action: Действие при конфликте:
-                - "ignore": игнорировать конфликт
-                - "update": обновить существующую запись
-            conflict_fields: Поля для проверки конфликта (по умолчанию уникальные поля модели)
-            
-        Returns:
-            Кортеж (created_count, updated_count)
-            
-        Raises:
-            ValueError: Если данные некорректны
+        ОПТИМИЗИРОВАННОЕ массовое создание записей с коммитом.
         """
-        created = 0
-        updated = 0
+        if not data_list:
+            return 0, 0
         
         if not conflict_fields:
             conflict_fields = self._unique_fields
         
+        start_time = time.time()
+        
         try:
-            for data in data_list:
-                if conflict_fields and conflict_action in ("update", "ignore"):
-                    # Проверяем существование записи по уникальным полям
-                    conflict_filters = {field: data.get(field) for field in conflict_fields}
-                    existing = await self._find_by_fields(session, conflict_filters)
-                    
-                    if existing:
-                        if conflict_action == "update":
-                            await self.update(session, existing.id, data)
-                            updated += 1
-                        # Если ignore - пропускаем создание
-                        continue
-                
-                # Создаем новую запись
-                await self.create(session, data)
-                created += 1
+            # Используем PostgreSQL-specific bulk операцию
+            if session.bind.dialect.name == 'postgresql' and conflict_action == "update":
+                return await self._bulk_create_postgresql(
+                    session, data_list, conflict_fields
+                )
+            else:
+                return await self._bulk_create_generic(
+                    session, data_list, conflict_action, conflict_fields
+                )
             
+        except Exception as e:
+            await session.rollback()
+            logger.error(f"Ошибка массового создания записей {self.model.__name__}: {e}")
+            raise
+        finally:
+            duration = time.time() - start_time
+            logger.debug(f"Bulk create выполнен за {duration:.2f} сек для {len(data_list)} записей")
+    
+    async def _bulk_create_postgresql(
+        self,
+        session: AsyncSession,
+        data_list: List[Dict[str, Any]],
+        conflict_fields: List[str]
+    ) -> Tuple[int, int]:
+        """
+        Оптимизированная версия для PostgreSQL с использованием ON CONFLICT DO UPDATE.
+        """
+        try:
+            # Фильтруем поля по кешированным колонкам
+            filtered_data_list = []
+            for data in data_list:
+                filtered_data = {k: v for k, v in data.items() if k in self._model_columns}
+                filtered_data_list.append(filtered_data)
+            
+            # Строим INSERT с ON CONFLICT
+            stmt = pg_insert(self.model).values(filtered_data_list)
+            
+            # Определяем поля для обновления (все кроме конфликтных)
+            update_dict = {}
+            for column in self._model_columns:
+                if column not in conflict_fields and column != 'id':
+                    update_dict[column] = getattr(stmt.excluded, column)
+            
+            # Применяем ON CONFLICT DO UPDATE
+            stmt = stmt.on_conflict_do_update(
+                index_elements=conflict_fields,
+                set_=update_dict
+            )
+            
+            # Выполняем и КОММИТИМ
+            result = await session.execute(stmt)
+            await session.commit()
+            
+            # rowcount показывает общее количество обработанных строк
+            total_processed = result.rowcount
+            
+            logger.info(f"PostgreSQL bulk create обработал {total_processed} записей")
+            return total_processed, 0
+            
+        except Exception as e:
+            await session.rollback()
+            raise
+    
+    async def _bulk_create_generic(
+        self,
+        session: AsyncSession,
+        data_list: List[Dict[str, Any]],
+        conflict_action: str,
+        conflict_fields: List[str]
+    ) -> Tuple[int, int]:
+        """
+        Универсальная версия для любых СУБД с коммитом.
+        """
+        try:
+            if not conflict_fields or conflict_action not in ("update", "ignore"):
+                # Просто создаем все записи
+                created = 0
+                for data in data_list:
+                    filtered_data = {k: v for k, v in data.items() if k in self._model_columns}
+                    instance = self.model(**filtered_data)
+                    session.add(instance)
+                    created += 1
+                
+                await session.commit()
+                return created, 0
+            
+            created = 0
+            updated = 0
+            
+            # Фильтруем данные по кешированным колонкам
+            filtered_data_list = []
+            for data in data_list:
+                filtered_data = {k: v for k, v in data.items() if k in self._model_columns}
+                filtered_data_list.append(filtered_data)
+            
+            for data in filtered_data_list:
+                # Проверяем существование записи по уникальным полям
+                conflict_filters = {field: data.get(field) for field in conflict_fields}
+                existing = await self._find_by_fields(session, conflict_filters)
+                
+                if existing:
+                    if conflict_action == "update":
+                        # Обновляем существующую запись
+                        for key, value in data.items():
+                            if hasattr(existing, key):
+                                setattr(existing, key, value)
+                        updated += 1
+                    # Если ignore - пропускаем создание
+                else:
+                    # Создаем новую запись
+                    instance = self.model(**data)
+                    session.add(instance)
+                    created += 1
+            
+            # ОДИН КОММИТ для всех операций
             await session.commit()
             logger.info(f"Bulk создание завершено. Создано: {created}, Обновлено: {updated}")
             return created, updated
             
         except Exception as e:
-            logger.error(f"Ошибка массового создания записей {self.model.__name__}: {e}")
             await session.rollback()
             raise
     
@@ -392,37 +431,24 @@ class BaseController(Generic[ModelType]):
         session: AsyncSession,
         fields: Dict[str, Any]
     ) -> Optional[ModelType]:
-        """
-        Ищет запись по указанным полям.
+        """Ищет запись по указанным полям. Без коммита (чтение)."""
+        query = select(self.model)
+        conditions = []
         
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            fields: Словарь {поле: значение}
-            
-        Returns:
-            Найденный объект или None
-        """
-        try:
-            query = select(self.model)
-            conditions = []
-            
-            for field_name, value in fields.items():
-                if value is not None:
-                    field = getattr(self.model, field_name, None)
-                    if field:
-                        conditions.append(field == value)
-            
-            if conditions:
-                query = query.where(and_(*conditions))
-                result = await session.execute(query)
-                return result.scalar_one_or_none()
-            
-            return None
-            
-        except Exception as e:
-            logger.error(f"Ошибка поиска по полям: {e}")
-            return None
+        for field_name, value in fields.items():
+            if value is not None:
+                field = getattr(self.model, field_name, None)
+                if field:
+                    conditions.append(field == value)
+        
+        if conditions:
+            query = query.where(and_(*conditions))
+            result = await session.execute(query)
+            return result.scalar_one_or_none()
+        
+        return None
     
+    @handle_controller_errors(default_return=[])
     async def search(
         self,
         session: AsyncSession,
@@ -431,78 +457,53 @@ class BaseController(Generic[ModelType]):
         skip: int = 0,
         limit: Optional[int] = 50
     ) -> List[ModelType]:
-        """
-        Поиск по нескольким текстовым полям.
+        """Поиск по нескольким текстовым полям. Без коммита (чтение)."""
+        if not search_fields:
+            return []
         
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            search_term: Строка для поиска
-            search_fields: Список полей для поиска
-            skip: Количество записей для пропуска
-            limit: Максимальное количество записей
-            
-        Returns:
-            Список найденных записей
-        """
-        try:
-            if not search_fields:
-                return []
-            
-            search_pattern = f"%{search_term}%"
-            conditions = []
-            
-            for field_name in search_fields:
-                field = getattr(self.model, field_name, None)
-                if field and hasattr(field, "ilike"):
-                    conditions.append(field.ilike(search_pattern))
-            
-            if not conditions:
-                return []
-            
-            query = select(self.model).where(or_(*conditions))
-            
-            if limit:
-                query = query.offset(skip).limit(limit)
-            else:
-                query = query.offset(skip)
-            
-            result = await session.execute(query)
-            return result.scalars().all()
-            
-        except Exception as e:
-            logger.error(f"Ошибка поиска по термину '{search_term}': {e}")
-            raise
+        search_pattern = f"%{search_term}%"
+        conditions = []
+        
+        for field_name in search_fields:
+            field = getattr(self.model, field_name, None)
+            if field and hasattr(field, "ilike"):
+                conditions.append(field.ilike(search_pattern))
+        
+        if not conditions:
+            return []
+        
+        query = select(self.model).where(or_(*conditions))
+        
+        query = query.offset(skip)
+        if limit:
+            query = query.limit(limit)
+        
+        result = await session.execute(query)
+        return result.scalars().all()
     
+    @handle_controller_errors(default_return=0)
     async def bulk_delete(
         self,
         session: AsyncSession,
         filters: Dict[str, Any]
     ) -> int:
-        """
-        Массовое удаление записей по фильтру.
-        
-        Args:
-            session: Асинхронная сессия SQLAlchemy
-            filters: Словарь условий для удаления
-            
-        Returns:
-            Количество удаленных записей
-        """
+        """Массовое удаление записей по фильтру с коммитом."""
         try:
-            # Находим записи для удаления
             records = await self.filter(session, filters, limit=None)
             
-            # Удаляем найденные записи
             deleted_count = 0
             for record in records:
                 await session.delete(record)
                 deleted_count += 1
             
+            # КОММИТ транзакции
             await session.commit()
+            
             logger.info(f"Удалено {deleted_count} записей {self.model.__name__}")
             return deleted_count
             
         except Exception as e:
-            logger.error(f"Ошибка массового удаления: {e}")
             await session.rollback()
+            logger.error(f"Ошибка массового удаления: {e}")
             raise
+        

@@ -9,6 +9,8 @@ from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
+from pydantic import BaseModel, validator
+
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -33,6 +35,21 @@ class SentryImpactRisk:
     def to_dict(self) -> Dict[str, Any]:
         """Преобразует объект в словарь."""
         return asdict(self)
+    
+# Добавить модель валидации ответа Sentry
+class SentryAPIResponse(BaseModel):
+    data: List[Dict[str, Any]]
+    fields: Optional[List[str]] = None
+    count: Optional[int] = None
+    
+    @validator('data')
+    def validate_data_structure(cls, v):
+        required_fields = ['des', 'ip', 'ts_max']
+        for item in v:
+            for field in required_fields:
+                if field not in item:
+                    raise ValueError(f"Missing required field {field} in Sentry response")
+        return v    
 
 class SentryClient:
     """Асинхронный клиент для получения данных о рисках столкновений."""
@@ -68,15 +85,18 @@ class SentryClient:
             
             async with self.session.get(self.SENTRY_API_URL, params=params) as response:
                 response.raise_for_status()
-                data = await response.json()
+                raw_data = await response.json()
                 
-                # Проверяем структуру ответа перед обработкой
-                if 'data' not in data:
-                    logger.warning("Ответ Sentry API не содержит ключа 'data'")
+                # Валидация структуры ответа
+                try:
+                    validated_data = SentryAPIResponse(**raw_data)
+                except ValueError as e:
+                    logger.error(f"Invalid Sentry API response structure: {e}")
+                    # Возвращаем данные с предупреждением
                     return []
                 
                 risks = []
-                for item in data.get('data', []):
+                for item in validated_data.data:
                     try:
                         risk = self._parse_sentry_item(item)
                         if risk.ts_max > 0:

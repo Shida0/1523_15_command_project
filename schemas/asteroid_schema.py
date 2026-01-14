@@ -1,15 +1,40 @@
-from pydantic import BaseModel, ConfigDict
+"""
+Pydantic схемы для астероидов.
+"""
+from typing import Optional
+from pydantic import Field
+from .base_schema import BaseSchema, CreateSchema
 
-class Asteroid(BaseModel):
-    mpc_number: int
-    name: str
+class AsteroidBase(BaseSchema):
+    """Базовая схема астероида."""
     designation: str
-    perihelion_au: float
-    aphelion_au: float
-    earth_moid_au: float
+    name: Optional[str] = None
+    perihelion_au: Optional[float] = None
+    aphelion_au: Optional[float] = None
+    earth_moid_au: Optional[float] = None
     absolute_magnitude: float
     estimated_diameter_km: float
     accurate_diameter: bool
-    albedo: float
-    is_neo: bool
-    is_pha: bool
+    albedo: float = Field(ge=0.0, le=1.0)
+    diameter_source: str
+    orbit_id: Optional[str] = None
+    orbit_class: Optional[str] = None
+
+class AsteroidCreate(CreateSchema):
+    """Схема для создания астероида."""
+    designation: str
+    name: Optional[str] = None
+    perihelion_au: Optional[float] = None
+    aphelion_au: Optional[float] = None
+    earth_moid_au: Optional[float] = None
+    absolute_magnitude: float
+    estimated_diameter_km: float
+    accurate_diameter: bool = False
+    albedo: float = Field(default=0.15, ge=0.0, le=1.0)
+    orbit_id: Optional[str] = None
+    orbit_class: Optional[str] = None
+    diameter_source: str = "calculated"
+
+class AsteroidResponse(AsteroidBase):
+    """Схема для ответа API с астероидом."""
+    pass

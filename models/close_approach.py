@@ -50,7 +50,7 @@ class CloseApproachModel(Base):
         String(50),
         nullable=False,
         index=True,
-        comment="Обозначение NASA астероида (из CAD API: asteroid_number)"
+        comment="Обозначение NASA астероида"
     )
     asteroid_name: Mapped[Optional[str]] = mapped_column(
         String(100),
