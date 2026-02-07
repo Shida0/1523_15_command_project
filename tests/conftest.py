@@ -1,191 +1,102 @@
-"""
-Общие фикстуры и настройки для тестов.
-"""
-import asyncio
 import pytest
-import logging
-from unittest.mock import AsyncMock, MagicMock
-from datetime import datetime, timedelta
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy import text
+from unittest.mock import Mock, AsyncMock, MagicMock
+from datetime import datetime
+from decimal import Decimal
 
-from models.base import Base
-from models.asteroid import AsteroidModel
-from models.close_approach import CloseApproachModel
-from models.engine import AsyncSessionLocal
-from models.threat_assessment import ThreatAssessmentModel
+# Pre-import models to ensure SQLAlchemy mappers are configured before tests run
+from domains.asteroid.models.asteroid import AsteroidModel
+from domains.approach.models.close_approach import CloseApproachModel
+from domains.threat.models.threat_assessment import ThreatAssessmentModel
 
-# Настройка логирования для тестов
-logging.basicConfig(level=logging.WARNING)
-logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 
-@pytest.fixture(autouse=True)
-async def cleanup_before_test(async_session):
-    """Автоматически очищает БД перед каждым тестом."""
-    await clean_database(async_session)
-    await async_session.commit()
+@pytest.fixture
+def mock_session():
+    """Mock SQLAlchemy session fixture."""
+    session = AsyncMock()
+    session.add = Mock()
+    session.commit = AsyncMock()
+    session.rollback = AsyncMock()
+    session.close = AsyncMock()
+    session.refresh = AsyncMock()
+    session.execute = AsyncMock()
+    session.delete = Mock()
+    session.flush = AsyncMock()
+    session.begin = AsyncMock()
+    return session
 
-@pytest.fixture(scope="session")
-def event_loop():
-    """Создание event loop для асинхронных тестов."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
 
-@pytest.fixture(scope="session")
-async def async_engine():
-    """Создание асинхронного движка для тестовой БД."""
-    # Используем существующую БД, но будем работать в транзакциях
-    from models.engine import async_engine as existing_engine
-    # Создаем отдельную сессию для тестов
-    test_engine = existing_engine
-    
-    # Проверяем соединение
-    async with test_engine.connect() as conn:
-        await conn.execute(text("SELECT 1"))
-    
-    yield test_engine
-    
-    await test_engine.dispose()
-    
-@pytest.fixture(scope="function")
-async def async_session():
-    """Создаёт новую сессию для каждого теста и очищает БД после."""
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-            # Очищаем все таблицы после теста
-            await clean_database(session)
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
-        finally:
-            await session.close()
-            
-async def clean_database(session: AsyncSession):
-    """Очищает все таблицы базы данных."""
-    await session.execute(text("TRUNCATE TABLE threat_assessment_models CASCADE"))
-    await session.execute(text("TRUNCATE TABLE close_approach_models CASCADE"))
-    await session.execute(text("TRUNCATE TABLE asteroid_models CASCADE"))
-    await session.commit()
+@pytest.fixture
+def mock_session_factory(mock_session):
+    """Mock session factory fixture."""
+    factory = Mock(return_value=mock_session)
+    return factory
 
-@pytest.fixture(scope="session")
-def event_loop():
-    """Создаёт event loop для асинхронных тестов."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+
+@pytest.fixture
+def mock_uow(mock_session):
+    """Mock Unit of Work fixture."""
+    uow = AsyncMock()
+    uow.__aenter__ = AsyncMock(return_value=uow)
+    uow.__aexit__ = AsyncMock(return_value=None)
+    uow.session = mock_session
+    return uow
+
 
 @pytest.fixture
 def sample_asteroid_data():
-    """Фикстура с тестовыми данными астероида."""
+    """Sample asteroid data for testing."""
     return {
-        "mpc_number": 999999,  # Несуществующий номер для тестов
+        "id": 1,
         "name": "Test Asteroid",
-        "designation": "2024 TE1",
-        "perihelion_au": 0.95,
-        "aphelion_au": 1.78,
-        "earth_moid_au": 0.05,
-        "absolute_magnitude": 18.5,
-        "estimated_diameter_km": 0.3,
-        "accurate_diameter": True,
-        "albedo": 0.25,
-        "is_neo": True,
-        "is_pha": True
+        "designation": "2023 TEST",
+        "absolute_magnitude": 20.5,
+        "estimated_diameter_min_km": 0.1,
+        "estimated_diameter_max_km": 0.3,
+        "albedo": 0.15,
+        "is_hazardous": False,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
     }
 
-@pytest.fixture
-async def test_asteroid(async_session, sample_asteroid_data):
-    """Создание тестового астероида в БД."""
-    asteroid = AsteroidModel(**sample_asteroid_data)
-    async_session.add(asteroid)
-    await async_session.flush()
-    await async_session.refresh(asteroid)
-    return asteroid
 
 @pytest.fixture
-async def test_close_approach(async_session, test_asteroid):
-    """Создание тестового сближения в БД."""
-    approach = CloseApproachModel(
-        asteroid_id=test_asteroid.id,
-        approach_time=datetime.now() + timedelta(days=30),
-        distance_au=0.02,
-        velocity_km_s=18.5,
-        calculation_batch_id="test_batch_001"
-    )
-    async_session.add(approach)
-    await async_session.flush()
-    await async_session.refresh(approach)
-    return approach
+def sample_approach_data():
+    """Sample approach data for testing."""
+    return {
+        "id": 1,
+        "asteroid_id": 1,
+        "approach_date": datetime.now().date(),
+        "distance_km": 100000.0,
+        "velocity_km_s": 10.5,
+        "orbit_class": "AMO",
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
+    }
+
 
 @pytest.fixture
-async def test_threat_assessment(async_session, test_close_approach):
-    """Создание тестовой оценки угрозы в БД."""
-    threat = ThreatAssessmentModel(
-        approach_id=test_close_approach.id,
-        threat_level="высокий",
-        impact_category="региональный",
-        energy_megatons=10.5
-    )
-    async_session.add(threat)
-    await async_session.flush()
-    await async_session.refresh(threat)
-    return threat
+def sample_threat_data():
+    """Sample threat data for testing."""
+    return {
+        "id": 1,
+        "asteroid_id": 1,
+        "palermo_scale": Decimal("0.5"),
+        "torino_scale": 1,
+        "impact_probability": Decimal("0.001"),
+        "potential_energy_mt": Decimal("100.0"),
+        "is_hazardous": True,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
+    }
+
 
 @pytest.fixture
-def mock_async_session():
-    """Мок асинхронной сессии для тестов без БД."""
-    session = MagicMock(spec=AsyncSession)
-    
-    # Синхронные методы
-    session.add = MagicMock()
-    session.delete = MagicMock()
-    
-    # Асинхронные методы должны быть настроены как асинхронные
-    session.commit = AsyncMock()
-    session.flush = AsyncMock()
-    session.refresh = AsyncMock()
-    session.execute = AsyncMock()
-    session.rollback = AsyncMock() 
-    
-    # Настроить результат execute
-    mock_result = AsyncMock()
-    mock_result.scalar_one_or_none = AsyncMock(return_value=None)
-    mock_result.scalars = AsyncMock(return_value=AsyncMock(all=AsyncMock(return_value=[])))
-    session.execute.return_value = mock_result
-    
-    return session
-
-@pytest.fixture(autouse=True)
-async def cleanup_test_data(async_session):
-    """Автоматическая очистка тестовых данных после каждого теста.
-    
-    Удаляет записи, созданные во время тестов (по определенным критериям).
-    """
-    yield
-    
-    # Удаляем тестовые записи по маркерам (например, mpc_number = 999999)
-    try:
-        await async_session.execute(
-            text("DELETE FROM asteroid_models WHERE mpc_number = 999999")
-        )
-        await async_session.execute(
-            text("DELETE FROM close_approach_models WHERE calculation_batch_id LIKE 'test_%'")
-        )
-        await async_session.commit()
-    except Exception as e:
-        await async_session.rollback()
-        logging.warning(f"Ошибка при очистке тестовых данных: {e}")
-
-# Регистрация маркеров
-def pytest_configure(config):
-    config.addinivalue_line(
-        "markers", "slow: mark test as slow (skip with -m 'not slow')"
-    )
-    config.addinivalue_line(
-        "markers", "external_api: mark test as using external API"
-    )
-    config.addinivalue_line(
-        "markers", "db: mark test as requiring database"
-    )
+def invalid_asteroid_data():
+    """Invalid asteroid data for testing validation."""
+    return {
+        "name": "",  # Invalid: empty name
+        "designation": "",  # Invalid: empty designation
+        "absolute_magnitude": -50,  # Invalid: too low magnitude
+        "estimated_diameter_min_km": -1,  # Invalid: negative diameter
+        "albedo": 1.5  # Invalid: albedo > 1
+    }

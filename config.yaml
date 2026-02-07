@@ -1,0 +1,25 @@
+database:
+  host: "localhost"
+  port: 5432
+  user: "asteroid_user"
+  password: ""
+  db_name: "asteroid_db"
+
+nasa_api:
+  base_url: "https://api.nasa.gov"
+  rate_limit_requests: 1000
+  rate_limit_period: 3600
+  timeout: 30
+  retry_attempts: 3
+  sbdb_timeout: 60
+  cad_timeout: 120
+  sentry_timeout: 180
+
+application:
+  environment: "development"
+  log_level: "INFO"
+  debug: false
+  update_interval_minutes: 60
+  max_concurrent_updates: 5
+  enable_monitoring: true
+  monitoring_port: 8000
