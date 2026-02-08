@@ -230,24 +230,31 @@ class TestAsteroidService:
         """Test converting model instance to dictionary."""
         # Arrange
         service = AsteroidService(Mock())
-        
+
         mock_model = Mock()
         mock_model.__table__ = Mock()
         mock_model.__table__.columns = []
-        
+
         for key, value in sample_asteroid_data.items():
             setattr(mock_model, key, value)
             mock_col = Mock()
             mock_col.name = key
             mock_model.__table__.columns.append(mock_col)
-        
+
         # Act
         result = service._model_to_dict(mock_model)
-        
+
         # Assert
         assert result is not None
         for key, expected_value in sample_asteroid_data.items():
-            assert result[key] == expected_value
+            actual_value = result[key]
+            # Handle type conversions that happen in _model_to_dict
+            if hasattr(expected_value, 'isoformat'):  # datetime objects
+                assert actual_value == expected_value.isoformat()
+            elif hasattr(expected_value, 'quantize'):  # Decimal objects
+                assert actual_value == float(expected_value)
+            else:
+                assert actual_value == expected_value
 
     def test_model_to_dict_with_none(self):
         """Test converting None model to dictionary."""
@@ -298,7 +305,14 @@ class TestAsteroidService:
         # Assert
         assert result is not None
         for key, expected_value in sample_asteroid_data.items():
-            assert result[key] == expected_value
+            actual_value = result[key]
+            # Handle type conversions that happen in _model_to_dict
+            if hasattr(expected_value, 'isoformat'):  # datetime objects
+                assert actual_value == expected_value.isoformat()
+            elif hasattr(expected_value, 'quantize'):  # Decimal objects
+                assert actual_value == float(expected_value)
+            else:
+                assert actual_value == expected_value
         assert "related_field" in result
 
     @pytest.mark.asyncio

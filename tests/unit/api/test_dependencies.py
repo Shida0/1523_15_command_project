@@ -36,7 +36,7 @@ class TestAPIDependencies:
     async def test_get_asteroid_service(self):
         """Test getting AsteroidService dependency."""
         # Act
-        service = await get_asteroid_service()
+        service = get_asteroid_service()
 
         # Assert
         assert isinstance(service, AsteroidService)
@@ -46,7 +46,7 @@ class TestAPIDependencies:
     async def test_get_approach_service(self):
         """Test getting ApproachService dependency."""
         # Act
-        service = await get_approach_service()
+        service = get_approach_service()
 
         # Assert
         assert isinstance(service, ApproachService)
@@ -56,7 +56,7 @@ class TestAPIDependencies:
     async def test_get_threat_service(self):
         """Test getting ThreatService dependency."""
         # Act
-        service = await get_threat_service()
+        service = get_threat_service()
 
         # Assert
         assert isinstance(service, ThreatService)
@@ -80,16 +80,16 @@ class TestAPIDependencies:
     async def test_service_factories_consistency(self):
         """Test that service factories create consistent instances."""
         # Act
-        asteroid_service1 = await get_asteroid_service()
-        asteroid_service2 = await get_asteroid_service()
-        approach_service1 = await get_approach_service()
-        threat_service1 = await get_threat_service()
+        asteroid_service1 = get_asteroid_service()
+        asteroid_service2 = get_asteroid_service()
+        approach_service1 = get_approach_service()
+        threat_service1 = get_threat_service()
 
         # Assert
         # All asteroid services should use the same session factory
         assert asteroid_service1.session_factory == asteroid_service2.session_factory
         assert asteroid_service1.session_factory == async_session_factory
-        
+
         # All services should use the same session factory
         assert approach_service1.session_factory == async_session_factory
         assert threat_service1.session_factory == async_session_factory
@@ -99,18 +99,18 @@ class TestAPIDependencies:
         """Test dependency injection with mocked session factory."""
         # Arrange
         mock_session_factory = Mock()
-        
+
         # Temporarily replace the session factory for testing
         original_factory = async_session_factory
-        
+
         # Since we can't directly modify the module variable in a test,
         # we'll test the constructors directly with a mock
         with patch('api.dependencies.async_session_factory', mock_session_factory):
             # Act
             uow = await get_uow()
-            asteroid_service = await get_asteroid_service()
-            approach_service = await get_approach_service()
-            threat_service = await get_threat_service()
+            asteroid_service = get_asteroid_service()
+            approach_service = get_approach_service()
+            threat_service = get_threat_service()
 
             # Assert
             assert uow.session_factory == mock_session_factory
@@ -149,16 +149,16 @@ class TestAPIDependencies:
     async def test_service_dependencies_have_expected_interface(self):
         """Test that service dependencies have the expected interface."""
         # Act
-        asteroid_service = await get_asteroid_service()
-        approach_service = await get_approach_service()
-        threat_service = await get_threat_service()
+        asteroid_service = get_asteroid_service()
+        approach_service = get_approach_service()
+        threat_service = get_threat_service()
 
         # Assert
         # Check that services have expected methods
         assert hasattr(asteroid_service, 'get_by_designation')
         assert hasattr(approach_service, 'get_upcoming')
         assert hasattr(threat_service, 'get_by_designation')
-        
+
         # Check that they all have the session_factory attribute
         assert hasattr(asteroid_service, 'session_factory')
         assert hasattr(approach_service, 'session_factory')
