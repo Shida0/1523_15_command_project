@@ -350,19 +350,19 @@ def nasa_api_endpoint(
     def decorator(func: Callable) -> Callable:
         # Применяем декораторы в правильном порядке
         decorated = func
-        
+
         # 1. Логирование времени выполнения
         decorated = log_execution_time(decorated)
-        
+
         # 2. Логирование вызова API
         decorated = log_api_call(decorated)
-        
+
         # 3. Обработка ошибок NASA API
         decorated = handle_nasa_api_errors(decorated)
-        
+
         # 4. Rate limiting
         decorated = rate_limit_nasa_api(rate_limit_delay)(decorated)
-        
+
         # 5. Retry с экспоненциальной задержкой
         decorated = retry_with_exponential_backoff(
             max_attempts=max_retries,
@@ -370,9 +370,59 @@ def nasa_api_endpoint(
             max_wait=DEFAULT_RETRY_MAX_WAIT,
             retry_exceptions=(NetworkError, NASAAPIError, RateLimitExceededError)
         )(decorated)
-        
+
         return decorated
     return decorator
+
+def nasa_cad_api_endpoint(func):
+    """
+    Композитный декоратор для конечных точек NASA CAD API.
+    Включает повторные попытки, обработку таймаутов и ошибок парсинга.
+    """
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        operation_name = func.__name__
+        
+        # Логирование начала операции
+        logger.info(f"CAD API вызов: {operation_name} с параметрами: {kwargs}")
+        
+        start_time = time.time()
+        
+        try:
+            # Выполняем функцию с повторными попытками
+            result = await retry_with_exponential_backoff(
+                max_attempts=3,
+                min_wait=DEFAULT_RETRY_MIN_WAIT,
+                max_wait=DEFAULT_RETRY_MAX_WAIT,
+                retry_exceptions=(NetworkError, NASAAPIError, RateLimitExceededError, DataParseError)
+            )(func)(*args, **kwargs)
+            
+            duration = time.time() - start_time
+            
+            # Проверяем результат
+            if result is None:
+                logger.warning(f"CAD API {operation_name} вернул None")
+                return []
+            elif isinstance(result, list) and len(result) == 0:
+                logger.info(f"CAD API {operation_name}: Нет данных (пустой список)")
+                return []
+            elif isinstance(result, dict) and not result:
+                logger.info(f"CAD API {operation_name}: Нет данных (пустой словарь)")
+                return []
+            
+            logger.info(f"CAD API {operation_name} успешно выполнен за {duration:.2f}с")
+            return result
+            
+        except DataParseError as e:
+            duration = time.time() - start_time
+            logger.error(f"Ошибка парсинга в {operation_name} после {duration:.2f}с: {e}")
+            return []
+        except Exception as e:
+            duration = time.time() - start_time
+            logger.error(f"Неожиданная ошибка в {operation_name} после {duration:.2f}с: {e}")
+            return []
+    
+    return wrapper
 
 def database_operation(
     max_retries: int = 3,

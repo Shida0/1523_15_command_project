@@ -9,6 +9,11 @@ from pathlib import Path
 from pydantic import BaseModel, ValidationError, Field
 from pydantic_settings import BaseSettings
 import yaml
+from dotenv import load_dotenv
+
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 logger = logging.getLogger(__name__)
@@ -16,16 +21,36 @@ logger = logging.getLogger(__name__)
 
 class DatabaseConfig(BaseModel):
     """Конфигурация базы данных."""
-    host: str = Field(default="localhost", description="Хост базы данных")
-    port: int = Field(default=5432, description="Порт базы данных")
-    user: str = Field(default="asteroid_user", description="Пользователь базы данных")
-    password: str = Field(default="", description="Пароль к базе данных")
-    db_name: str = Field(default="asteroid_db", description="Имя базы данных")
+    host: str = Field(
+        default_factory=lambda: os.getenv('DB_HOST'),
+        description="Хост базы данных"
+    )
+    port: int = Field(
+        default_factory=lambda: int(os.getenv('DB_PORT')),
+        description="Порт базы данных"
+    )
+    user: str = Field(
+        default_factory=lambda: os.getenv('DB_USER'),
+        description="Пользователь базы данных"
+    )
+    password: str = Field(
+        default_factory=lambda: os.getenv('DB_PASSWORD'),
+        description="Пароль к базе данных"
+    )
+    db_name: str = Field(
+        default_factory=lambda: os.getenv('DB_NAME'),
+        description="Имя базы данных"
+    )
 
     @property
     def dsn(self) -> str:
         """Получить строку подключения к базе данных."""
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"
+
+    @property
+    def async_driver(self) -> str:
+        """Получить драйвер для асинхронного подключения."""
+        return "asyncpg"
 
 
 class NasaApiConfig(BaseModel):
@@ -78,10 +103,7 @@ class ConfigManager:
             else:
                 raise ValueError(f"Неподдерживаемый формат файла конфигурации: {config_path.suffix}")
             
-            # Валидация и установка конфигурации
-            if 'database' in config_data:
-                self.database = DatabaseConfig(**config_data['database'])
-            
+            # Валидация и установка конфигурации           
             if 'nasa_api' in config_data:
                 self.nasa_api = NasaApiConfig(**config_data['nasa_api'])
             

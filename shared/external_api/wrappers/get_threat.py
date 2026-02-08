@@ -5,7 +5,7 @@
 """
 import logging
 from typing import List, Dict, Any, Optional
-from domains.external_api.clients.sentry_api import SentryClient, SentryImpactRisk
+from ...external_api.clients.sentry_api import SentryClient, SentryImpactRisk
 from shared.resilience import circuit_breaker, NASA_API_CIRCUIT_CONFIG, bulkhead, SENTRY_BULKHEAD_CONFIG, timeout, NASA_API_TIMEOUTS
 
 logger = logging.getLogger(__name__)

@@ -55,10 +55,32 @@
 ## 🔗 Полезные ссылки
 
 - [NASA Small-Body Database](https://ssd.jpl.nasa.gov/sbdb.cgi)
-    
+
 - [NASA CAD API Documentation](https://ssd-api.jpl.nasa.gov/doc/cad.html)
-    
+
 - [Astroquery Documentation](https://astroquery.readthedocs.io/)
-    
+
 - [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
+
+## Configuration
+
+### Environment Variables
+
+Create a `.env` file in the project root directory with the following variables:
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=asteroid_user
+DB_PASSWORD=your_actual_password
+DB_NAME=asteroid_db
+```
+
+The application will automatically load these environment variables and use them to connect to the database. Values in the `.env` file will override those in `config.yaml`.
+
+### Configuration Priority
+
+The configuration system follows this priority order:
+1. Environment variables (highest priority)
+2. Values from `config.yaml` (lowest priority)
 

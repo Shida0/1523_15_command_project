@@ -40,96 +40,118 @@ class UpdateService:
         logger.info("UpdateService инициализирован")
     
     async def update_asteroids(self, limit: int|None = 500) -> int:
-        """Обновление астероидов."""
+        """Обновление астероидов с надежной обработкой ошибок"""
         logger.info(f"Обновление астероидов (лимит: {limit})")
         
         try:
-            # Получаем данные из NASA через utils.get_asteroid_data
+            # 1. Получение данных с обработкой ошибок
             asteroids_data = await get_asteroid_data(limit=limit)
             
             if not asteroids_data:
                 logger.warning("Нет данных об астероидах")
                 return 0
             
-            # Обновляем каждый астероид
-            count = 0
+            # 2. Обновление в транзакции
             async with UnitOfWork(self.session_factory) as uow:
-                for asteroid in asteroids_data:
-                    designation = asteroid.get('designation')
-                    if not designation:
-                        continue
-                    
-                    # Форматируем данные для модели AsteroidModel
-                    data = {
-                        'designation': designation,
-                        'name': asteroid.get('name'),
-                        'perihelion_au': asteroid.get('perihelion_au'),
-                        'aphelion_au': asteroid.get('aphelion_au'),
-                        'earth_moid_au': asteroid.get('earth_moid_au'),
-                        'absolute_magnitude': asteroid.get('absolute_magnitude', 0),
-                        'estimated_diameter_km': asteroid.get('estimated_diameter_km', 0),
-                        'accurate_diameter': asteroid.get('accurate_diameter', False),
-                        'albedo': asteroid.get('albedo', 0.15),
-                        'orbit_class': asteroid.get('orbit_class'),
-                        'orbit_id': asteroid.get('orbit_id'),
-                        'diameter_source': asteroid.get('diameter_source', 'calculated')
-                    }
-                    
-                    # Проверяем существование
-                    existing = await uow.asteroid_repo.get_by_designation(designation)
-                    if existing:
-                        # Update the existing asteroid
-                        for key, value in data.items():
-                            if hasattr(existing, key):
-                                setattr(existing, key, value)
-                        await uow.commit()
-                    else:
-                        # Create new asteroid
-                        from domains.asteroid.models.asteroid import AsteroidModel
-                        new_asteroid = AsteroidModel(**{k: v for k, v in data.items() 
-                                                        if k in [col.name for col in AsteroidModel.__table__.columns] 
-                                                        if k != 'id'})
-                        uow.session.add(new_asteroid)
-                        await uow.commit()
-                    
-                    count += 1
+                count = 0
                 
-            logger.info(f"Обновлено астероидов: {count}")
+                for asteroid in asteroids_data:
+                    try:
+                        # Проверка наличия designation
+                        designation = asteroid.get('designation')
+                        if not designation:
+                            logger.warning(f"Пропуск астероида без designation: {asteroid}")
+                            continue
+                        
+                        # Преобразование None значений в дефолтные
+                        # Проверка типов данных (float, int, str)
+                        data = {
+                            'designation': designation,
+                            'name': asteroid.get('name') or None,
+                            'perihelion_au': self._safe_float_conversion(asteroid.get('perihelion_au')),
+                            'aphelion_au': self._safe_float_conversion(asteroid.get('aphelion_au')),
+                            'earth_moid_au': self._safe_float_conversion(asteroid.get('earth_moid_au')),
+                            'absolute_magnitude': self._safe_float_conversion(asteroid.get('absolute_magnitude'), default=18.0),
+                            'estimated_diameter_km': self._safe_float_conversion(asteroid.get('estimated_diameter_km'), default=0.0),
+                            'accurate_diameter': bool(asteroid.get('accurate_diameter', False)),
+                            'albedo': self._safe_float_conversion(asteroid.get('albedo'), default=0.15),
+                            'orbit_class': asteroid.get('orbit_class') or 'Unknown',
+                            'orbit_id': asteroid.get('orbit_id') or None,
+                            'diameter_source': asteroid.get('diameter_source') or 'calculated'
+                        }
+                        
+                        # 3. Поиск существующего или создание нового
+                        existing = await uow.asteroid_repo.get_by_designation(designation)
+                        if existing:
+                            # Обновление
+                            for key, value in data.items():
+                                if hasattr(existing, key):
+                                    setattr(existing, key, value)
+                        else:
+                            # Создание
+                            from domains.asteroid.models.asteroid import AsteroidModel
+                            new_asteroid = AsteroidModel(**{k: v for k, v in data.items()
+                                                            if k in [col.name for col in AsteroidModel.__table__.columns]
+                                                            if k != 'id'})
+                            uow.session.add(new_asteroid)
+                        
+                        count += 1
+                        
+                    except Exception as e:
+                        logger.error(f"Ошибка обработки астероида {designation}: {e}")
+                        continue  # Продолжаем обработку остальных
+                
+                # 4. Коммит всех изменений
+                await uow.commit()
+                
+            logger.info(f"Успешно обновлено астероидов: {count}")
             return count
             
         except Exception as e:
-            logger.error(f"Ошибка обновления астероидов: {e}")
+            logger.error(f"Критическая ошибка обновления астероидов: {e}")
             return 0
+
+    def _safe_float_conversion(self, value, default=0.0):
+        """Безопасное преобразование значения в float"""
+        if value is None:
+            return default
+        if isinstance(value, (int, float)):
+            return float(value)
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return default
     
     async def update_approaches(self, days: int = 3650) -> int:
-        """Обновление сближений."""
+        """Обновление сближений с улучшенной обработкой ошибок."""
         logger.info(f"Обновление сближений на {days} дней")
         
         try:
             # Получаем астероиды из БД для передачи в get_current_close_approaches
-            # Using UnitOfWork to fetch asteroids
-            async with UnitOfWork(self.session_factory) as uow:
-                asteroids = await uow.asteroid_repo.get_all(skip=0, limit=None)
-                asteroids_dicts = [uow.asteroid_repo._model_to_dict(asteroid) for asteroid in asteroids]
-                
+            asteroids_dicts = await self.asteroid_service.get_all(skip=0, limit=1000)  # Ограничиваем для теста
+            logger.info(f"Получено {len(asteroids_dicts)} астероидов для поиска сближений")
+            
             if not asteroids_dicts:
                 logger.warning("Нет астероидов для обновления сближений")
                 return 0
-            
-            # Получаем сближения через utils.get_current_close_approaches
+
+            # Получаем сближения
             approaches_data = await get_current_close_approaches(
                 asteroids=asteroids_dicts,
                 days=days,
                 max_distance_au=0.05
             )
             
+            # КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: проверяем результат
             if not approaches_data:
-                logger.warning("Нет данных о сближениях")
+                logger.info("Нет данных о сближениях в указанном периоде")
                 return 0
             
+            logger.info(f"Получено {len(approaches_data)} сближений для обработки")
+
             # Создаем словарь астероидов для быстрого поиска
             asteroid_dict = {a['designation']: a for a in asteroids_dicts if a.get('designation')}
-            
+
             # Обновляем сближения
             count = 0
             async with UnitOfWork(self.session_factory) as uow:
@@ -137,21 +159,21 @@ class UpdateService:
                     designation = approach.get('asteroid_designation')
                     if not designation:
                         continue
-                    
+
                     # Находим астероид в словаре
                     asteroid = asteroid_dict.get(designation)
                     if not asteroid:
                         continue
-                    
+
                     approach['asteroid_id'] = asteroid['id']
-                    
+
                     # Ищем существующее сближение
                     existing_approaches = await uow.approach_repo.filter(
                         filters={'asteroid_id': asteroid['id']},
                         skip=0,
                         limit=1
                     )
-                    
+
                     if existing_approaches:
                         # Update existing approach
                         existing_approach = existing_approaches[0]
@@ -162,17 +184,17 @@ class UpdateService:
                     else:
                         # Create new approach
                         from domains.approach.models.close_approach import CloseApproachModel
-                        new_approach = CloseApproachModel(**{k: v for k, v in approach.items() 
-                                                           if k in [col.name for col in CloseApproachModel.__table__.columns] 
+                        new_approach = CloseApproachModel(**{k: v for k, v in approach.items()
+                                                           if k in [col.name for col in CloseApproachModel.__table__.columns]
                                                            if k != 'id'})
                         uow.session.add(new_approach)
                         await uow.commit()
-                    
+
                     count += 1
-                
+
             logger.info(f"Обновлено сближений: {count}")
             return count
-            
+
         except Exception as e:
             logger.error(f"Ошибка обновления сближений: {e}")
             return 0
@@ -190,9 +212,7 @@ class UpdateService:
                 return 0
             
             # Получаем астероиды для связи
-            async with UnitOfWork(self.session_factory) as uow:
-                asteroids = await uow.asteroid_repo.get_all(skip=0, limit=None)
-                asteroids_dicts = [uow.asteroid_repo._model_to_dict(asteroid) for asteroid in asteroids]
+            asteroids_dicts = await self.asteroid_service.get_all(skip=0, limit=None)
             
             asteroid_dict = {a['designation']: a for a in asteroids_dicts if a.get('designation')}
             

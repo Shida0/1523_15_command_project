@@ -197,9 +197,11 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
                     count = await ts_scalar
                 else:
                     count = ts_scalar
+                count_val = count or 0
+                percent = round((count_val / total * 100) if total > 0 else 0, 1)
                 ts_stats[f"ts_{ts}"] = {
-                    'count': count or 0,
-                    'percent': round(((count or 0) / total * 100) if total > 0 else 0, 1)
+                    'count': count_val,
+                    'percent': percent
                 }
 
             # Распределение по категориям воздействия
@@ -213,9 +215,11 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
                     count = await cat_scalar
                 else:
                     count = cat_scalar
+                count_val = count or 0
+                percent = round((count_val / total * 100) if total > 0 else 0, 1)
                 category_stats[category] = {
-                    'count': count or 0,
-                    'percent': round(((count or 0) / total * 100) if total > 0 else 0, 1)
+                    'count': count_val,
+                    'percent': percent
                 }
 
             # Средняя вероятность
@@ -227,7 +231,12 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
                 avg_prob_value = await avg_prob_scalar
             else:
                 avg_prob_value = avg_prob_scalar
-            avg_probability = avg_prob_value or 0
+            
+            # Handle None value when there are no records
+            if avg_prob_value is None:
+                avg_probability = 0.0
+            else:
+                avg_probability = round(avg_prob_value, 6)
 
             # Максимальная энергия
             max_energy_query = select(func.max(self.model.energy_megatons))
@@ -238,7 +247,12 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
                 max_energy_value = await max_energy_scalar
             else:
                 max_energy_value = max_energy_scalar
-            max_energy = max_energy_value or 0
+            
+            # Handle None value when there are no records
+            if max_energy_value is None:
+                max_energy = 0.0
+            else:
+                max_energy = float(max_energy_value)
 
             # Средняя энергия
             avg_energy_query = select(func.avg(self.model.energy_megatons))
@@ -249,7 +263,12 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
                 avg_energy_value = await avg_energy_scalar
             else:
                 avg_energy_value = avg_energy_scalar
-            avg_energy = round(avg_energy_value, 1)
+            
+            # Handle None value when there are no records
+            if avg_energy_value is None:
+                avg_energy = 0.0
+            else:
+                avg_energy = round(avg_energy_value, 1)
 
             # Количество угроз с ненулевой вероятностью
             non_zero_query = select(func.count()).where(self.model.ip > 0)

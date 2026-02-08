@@ -87,17 +87,11 @@ class NASASBDBClient:
     
     async def _process_batch(self, batch: List[str]) -> List:
         """Обрабатывает батч астероидов."""
-        tasks = [
-            asyncio.get_event_loop().run_in_executor(
-                self.executor,
-                self._fetch_with_astroquery,
-                des
-            )
-            for des in batch
-        ]
-        
+        # Создаем задачи для асинхронного выполнения
+        tasks = [self._fetch_with_astroquery(des) for des in batch]
+
         batch_results = await asyncio.gather(*tasks, return_exceptions=True)
-        
+
         # Обработка конкретных ошибок NASA
         for i, result in enumerate(batch_results):
             if isinstance(result, Exception):
@@ -105,15 +99,13 @@ class NASASBDBClient:
                     await asyncio.sleep(65)  # Ждем чуть больше минуты
                     # Повторяем запрос для этого астероида
                     try:
-                        retry_result = await asyncio.get_event_loop().run_in_executor(
-                            self.executor, self._fetch_with_astroquery, batch[i]
-                        )
+                        retry_result = await self._fetch_with_astroquery(batch[i])
                         batch_results[i] = retry_result
                     except:
                         batch_results[i] = self._create_fallback_asteroid(batch[i])
-        
+
         processed_results = []
-        
+
         for des, result in zip(batch, batch_results):
             if isinstance(result, dict):
                 processed_results.append(result)
@@ -121,7 +113,7 @@ class NASASBDBClient:
                 processed_results.append(self._create_fallback_asteroid(des))
             else:
                 processed_results.append(None)
-        
+
         return processed_results
     
     @circuit_breaker(NASA_API_CIRCUIT_CONFIG)
@@ -129,21 +121,27 @@ class NASASBDBClient:
     @timeout(NASA_API_TIMEOUTS['sbdb'])
     @retry_with_exponential_backoff(max_attempts=3, retry_exceptions=(Exception,))
     @fallback_on_error(fallback_func=lambda self, designation: self._create_fallback_asteroid(designation))
-    def _fetch_with_astroquery(self, designation: str) -> Optional[Dict[str, Any]]:
-        """Синхронный запрос через astroquery для одного астероида."""
+    async def _fetch_with_astroquery(self, designation: str) -> Optional[Dict[str, Any]]:
+        """Асинхронный запрос через astroquery для одного астероида."""
+        loop = asyncio.get_event_loop()
         try:
             from astroquery.jplsbdb import SBDB
-            
-            try:
-                result = SBDB.query(designation, phys=True, full_precision=True)
-            except Exception:
-                result = SBDB.query(designation, full_precision=False)
-            
-            if not result or 'object' not in result:
-                return None
-            
-            return self._parse_astroquery_result(result, designation)
-            
+
+            def sync_query():
+                try:
+                    result = SBDB.query(designation, phys=True, full_precision=True)
+                except Exception:
+                    result = SBDB.query(designation, full_precision=False)
+
+                if not result or 'object' not in result:
+                    return None
+
+                return self._parse_astroquery_result(result, designation)
+
+            # Выполняем синхронный вызов в пуле потоков
+            result = await loop.run_in_executor(self.executor, sync_query)
+            return result
+
         except Exception as e:
             logger.error(f"Astroquery ошибка для {designation}: {e}")
             raise NetworkError(f"Ошибка при запросе астероида {designation}: {e}")

@@ -24,3 +24,6 @@ def get_async_db_url() -> URL:
 def get_async_dsn() -> str:
     """Возвращает DSN строку в текстовом формате."""
     return str(get_async_db_url())
+
+if __name__ == "__main__":
+    print(get_async_dsn())

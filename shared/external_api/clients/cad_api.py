@@ -36,7 +36,6 @@ class CADClient(GetDate):
     @bulkhead(CAD_BULKHEAD_CONFIG)
     @timeout(NASA_API_TIMEOUTS['cad'])
     @nasa_api_endpoint(max_retries=3, rate_limit_delay=2.0)
-    @validate_response(required_fields=['fields', 'data'])
     @log_execution_time
     async def get_close_approaches(
         self,
@@ -45,13 +44,16 @@ class CADClient(GetDate):
         end_date: Optional[datetime] = None,
         max_distance_au: float = 0.05
     ) -> Dict[str, List[Dict[str, Any]]]:
-        """Получает данные о сближениях астероидов с Землей."""
+        """
+        Получает данные о сближениях астероидов с Землей.
+        Обрабатывает разные форматы ответов от NASA API.
+        """
         if not self.session:
             raise RuntimeError("Сессия не инициализирована. Используйте контекстный менеджер.")
-            
+
         start_date = start_date or datetime.now()
         end_date = end_date or start_date + timedelta(days=3650)
-        
+
         params = {
             'date-min': start_date.strftime('%Y-%m-%d'),
             'date-max': end_date.strftime('%Y-%m-%d'),
@@ -60,14 +62,58 @@ class CADClient(GetDate):
             'sort': 'dist',
             'fullname': 'true'
         }
-        
-        async with self.session.get(self.CAD_API_URL, params=params) as response:
-            response.raise_for_status()
-            data = await response.json()
-            
-            approaches = await self._process_cad_response(data, asteroid_ids)
-            logger.info(f"Получено {len(approaches)} уникальных сближений")
-            return approaches
+
+        try:
+            async with self.session.get(self.CAD_API_URL, params=params) as response:
+                # Проверяем статус ответа
+                if response.status != 200:
+                    logger.warning(f"CAD API вернул статус {response.status}")
+                    return {}
+                
+                data = await response.json()
+                
+                # Проверяем структуру ответа
+                if not data:
+                    logger.debug("Пустой ответ от CAD API")
+                    return {}
+                
+                # КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: проверяем наличие обязательных полей
+                if not isinstance(data, dict):
+                    logger.warning(f"Некорректный формат ответа CAD API: {type(data)}")
+                    return {}
+                
+                if 'fields' not in data or 'data' not in data:
+                    # Логируем что получили для отладки
+                    logger.debug(f"Ответ CAD API без полей fields/data: {data}")
+                    
+                    # Проверяем альтернативные форматы
+                    if 'count' in data and int(data.get('count', 0)) == 0:
+                        logger.info("CAD API: Нет сближений в указанном периоде")
+                        return {}
+                    elif 'error' in data:
+                        logger.error(f"Ошибка CAD API: {data.get('error')}")
+                        return {}
+                    elif 'message' in data:
+                        logger.info(f"Сообщение CAD API: {data.get('message')}")
+                        return {}
+                    else:
+                        logger.warning(f"Неизвестный формат ответа CAD API: {data}")
+                        return {}
+                
+                # Если есть fields и data, обрабатываем
+                approaches = await self._process_cad_response(data, asteroid_ids)
+                logger.info(f"Получено {len(approaches)} уникальных сближений")
+                return approaches
+                
+        except asyncio.TimeoutError:
+            logger.error("Таймаут при запросе к CAD API")
+            return {}
+        except aiohttp.ClientError as e:
+            logger.error(f"Ошибка сети при запросе к CAD API: {e}")
+            return {}
+        except Exception as e:
+            logger.error(f"Неожиданная ошибка в CAD API: {e}")
+            return {}
             
     async def _process_cad_response(
         self,

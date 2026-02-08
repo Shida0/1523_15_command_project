@@ -70,16 +70,36 @@ class UnitOfWork:
         self.approach_repo = None
         self.threat_repo = None
 
+    @property
+    def session(self) -> AsyncSession:
+        """
+        📤 Получить текущую сессию или создать новую.
+
+        Returns:
+            AsyncSession: Асинхронная сессия SQLAlchemy
+
+        Raises:
+            RuntimeError: Если UnitOfWork не инициализирован
+
+        Example:
+            >>> async with UnitOfWork(session_factory) as uow:
+            >>>     session = uow.session
+            >>>     # Работа с сессией
+        """
+        if self._session is None:
+            raise RuntimeError("UnitOfWork not initialized. Use as context manager or initialize manually.")
+        return self._session
+
     def get_session(self) -> AsyncSession:
         """
         📤 Получить текущую сессию или создать новую.
-        
+
         Returns:
             AsyncSession: Асинхронная сессия SQLAlchemy
-            
+
         Raises:
             RuntimeError: Если UnitOfWork не инициализирован
-            
+
         Example:
             >>> async with UnitOfWork(session_factory) as uow:
             >>>     session = uow.get_session()

@@ -22,17 +22,19 @@ class ThreatAssessmentModel(Base):
         unique=True,
         comment="Ссылка на астероид (One-to-One)"
     )
-    
+
     # Основные данные из Sentry API
     designation: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
         index=True,
+        default="",
         comment="Обозначение астероида (например, '2023 DW')"
     )
     fullname: Mapped[str] = mapped_column(
         String(100),
         nullable=False,
+        default="",
         comment="Полное название астероида"
     )
     
@@ -40,16 +42,19 @@ class ThreatAssessmentModel(Base):
     ip: Mapped[float] = mapped_column(
         Float,
         nullable=False,
+        default=0.0,
         comment="Вероятность столкновения (impact probability)"
     )
     ts_max: Mapped[int] = mapped_column(
         Integer,
         nullable=False,
+        default=0,
         comment="Максимальное значение по Туринской шкале"
     )
     ps_max: Mapped[float] = mapped_column(
         Float,
         nullable=False,
+        default=0.0,
         comment="Максимальное значение по Палермской шкале"
     )
     
@@ -57,16 +62,19 @@ class ThreatAssessmentModel(Base):
     diameter: Mapped[float] = mapped_column(
         Float,
         nullable=False,
+        default=0.0,
         comment="Диаметр астероида в километрах (из Sentry)"
     )
     v_inf: Mapped[float] = mapped_column(
         Float,
         nullable=False,
+        default=0.0,
         comment="Скорость на бесконечности в км/с"
     )
     h: Mapped[float] = mapped_column(
         Float,
         nullable=False,
+        default=0.0,
         comment="Абсолютная звездная величина (H) из Sentry"
     )
     
@@ -74,11 +82,13 @@ class ThreatAssessmentModel(Base):
     n_imp: Mapped[int] = mapped_column(
         Integer,
         nullable=False,
+        default=0,
         comment="Количество сценариев столкновения"
     )
     impact_years: Mapped[List[int]] = mapped_column(
         JSON,
         nullable=False,
+        default=list,
         comment="Года возможных столкновений (JSON-массив)"
     )
     
@@ -86,6 +96,7 @@ class ThreatAssessmentModel(Base):
     last_obs: Mapped[str] = mapped_column(
         String(20),
         nullable=False,
+        default="",
         comment="Дата последнего наблюдения"
     )
     
@@ -93,16 +104,19 @@ class ThreatAssessmentModel(Base):
     threat_level_ru: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
+        default="",
         comment="Уровень угрозы на русском"
     )
     torino_scale_ru: Mapped[str] = mapped_column(
         Text,
         nullable=False,
+        default="",
         comment="Описание по Туринской шкале на русском"
     )
     impact_probability_text_ru: Mapped[str] = mapped_column(
         Text,
         nullable=False,
+        default="",
         comment="Текст вероятности на русском"
     )
     
@@ -122,6 +136,7 @@ class ThreatAssessmentModel(Base):
     
     sentry_last_update: Mapped[datetime] = mapped_column(
         nullable=False,
+        default=lambda: datetime.now(),
         comment="Время последнего обновления данных из Sentry API"
     )
     
