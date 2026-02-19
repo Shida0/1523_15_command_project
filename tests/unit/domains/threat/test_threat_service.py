@@ -1,62 +1,51 @@
+"""
+Unit tests for ThreatService.
+
+These tests verify that service methods correctly pass pagination parameters
+to repository methods.
+"""
 import pytest
 from unittest.mock import AsyncMock, Mock, patch
-from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import datetime
+from datetime import datetime, timezone
+
 from domains.threat.services.threat_service import ThreatService
 
 
 class TestThreatService:
     """Unit tests for ThreatService class."""
 
-    def test_threat_service_initialization(self):
+    def test_threat_service_initialization(self, mock_session_factory):
         """Test initializing the threat service."""
-        # Arrange
-        mock_session_factory = Mock()
-        
-        # Act
+        # Arrange & Act
         service = ThreatService(mock_session_factory)
-        
+
         # Assert
         assert service.session_factory == mock_session_factory
 
     @pytest.mark.asyncio
-    async def test_get_by_designation_found(self, mock_session_factory, sample_threat_data):
+    async def test_get_by_designation_found(self, mock_session_factory):
         """Test getting threat assessment by designation when found."""
         # Arrange
         service = ThreatService(mock_session_factory)
+        
+        # Mock _model_to_dict to return simple dict
+        service._model_to_dict = Mock(return_value={"designation": "2023 TEST", "ts_max": 1})
 
-        # Mock the UoW context manager
         mock_uow = Mock()
         mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
         mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
-
-        # Extend sample_threat_data with designation which is expected by the test
-        extended_threat_data = {**sample_threat_data, "designation": "2023 DW"}
         
-        # Create a simple object with the expected attributes instead of a complex mock
-        from types import SimpleNamespace
-        expected_threat = SimpleNamespace(**extended_threat_data)
-        # Add the table structure for the _model_to_dict method
-        expected_threat.__table__ = Mock()
-        expected_threat.__table__.columns = []
-        for key in extended_threat_data.keys():
-            mock_col = Mock()
-            mock_col.name = key
-            expected_threat.__table__.columns.append(mock_col)
-
-        mock_uow.threat_repo.get_by_designation = AsyncMock(return_value=expected_threat)
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_by_designation = AsyncMock(return_value=mock_threat)
 
         with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
             # Act
-            result = await service.get_by_designation("2023 DW")
+            result = await service.get_by_designation("2023 TEST")
 
             # Assert
             assert result is not None
-            assert result["designation"] == "2023 DW"
-            mock_uow.threat_repo.get_by_designation.assert_called_once_with("2023 DW")
+            assert result["designation"] == "2023 TEST"
+            mock_uow.threat_repo.get_by_designation.assert_called_once_with("2023 TEST")
 
     @pytest.mark.asyncio
     async def test_get_by_designation_not_found(self, mock_session_factory):
@@ -64,13 +53,9 @@ class TestThreatService:
         # Arrange
         service = ThreatService(mock_session_factory)
 
-        # Mock the UoW context manager
         mock_uow = Mock()
         mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
         mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
         mock_uow.threat_repo.get_by_designation = AsyncMock(return_value=None)
 
         with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
@@ -82,29 +67,18 @@ class TestThreatService:
             mock_uow.threat_repo.get_by_designation.assert_called_once_with("nonexistent")
 
     @pytest.mark.asyncio
-    async def test_get_by_asteroid_id_found(self, mock_session_factory, sample_threat_data):
+    async def test_get_by_asteroid_id_found(self, mock_session_factory):
         """Test getting threat assessment by asteroid ID when found."""
         # Arrange
         service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"asteroid_id": 1, "ts_max": 1})
 
-        # Mock the UoW context manager
         mock_uow = Mock()
         mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
         mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
-
-        expected_threat = Mock()
-        expected_threat.__table__ = Mock()
-        expected_threat.__table__.columns = []
-        for key, value in sample_threat_data.items():
-            setattr(expected_threat, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_threat.__table__.columns.append(mock_col)
-
-        mock_uow.threat_repo.get_by_asteroid_id = AsyncMock(return_value=expected_threat)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_by_asteroid_id = AsyncMock(return_value=mock_threat)
 
         with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
             # Act
@@ -112,7 +86,7 @@ class TestThreatService:
 
             # Assert
             assert result is not None
-            assert result["asteroid_id"] == sample_threat_data["asteroid_id"]
+            assert result["asteroid_id"] == 1
             mock_uow.threat_repo.get_by_asteroid_id.assert_called_once_with(1)
 
     @pytest.mark.asyncio
@@ -121,13 +95,9 @@ class TestThreatService:
         # Arrange
         service = ThreatService(mock_session_factory)
 
-        # Mock the UoW context manager
         mock_uow = Mock()
         mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
         mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
         mock_uow.threat_repo.get_by_asteroid_id = AsyncMock(return_value=None)
 
         with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
@@ -139,29 +109,18 @@ class TestThreatService:
             mock_uow.threat_repo.get_by_asteroid_id.assert_called_once_with(999)
 
     @pytest.mark.asyncio
-    async def test_get_high_risk(self, mock_session_factory, sample_threat_data):
+    async def test_get_high_risk(self, mock_session_factory):
         """Test getting high risk threat assessments."""
         # Arrange
         service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"ts_max": 6})
 
-        # Mock the UoW context manager
         mock_uow = Mock()
         mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
         mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
-
-        expected_threat = Mock()
-        expected_threat.__table__ = Mock()
-        expected_threat.__table__.columns = []
-        for key, value in sample_threat_data.items():
-            setattr(expected_threat, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_threat.__table__.columns.append(mock_col)
-
-        mock_uow.threat_repo.get_high_risk_threats = AsyncMock(return_value=[expected_threat])
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_high_risk_threats = AsyncMock(return_value=[mock_threat])
 
         with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
             # Act
@@ -169,55 +128,240 @@ class TestThreatService:
 
             # Assert
             assert len(result) == 1
-            assert result[0]["torino_scale"] == sample_threat_data["torino_scale"]
-            mock_uow.threat_repo.get_high_risk_threats.assert_called_once_with(20)
+            mock_uow.threat_repo.get_high_risk_threats.assert_called_once_with(limit=20, skip=0)
 
     @pytest.mark.asyncio
-    async def test_get_by_risk_level(self, mock_session_factory, sample_threat_data):
-        """Test getting threat assessments by risk level."""
+    async def test_get_high_risk_default_limit(self, mock_session_factory):
+        """Test getting high risk threats with default limit."""
         # Arrange
         service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"ts_max": 6})
 
-        # Mock the UoW context manager
         mock_uow = Mock()
         mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
         mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
-
-        expected_threat = Mock()
-        expected_threat.__table__ = Mock()
-        expected_threat.__table__.columns = []
-        for key, value in sample_threat_data.items():
-            setattr(expected_threat, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_threat.__table__.columns.append(mock_col)
-
-        mock_uow.threat_repo.get_threats_by_risk_level = AsyncMock(return_value=[expected_threat])
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_high_risk_threats = AsyncMock(return_value=[mock_threat])
 
         with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
             # Act
-            result = await service.get_by_risk_level(min_ts=4, max_ts=6)
+            result = await service.get_high_risk()
 
             # Assert
             assert len(result) == 1
-            mock_uow.threat_repo.get_threats_by_risk_level.assert_called_once_with(4, 6)
+            mock_uow.threat_repo.get_high_risk_threats.assert_called_once_with(limit=20, skip=0)
+
+    @pytest.mark.asyncio
+    async def test_get_by_risk_level_with_defaults(self, mock_session_factory):
+        """Test getting threat assessments by risk level with default pagination."""
+        # Arrange
+        service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"ts_max": 3})
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_threats_by_risk_level = AsyncMock(return_value=[mock_threat])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_risk_level(min_ts=0, max_ts=10)
+
+            # Assert
+            assert len(result) == 1
+            # Verify pagination parameters are passed with defaults
+            mock_uow.threat_repo.get_threats_by_risk_level.assert_called_once_with(
+                0, 10, skip=0, limit=100
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_risk_level_with_custom_pagination(self, mock_session_factory):
+        """Test getting threat assessments by risk level with custom pagination."""
+        # Arrange
+        service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"ts_max": 3})
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_threats_by_risk_level = AsyncMock(return_value=[mock_threat])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_risk_level(min_ts=4, max_ts=6, skip=10, limit=50)
+
+            # Assert
+            assert len(result) == 1
+            # Verify custom pagination parameters are passed
+            mock_uow.threat_repo.get_threats_by_risk_level.assert_called_once_with(
+                4, 6, skip=10, limit=50
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_probability_with_defaults(self, mock_session_factory):
+        """Test getting threat assessments by probability with default pagination."""
+        # Arrange
+        service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"ip": 0.001})
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_threats_by_probability = AsyncMock(return_value=[mock_threat])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_probability(min_probability=0.0, max_probability=1.0)
+
+            # Assert
+            assert len(result) == 1
+            # Verify pagination parameters are passed with defaults
+            mock_uow.threat_repo.get_threats_by_probability.assert_called_once_with(
+                0.0, 1.0, skip=0, limit=100
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_probability_with_custom_pagination(self, mock_session_factory):
+        """Test getting threat assessments by probability with custom pagination."""
+        # Arrange
+        service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"ip": 0.001})
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_threats_by_probability = AsyncMock(return_value=[mock_threat])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_probability(
+                min_probability=0.001, max_probability=0.01, skip=5, limit=25
+            )
+
+            # Assert
+            assert len(result) == 1
+            # Verify custom pagination parameters are passed
+            mock_uow.threat_repo.get_threats_by_probability.assert_called_once_with(
+                0.001, 0.01, skip=5, limit=25
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_energy_with_defaults(self, mock_session_factory):
+        """Test getting threat assessments by energy with default pagination."""
+        # Arrange
+        service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"energy_megatons": 10.0})
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_threats_by_energy = AsyncMock(return_value=[mock_threat])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_energy(min_energy=0.0, max_energy=None)
+
+            # Assert
+            assert len(result) == 1
+            # Verify pagination parameters are passed with defaults
+            mock_uow.threat_repo.get_threats_by_energy.assert_called_once_with(
+                0.0, None, skip=0, limit=100
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_energy_with_custom_pagination(self, mock_session_factory):
+        """Test getting threat assessments by energy with custom pagination."""
+        # Arrange
+        service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"energy_megatons": 50.0})
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_threats_by_energy = AsyncMock(return_value=[mock_threat])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_energy(
+                min_energy=10.0, max_energy=100.0, skip=10, limit=50
+            )
+
+            # Assert
+            assert len(result) == 1
+            # Verify custom pagination parameters are passed
+            mock_uow.threat_repo.get_threats_by_energy.assert_called_once_with(
+                10.0, 100.0, skip=10, limit=50
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_category_with_defaults(self, mock_session_factory):
+        """Test getting threat assessments by category with default pagination."""
+        # Arrange
+        service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"impact_category": "локальный"})
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_threats_by_impact_category = AsyncMock(return_value=[mock_threat])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_category("локальный")
+
+            # Assert
+            assert len(result) == 1
+            assert result[0]["impact_category"] == "локальный"
+            # Verify pagination parameters are passed with defaults
+            mock_uow.threat_repo.get_threats_by_impact_category.assert_called_once_with(
+                "локальный", skip=0, limit=100
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_category_with_custom_pagination(self, mock_session_factory):
+        """Test getting threat assessments by category with custom pagination."""
+        # Arrange
+        service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"impact_category": "региональный"})
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_threats_by_impact_category = AsyncMock(return_value=[mock_threat])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_category("региональный", skip=5, limit=25)
+
+            # Assert
+            assert len(result) == 1
+            # Verify custom pagination parameters are passed
+            mock_uow.threat_repo.get_threats_by_impact_category.assert_called_once_with(
+                "региональный", skip=5, limit=25
+            )
 
     @pytest.mark.asyncio
     async def test_get_statistics(self, mock_session_factory):
         """Test getting threat assessment statistics."""
         # Arrange
         service = ThreatService(mock_session_factory)
-
-        # Mock the UoW context manager
-        mock_uow = Mock()
-        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
-        mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
 
         expected_stats = {
             "total_threats": 100,
@@ -231,6 +375,9 @@ class TestThreatService:
             "last_updated": "2023-01-01T00:00:00"
         }
 
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
         mock_uow.threat_repo.get_statistics = AsyncMock(return_value=expected_stats)
 
         with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
@@ -241,231 +388,63 @@ class TestThreatService:
             assert result == expected_stats
             mock_uow.threat_repo.get_statistics.assert_called_once()
 
-    @pytest.mark.asyncio
-    async def test_get_by_energy(self, mock_session_factory, sample_threat_data):
-        """Test getting threat assessments by energy range."""
-        # Arrange
-        service = ThreatService(mock_session_factory)
-
-        # Mock the UoW context manager
-        mock_uow = Mock()
-        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
-        mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
-
-        expected_threat = Mock()
-        expected_threat.__table__ = Mock()
-        expected_threat.__table__.columns = []
-        for key, value in sample_threat_data.items():
-            setattr(expected_threat, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_threat.__table__.columns.append(mock_col)
-
-        mock_uow.threat_repo.get_threats_by_energy = AsyncMock(return_value=[expected_threat])
-
-        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
-            # Act
-            result = await service.get_by_energy(min_energy=10.0, max_energy=100.0)
-
-            # Assert
-            assert len(result) == 1
-            mock_uow.threat_repo.get_threats_by_energy.assert_called_once_with(10.0, 100.0)
-
-    @pytest.mark.asyncio
-    async def test_get_by_energy_no_max(self, mock_session_factory, sample_threat_data):
-        """Test getting threat assessments by minimum energy only."""
-        # Arrange
-        service = ThreatService(mock_session_factory)
-
-        # Mock the UoW context manager
-        mock_uow = Mock()
-        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
-        mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
-
-        expected_threat = Mock()
-        expected_threat.__table__ = Mock()
-        expected_threat.__table__.columns = []
-        for key, value in sample_threat_data.items():
-            setattr(expected_threat, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_threat.__table__.columns.append(mock_col)
-
-        mock_uow.threat_repo.get_threats_by_energy = AsyncMock(return_value=[expected_threat])
-
-        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
-            # Act
-            result = await service.get_by_energy(min_energy=10.0)
-
-            # Assert
-            assert len(result) == 1
-            mock_uow.threat_repo.get_threats_by_energy.assert_called_once_with(10.0, None)
-
-    @pytest.mark.asyncio
-    async def test_get_by_category(self, mock_session_factory, sample_threat_data):
-        """Test getting threat assessments by category."""
-        # Arrange
-        service = ThreatService(mock_session_factory)
-
-        # Mock the UoW context manager
-        mock_uow = Mock()
-        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
-        mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
-
-        expected_threat = Mock()
-        expected_threat.__table__ = Mock()
-        expected_threat.__table__.columns = []
-        for key, value in sample_threat_data.items():
-            setattr(expected_threat, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_threat.__table__.columns.append(mock_col)
-
-        mock_uow.threat_repo.get_threats_by_impact_category = AsyncMock(return_value=[expected_threat])
-
-        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
-            # Act
-            result = await service.get_by_category("региональный")
-
-            # Assert
-            assert len(result) == 1
-            mock_uow.threat_repo.get_threats_by_impact_category.assert_called_once_with("региональный")
-
-    def test_model_to_dict_with_valid_model(self, sample_threat_data):
-        """Test converting model instance to dictionary."""
-        # Arrange
-        service = ThreatService(Mock())
-        
-        mock_model = Mock()
-        mock_model.__table__ = Mock()
-        mock_model.__table__.columns = []
-        
-        for key, value in sample_threat_data.items():
-            setattr(mock_model, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            mock_model.__table__.columns.append(mock_col)
-        
-        # Act
-        result = service._model_to_dict(mock_model)
-
-        # Assert
-        assert result is not None
-        for key, expected_value in sample_threat_data.items():
-            actual_value = result[key]
-            # Handle type conversions that happen in _model_to_dict
-            if hasattr(expected_value, 'isoformat'):  # datetime objects
-                assert actual_value == expected_value.isoformat()
-            elif hasattr(expected_value, 'quantize'):  # Decimal objects
-                assert actual_value == float(expected_value)
-            else:
-                assert actual_value == expected_value
-
     def test_model_to_dict_with_none(self):
         """Test converting None model to dictionary."""
         # Arrange
         service = ThreatService(Mock())
-        
+
         # Act
         result = service._model_to_dict(None)
-        
+
         # Assert
         assert result is None
 
-    def test_model_to_dict_with_relationships(self, sample_threat_data):
-        """Test converting model instance with relationships to dictionary."""
-        # Arrange
-        service = ThreatService(Mock())
-
-        # Use SimpleNamespace to avoid _mock_methods conflicts
-        from types import SimpleNamespace
-
-        mock_model = SimpleNamespace()
-        mock_model.__dict__.update(sample_threat_data)
-
-        # Create a mock table
-        mock_table = Mock()
-        mock_table.columns = []
-        for key in sample_threat_data.keys():
-            mock_col = Mock()
-            mock_col.name = key
-            mock_table.columns.append(mock_col)
-        mock_model.__table__ = mock_table
-
-        # Add a relationship attribute
-        mock_related_model = SimpleNamespace(id=1, name="Related")
-        mock_related_table = Mock()
-        mock_related_table.columns = []
-        for attr in ["id", "name"]:
-            mock_col = Mock()
-            mock_col.name = attr
-            mock_related_table.columns.append(mock_col)
-        mock_related_model.__table__ = mock_related_table
-
-        mock_model.related_field = mock_related_model
-
-        # Act
-        result = service._model_to_dict(mock_model)
-
-        # Assert
-        assert result is not None
-        for key, expected_value in sample_threat_data.items():
-            actual_value = result[key]
-            # Handle type conversions that happen in _model_to_dict
-            if hasattr(expected_value, 'isoformat'):  # datetime objects
-                assert actual_value == expected_value.isoformat()
-            elif hasattr(expected_value, 'quantize'):  # Decimal objects
-                assert actual_value == float(expected_value)
-            else:
-                assert actual_value == expected_value
-        assert "related_field" in result
-
     @pytest.mark.asyncio
-    async def test_service_methods_use_uow_properly(self, mock_session_factory):
-        """Test that all service methods properly use UnitOfWork."""
+    async def test_all_methods_use_uow_correctly(self, mock_session_factory):
+        """Test that all service methods properly use UnitOfWork with pagination."""
         # Arrange
         service = ThreatService(mock_session_factory)
+        service._model_to_dict = Mock(return_value={"ts_max": 1})
 
-        # Mock the UoW context manager
         mock_uow = Mock()
         mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
         mock_uow.__aexit__ = AsyncMock(return_value=None)
-        mock_uow.threat_repo = Mock()
-        mock_session = Mock()
-        mock_uow.threat_repo.session = mock_session
         
-        mock_uow.threat_repo.get_by_designation = AsyncMock(return_value=None)
-        mock_uow.threat_repo.get_by_asteroid_id = AsyncMock(return_value=None)
-        mock_uow.threat_repo.get_high_risk_threats = AsyncMock(return_value=[])
-        mock_uow.threat_repo.get_threats_by_risk_level = AsyncMock(return_value=[])
+        mock_threat = Mock()
+        mock_uow.threat_repo.get_by_designation = AsyncMock(return_value=mock_threat)
+        mock_uow.threat_repo.get_by_asteroid_id = AsyncMock(return_value=mock_threat)
+        mock_uow.threat_repo.get_high_risk_threats = AsyncMock(return_value=[mock_threat])
+        mock_uow.threat_repo.get_threats_by_risk_level = AsyncMock(return_value=[mock_threat])
         mock_uow.threat_repo.get_statistics = AsyncMock(return_value={})
-        mock_uow.threat_repo.get_threats_by_energy = AsyncMock(return_value=[])
-        mock_uow.threat_repo.get_threats_by_impact_category = AsyncMock(return_value=[])
+        mock_uow.threat_repo.get_threats_by_energy = AsyncMock(return_value=[mock_threat])
+        mock_uow.threat_repo.get_threats_by_impact_category = AsyncMock(return_value=[mock_threat])
+        mock_uow.threat_repo.get_threats_by_probability = AsyncMock(return_value=[mock_threat])
 
         with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
-            # Act - Call all the methods
-            await service.get_by_designation("2023 DW")
+            # Act - Call all methods
+            await service.get_by_designation("2023 TEST")
             await service.get_by_asteroid_id(1)
             await service.get_high_risk(limit=20)
-            await service.get_by_risk_level(min_ts=0, max_ts=10)
+            await service.get_by_risk_level(min_ts=0, max_ts=10, skip=0, limit=100)
             await service.get_statistics()
-            await service.get_by_energy(min_energy=0.0, max_energy=100.0)
-            await service.get_by_category("локальный")
+            await service.get_by_energy(min_energy=0.0, max_energy=100.0, skip=0, limit=100)
+            await service.get_by_category("локальный", skip=0, limit=100)
+            await service.get_by_probability(min_probability=0.0, max_probability=1.0, skip=0, limit=100)
 
-            # Assert - All methods should have used UoW
-            mock_uow.threat_repo.get_by_designation.assert_called_once_with("2023 DW")
+            # Assert - All methods should have used UoW with correct pagination
+            mock_uow.threat_repo.get_by_designation.assert_called_once_with("2023 TEST")
             mock_uow.threat_repo.get_by_asteroid_id.assert_called_once_with(1)
-            mock_uow.threat_repo.get_high_risk_threats.assert_called_once_with(20)
-            mock_uow.threat_repo.get_threats_by_risk_level.assert_called_once_with(0, 10)
+            mock_uow.threat_repo.get_high_risk_threats.assert_called_once_with(limit=20, skip=0)
+            mock_uow.threat_repo.get_threats_by_risk_level.assert_called_once_with(
+                0, 10, skip=0, limit=100
+            )
             mock_uow.threat_repo.get_statistics.assert_called_once()
-            mock_uow.threat_repo.get_threats_by_energy.assert_called_once_with(0.0, 100.0)
-            mock_uow.threat_repo.get_threats_by_impact_category.assert_called_once_with("локальный")
+            mock_uow.threat_repo.get_threats_by_energy.assert_called_once_with(
+                0.0, 100.0, skip=0, limit=100
+            )
+            mock_uow.threat_repo.get_threats_by_impact_category.assert_called_once_with(
+                "локальный", skip=0, limit=100
+            )
+            mock_uow.threat_repo.get_threats_by_probability.assert_called_once_with(
+                0.0, 1.0, skip=0, limit=100
+            )

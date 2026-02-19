@@ -1,0 +1,1 @@
+from .asteroid_schema import *

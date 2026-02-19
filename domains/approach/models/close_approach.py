@@ -2,7 +2,7 @@ from typing import Optional
 from sqlalchemy import Float, DateTime, ForeignKey, String, UniqueConstraint, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
-from datetime import datetime
+from datetime import datetime, timezone
 
 from shared.models.base import Base
 
@@ -11,7 +11,7 @@ class CloseApproachModel(Base):
     Модель для хранения рассчитанных сближений астероидов с Землей.
     Соответствует таблице 'close_approach_models'.
     """
-    
+
     # Связь с астероидом
     asteroid_id: Mapped[int] = mapped_column(
         ForeignKey('asteroid_models.id', ondelete='CASCADE'),
@@ -19,10 +19,10 @@ class CloseApproachModel(Base):
         index=True,
         comment="Ссылка на астероид"
     )
-    
+
     # Временные параметры сближения
     approach_time: Mapped[datetime] = mapped_column(
-        DateTime,
+        DateTime(timezone=True),
         nullable=False,
         index=True,
         comment="Точное время максимального сближения"

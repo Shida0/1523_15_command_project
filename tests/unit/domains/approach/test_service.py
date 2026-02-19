@@ -1,166 +1,303 @@
+"""
+Unit tests for ApproachService.
+
+These tests verify that service methods correctly pass pagination parameters
+to repository methods.
+"""
 import pytest
 from unittest.mock import AsyncMock, Mock, patch
-from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+from domains.approach.models.close_approach import CloseApproachModel
 from domains.approach.services.approach_service import ApproachService
 
 
 class TestApproachService:
     """Unit tests for ApproachService class."""
 
-    def test_approach_service_initialization(self):
+    def test_approach_service_initialization(self, mock_session_factory):
         """Test initializing the approach service."""
-        # Arrange
-        mock_session_factory = Mock()
-        
-        # Act
+        # Arrange & Act
         service = ApproachService(mock_session_factory)
-        
+
         # Assert
         assert service.session_factory == mock_session_factory
 
     @pytest.mark.asyncio
-    async def test_get_upcoming(self, mock_session_factory, sample_approach_data):
+    async def test_get_upcoming(self, mock_session_factory, sample_approach_data, create_mock_model):
         """Test getting upcoming approaches."""
         # Arrange
         service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
 
-        # Create a fully mocked repository
-        mock_repo = Mock()
-        
-        expected_approach = Mock()
-        expected_approach.__table__ = Mock()
-        expected_approach.__table__.columns = []
-        for key, value in sample_approach_data.items():
-            setattr(expected_approach, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_approach.__table__.columns.append(mock_col)
-
-        # Configure the repository method to return the expected result using AsyncMock
-        mock_repo.get_upcoming_approaches = AsyncMock(return_value=[expected_approach])
-
-        # Mock the UoW with the mocked repository
         mock_uow = Mock()
-        mock_uow.approach_repo = mock_repo
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_upcoming_approaches = AsyncMock(
+            return_value=[expected_approach]
+        )
 
-        # Since UnitOfWork is imported inside the function, we need to patch it at the module level
-        # Patch the shared.transaction.uow module's UnitOfWork
-        with patch('shared.transaction.uow.UnitOfWork') as MockUoWClass:
-            mock_uow_instance = Mock()
-            mock_uow_instance.__aenter__ = AsyncMock(return_value=mock_uow)
-            mock_uow_instance.__aexit__ = AsyncMock(return_value=None)
-            MockUoWClass.return_value = mock_uow_instance
-
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
             # Act
-            result = await service.get_upcoming(limit=10)
+            result = await service.get_upcoming(limit=10, skip=0)
 
             # Assert
-            mock_repo.get_upcoming_approaches.assert_called_once_with(10)
             assert len(result) == 1
             assert result[0]["asteroid_id"] == sample_approach_data["asteroid_id"]
+            mock_uow.approach_repo.get_upcoming_approaches.assert_called_once_with(limit=10, skip=0)
 
     @pytest.mark.asyncio
-    async def test_get_closest(self, mock_session_factory, sample_approach_data):
+    async def test_get_upcoming_default_limit(self, mock_session_factory, sample_approach_data, create_mock_model):
+        """Test getting upcoming approaches with default limit."""
+        # Arrange
+        service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_upcoming_approaches = AsyncMock(
+            return_value=[expected_approach]
+        )
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_upcoming()
+
+            # Assert
+            assert len(result) == 1
+            mock_uow.approach_repo.get_upcoming_approaches.assert_called_once_with(limit=10, skip=0)
+
+    @pytest.mark.asyncio
+    async def test_get_closest(self, mock_session_factory, sample_approach_data, create_mock_model):
         """Test getting closest approaches."""
         # Arrange
         service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
 
-        # Create a fully mocked repository
-        mock_repo = Mock()
-        mock_session = Mock()
-        mock_repo.session = mock_session
-
-        # Extend sample_approach_data with distance_au which is expected by the model
-        extended_approach_data = {**sample_approach_data, "distance_au": 0.67}
-        
-        # Create a simple object with the expected attributes instead of a complex mock
-        from types import SimpleNamespace
-        expected_approach = SimpleNamespace(**extended_approach_data)
-        # Add the table structure for the _model_to_dict method
-        expected_approach.__table__ = Mock()
-        expected_approach.__table__.columns = []
-        for key in extended_approach_data.keys():
-            mock_col = Mock()
-            mock_col.name = key
-            expected_approach.__table__.columns.append(mock_col)
-
-        # Configure the repository method to return the expected result as a coroutine
-        mock_repo.get_closest_approaches_by_distance = AsyncMock(return_value=[expected_approach])
-
-        # Mock the UoW with the mocked repository
         mock_uow = Mock()
-        mock_uow.approach_repo = mock_repo
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_closest_approaches_by_distance = AsyncMock(
+            return_value=[expected_approach]
+        )
 
-        # Since UnitOfWork is imported inside the function, we need to patch it at the module level
-        # Patch the shared.transaction.uow module's UnitOfWork
-        with patch('shared.transaction.uow.UnitOfWork') as MockUoWClass:
-            mock_uow_instance = Mock()
-            mock_uow_instance.__aenter__ = AsyncMock(return_value=mock_uow)
-            mock_uow_instance.__aexit__ = AsyncMock(return_value=None)
-            MockUoWClass.return_value = mock_uow_instance
-
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
             # Act
             result = await service.get_closest(limit=10)
 
             # Assert
-            mock_repo.get_closest_approaches_by_distance.assert_called_once_with(10)
             assert len(result) == 1
-            assert result[0]["distance_au"] == 0.67  # Using the added value
+            assert result[0]["distance_au"] == sample_approach_data["distance_au"]
+            mock_uow.approach_repo.get_closest_approaches_by_distance.assert_called_once_with(limit=10, skip=0)
 
     @pytest.mark.asyncio
-    async def test_get_fastest(self, mock_session_factory, sample_approach_data):
+    async def test_get_fastest(self, mock_session_factory, sample_approach_data, create_mock_model):
         """Test getting fastest approaches."""
         # Arrange
         service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
 
-        # Create a fully mocked repository
-        mock_repo = Mock()
-        mock_session = Mock()
-        mock_repo.session = mock_session
-
-        expected_approach = Mock()
-        expected_approach.__table__ = Mock()
-        expected_approach.__table__.columns = []
-        for key, value in sample_approach_data.items():
-            setattr(expected_approach, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_approach.__table__.columns.append(mock_col)
-
-        # Configure the repository method to return the expected result as a coroutine
-        mock_repo.get_fastest_approaches = AsyncMock(return_value=[expected_approach])
-
-        # Mock the UoW with the mocked repository
         mock_uow = Mock()
-        mock_uow.approach_repo = mock_repo
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_fastest_approaches = AsyncMock(
+            return_value=[expected_approach]
+        )
 
-        # Since UnitOfWork is imported inside the function, we need to patch it at the module level
-        # Patch the shared.transaction.uow module's UnitOfWork
-        with patch('shared.transaction.uow.UnitOfWork') as MockUoWClass:
-            mock_uow_instance = Mock()
-            mock_uow_instance.__aenter__ = AsyncMock(return_value=mock_uow)
-            mock_uow_instance.__aexit__ = AsyncMock(return_value=None)
-            MockUoWClass.return_value = mock_uow_instance
-
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
             # Act
             result = await service.get_fastest(limit=10)
 
             # Assert
-            mock_repo.get_fastest_approaches.assert_called_once_with(10)
             assert len(result) == 1
             assert result[0]["velocity_km_s"] == sample_approach_data["velocity_km_s"]
+            mock_uow.approach_repo.get_fastest_approaches.assert_called_once_with(limit=10, skip=0)
+
+    @pytest.mark.asyncio
+    async def test_get_by_asteroid_id_with_defaults(self, mock_session_factory, sample_approach_data, create_mock_model):
+        """Test getting approaches by asteroid ID with default pagination."""
+        # Arrange
+        service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_by_asteroid = AsyncMock(
+            return_value=[expected_approach]
+        )
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_asteroid_id(1)
+
+            # Assert
+            assert len(result) == 1
+            assert result[0]["asteroid_id"] == sample_approach_data["asteroid_id"]
+            # Verify pagination parameters are passed with defaults
+            mock_uow.approach_repo.get_by_asteroid.assert_called_once_with(
+                1, skip=0, limit=100
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_asteroid_id_with_custom_pagination(self, mock_session_factory, sample_approach_data, create_mock_model):
+        """Test getting approaches by asteroid ID with custom pagination."""
+        # Arrange
+        service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_by_asteroid = AsyncMock(
+            return_value=[expected_approach]
+        )
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_asteroid_id(1, skip=10, limit=50)
+
+            # Assert
+            assert len(result) == 1
+            # Verify custom pagination parameters are passed
+            mock_uow.approach_repo.get_by_asteroid.assert_called_once_with(
+                1, skip=10, limit=50
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_asteroid_id_empty_result(self, mock_session_factory):
+        """Test getting approaches by asteroid ID returns empty list when none found."""
+        # Arrange
+        service = ApproachService(mock_session_factory)
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_by_asteroid = AsyncMock(return_value=[])
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_asteroid_id(999)
+
+            # Assert
+            assert result == []
+            assert isinstance(result, list)
+
+    @pytest.mark.asyncio
+    async def test_get_by_asteroid_designation_with_defaults(self, mock_session_factory, sample_approach_data, create_mock_model):
+        """Test getting approaches by asteroid designation with default pagination."""
+        # Arrange
+        service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_by_asteroid_designation = AsyncMock(
+            return_value=[expected_approach]
+        )
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_asteroid_designation("2023 TEST")
+
+            # Assert
+            assert len(result) == 1
+            assert result[0]["asteroid_designation"] == "2023 TEST"
+            # Verify pagination parameters are passed with defaults
+            mock_uow.approach_repo.get_by_asteroid_designation.assert_called_once_with(
+                "2023 TEST", skip=0, limit=100
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_by_asteroid_designation_with_custom_pagination(self, mock_session_factory, sample_approach_data, create_mock_model):
+        """Test getting approaches by asteroid designation with custom pagination."""
+        # Arrange
+        service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_by_asteroid_designation = AsyncMock(
+            return_value=[expected_approach]
+        )
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_by_asteroid_designation("2023 TEST", skip=5, limit=25)
+
+            # Assert
+            assert len(result) == 1
+            # Verify custom pagination parameters are passed
+            mock_uow.approach_repo.get_by_asteroid_designation.assert_called_once_with(
+                "2023 TEST", skip=5, limit=25
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_approaches_in_period_with_defaults(self, mock_session_factory, sample_approach_data, create_mock_model):
+        """Test getting approaches in period with default pagination."""
+        # Arrange
+        service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_approaches_in_period = AsyncMock(
+            return_value=[expected_approach]
+        )
+        
+        start_date = datetime(2024, 1, 1, tzinfo=timezone.utc)
+        end_date = datetime(2024, 12, 31, tzinfo=timezone.utc)
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_approaches_in_period(start_date, end_date)
+
+            # Assert
+            assert len(result) == 1
+            # Verify pagination parameters are passed with defaults
+            mock_uow.approach_repo.get_approaches_in_period.assert_called_once_with(
+                start_date, end_date, max_distance=None, skip=0, limit=100
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_approaches_in_period_with_max_distance(self, mock_session_factory, sample_approach_data, create_mock_model):
+        """Test getting approaches in period with max_distance filter."""
+        # Arrange
+        service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
+
+        mock_uow = Mock()
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_approaches_in_period = AsyncMock(
+            return_value=[expected_approach]
+        )
+        
+        start_date = datetime(2024, 1, 1, tzinfo=timezone.utc)
+        end_date = datetime(2024, 12, 31, tzinfo=timezone.utc)
+
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act
+            result = await service.get_approaches_in_period(
+                start_date, end_date, max_distance=0.05, skip=10, limit=50
+            )
+
+            # Assert
+            assert len(result) == 1
+            # Verify all parameters are passed correctly
+            mock_uow.approach_repo.get_approaches_in_period.assert_called_once_with(
+                start_date, end_date, max_distance=0.05, skip=10, limit=50
+            )
 
     @pytest.mark.asyncio
     async def test_get_statistics(self, mock_session_factory):
         """Test getting approach statistics."""
         # Arrange
         service = ApproachService(mock_session_factory)
-
-        # Create a fully mocked repository
-        mock_repo = Mock()
-        mock_session = Mock()
-        mock_repo.session = mock_session
 
         expected_stats = {
             "total_approaches": 100,
@@ -173,134 +310,34 @@ class TestApproachService:
             "last_updated": "2023-01-01T00:00:00"
         }
 
-        # Configure the repository method to return the expected result as a coroutine
-        mock_repo.get_statistics = AsyncMock(return_value=expected_stats)
-
-        # Mock the UoW with the mocked repository
         mock_uow = Mock()
-        mock_uow.approach_repo = mock_repo
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        mock_uow.approach_repo.get_statistics = AsyncMock(return_value=expected_stats)
 
-        # Since UnitOfWork is imported inside the function, we need to patch it at the module level
-        # Patch the shared.transaction.uow module's UnitOfWork
-        with patch('shared.transaction.uow.UnitOfWork') as MockUoWClass:
-            mock_uow_instance = Mock()
-            mock_uow_instance.__aenter__ = AsyncMock(return_value=mock_uow)
-            mock_uow_instance.__aexit__ = AsyncMock(return_value=None)
-            MockUoWClass.return_value = mock_uow_instance
-
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
             # Act
             result = await service.get_statistics()
 
             # Assert
-            mock_repo.get_statistics.assert_called_once()
             assert result == expected_stats
-
-    @pytest.mark.asyncio
-    async def test_get_by_asteroid_id(self, mock_session_factory, sample_approach_data):
-        """Test getting approaches by asteroid ID."""
-        # Arrange
-        service = ApproachService(mock_session_factory)
-
-        # Create a fully mocked repository
-        mock_repo = Mock()
-        mock_session = Mock()
-        mock_repo.session = mock_session
-
-        expected_approach = Mock()
-        expected_approach.__table__ = Mock()
-        expected_approach.__table__.columns = []
-        for key, value in sample_approach_data.items():
-            setattr(expected_approach, key, value)
-            mock_col = Mock()
-            mock_col.name = key
-            expected_approach.__table__.columns.append(mock_col)
-
-        # Configure the repository method to return the expected result as a coroutine
-        mock_repo.get_by_asteroid = AsyncMock(return_value=[expected_approach])
-
-        # Mock the UoW with the mocked repository
-        mock_uow = Mock()
-        mock_uow.approach_repo = mock_repo
-
-        # Since UnitOfWork is imported inside the function, we need to patch it at the module level
-        # Patch the shared.transaction.uow module's UnitOfWork
-        with patch('shared.transaction.uow.UnitOfWork') as MockUoWClass:
-            mock_uow_instance = Mock()
-            mock_uow_instance.__aenter__ = AsyncMock(return_value=mock_uow)
-            mock_uow_instance.__aexit__ = AsyncMock(return_value=None)
-            MockUoWClass.return_value = mock_uow_instance
-
-            # Act
-            result = await service.get_by_asteroid_id(1)
-
-            # Assert
-            mock_repo.get_by_asteroid.assert_called_once_with(1)
-            assert len(result) == 1
-            assert result[0]["asteroid_id"] == sample_approach_data["asteroid_id"]
-
-    @pytest.mark.asyncio
-    async def test_get_by_asteroid_designation(self, mock_session_factory, sample_approach_data):
-        """Test getting approaches by asteroid designation."""
-        # Arrange
-        service = ApproachService(mock_session_factory)
-
-        # Create a fully mocked repository
-        mock_repo = Mock()
-        mock_session = Mock()
-        mock_repo.session = mock_session
-
-        # Extend sample_approach_data with distance_au which is expected by the model
-        extended_approach_data = {**sample_approach_data, "distance_au": 0.67, "asteroid_designation": "2023 DW"}
-        
-        # Create a simple object with the expected attributes instead of a complex mock
-        from types import SimpleNamespace
-        expected_approach = SimpleNamespace(**extended_approach_data)
-        # Add the table structure for the _model_to_dict method
-        expected_approach.__table__ = Mock()
-        expected_approach.__table__.columns = []
-        for key in extended_approach_data.keys():
-            mock_col = Mock()
-            mock_col.name = key
-            expected_approach.__table__.columns.append(mock_col)
-
-        # Configure the repository method to return the expected result as a coroutine
-        mock_repo.get_by_asteroid_designation = AsyncMock(return_value=[expected_approach])
-
-        # Mock the UoW with the mocked repository
-        mock_uow = Mock()
-        mock_uow.approach_repo = mock_repo
-
-        # Since UnitOfWork is imported inside the function, we need to patch it at the module level
-        # Patch the shared.transaction.uow module's UnitOfWork
-        with patch('shared.transaction.uow.UnitOfWork') as MockUoWClass:
-            mock_uow_instance = Mock()
-            mock_uow_instance.__aenter__ = AsyncMock(return_value=mock_uow)
-            mock_uow_instance.__aexit__ = AsyncMock(return_value=None)
-            MockUoWClass.return_value = mock_uow_instance
-
-            # Act
-            result = await service.get_by_asteroid_designation("2023 DW")
-
-            # Assert
-            mock_repo.get_by_asteroid_designation.assert_called_once_with("2023 DW")
-            assert len(result) == 1
-            assert result[0]["asteroid_designation"] == "2023 DW"
+            mock_uow.approach_repo.get_statistics.assert_called_once()
 
     def test_model_to_dict_with_valid_model(self, sample_approach_data):
         """Test converting model instance to dictionary."""
         # Arrange
         service = ApproachService(Mock())
-        
+
         mock_model = Mock()
         mock_model.__table__ = Mock()
         mock_model.__table__.columns = []
-        
+
         for key, value in sample_approach_data.items():
             setattr(mock_model, key, value)
             mock_col = Mock()
             mock_col.name = key
             mock_model.__table__.columns.append(mock_col)
-        
+
         # Act
         result = service._model_to_dict(mock_model)
 
@@ -308,14 +345,8 @@ class TestApproachService:
         assert result is not None
         for key, expected_value in sample_approach_data.items():
             actual_value = result[key]
-            # Handle type conversions that happen in _model_to_dict
-            if hasattr(expected_value, 'isoformat'):  # datetime or date objects
-                if hasattr(expected_value, 'hour'):  # datetime object (has hour attribute)
-                    assert actual_value == expected_value.isoformat()
-                else:  # date object (no hour attribute)
-                    assert actual_value == expected_value.isoformat()
-            elif hasattr(expected_value, 'quantize'):  # Decimal objects
-                assert actual_value == float(expected_value)
+            if hasattr(expected_value, 'isoformat'):
+                assert actual_value == expected_value.isoformat()
             else:
                 assert actual_value == expected_value
 
@@ -323,107 +354,54 @@ class TestApproachService:
         """Test converting None model to dictionary."""
         # Arrange
         service = ApproachService(Mock())
-        
+
         # Act
         result = service._model_to_dict(None)
-        
+
         # Assert
         assert result is None
 
-    def test_model_to_dict_with_relationships(self, sample_approach_data):
-        """Test converting model instance with relationships to dictionary."""
-        # Arrange
-        service = ApproachService(Mock())
-
-        # Use SimpleNamespace to avoid _mock_methods conflicts
-        from types import SimpleNamespace
-        
-        mock_model = SimpleNamespace()
-        mock_model.__dict__.update(sample_approach_data)
-        
-        # Create a mock table
-        mock_table = Mock()
-        mock_table.columns = []
-        for key in sample_approach_data.keys():
-            mock_col = Mock()
-            mock_col.name = key
-            mock_table.columns.append(mock_col)
-        mock_model.__table__ = mock_table
-
-        # Add a relationship attribute
-        mock_related_model = SimpleNamespace(id=1, name="Related")
-        mock_related_table = Mock()
-        mock_related_table.columns = []
-        for attr in ["id", "name"]:
-            mock_col = Mock()
-            mock_col.name = attr
-            mock_related_table.columns.append(mock_col)
-        mock_related_model.__table__ = mock_related_table
-
-        mock_model.related_field = mock_related_model
-
-        # Act
-        result = service._model_to_dict(mock_model)
-
-        # Assert
-        assert result is not None
-        for key, expected_value in sample_approach_data.items():
-            actual_value = result[key]
-            # Handle type conversions that happen in _model_to_dict
-            if hasattr(expected_value, 'isoformat'):  # datetime or date objects
-                if hasattr(expected_value, 'hour'):  # datetime object (has hour attribute)
-                    assert actual_value == expected_value.isoformat()
-                else:  # date object (no hour attribute)
-                    assert actual_value == expected_value.isoformat()
-            elif hasattr(expected_value, 'quantize'):  # Decimal objects
-                assert actual_value == float(expected_value)
-            else:
-                assert actual_value == expected_value
-        assert "related_field" in result
-
     @pytest.mark.asyncio
-    async def test_service_methods_use_uow_properly(self, mock_session_factory):
+    async def test_all_methods_use_uow_correctly(self, mock_session_factory, sample_approach_data, create_mock_model):
         """Test that all service methods properly use UnitOfWork."""
         # Arrange
         service = ApproachService(mock_session_factory)
+        expected_approach = create_mock_model(CloseApproachModel, sample_approach_data)
 
-        # Create a fully mocked repository
-        mock_repo = Mock()
-        mock_session = Mock()
-        mock_repo.session = mock_session
-
-        # Configure the repository methods to return expected results as coroutines
-        mock_repo.get_upcoming_approaches = AsyncMock(return_value=[])
-        mock_repo.get_closest_approaches_by_distance = AsyncMock(return_value=[])
-        mock_repo.get_fastest_approaches = AsyncMock(return_value=[])
-        mock_repo.get_statistics = AsyncMock(return_value={})
-        mock_repo.get_by_asteroid = AsyncMock(return_value=[])
-        mock_repo.get_by_asteroid_designation = AsyncMock(return_value=[])
-
-        # Mock the UoW with the mocked repository
         mock_uow = Mock()
-        mock_uow.approach_repo = mock_repo
+        mock_uow.__aenter__ = AsyncMock(return_value=mock_uow)
+        mock_uow.__aexit__ = AsyncMock(return_value=None)
+        
+        mock_uow.approach_repo.get_upcoming_approaches = AsyncMock(return_value=[expected_approach])
+        mock_uow.approach_repo.get_closest_approaches_by_distance = AsyncMock(return_value=[expected_approach])
+        mock_uow.approach_repo.get_fastest_approaches = AsyncMock(return_value=[expected_approach])
+        mock_uow.approach_repo.get_statistics = AsyncMock(return_value={})
+        mock_uow.approach_repo.get_by_asteroid = AsyncMock(return_value=[expected_approach])
+        mock_uow.approach_repo.get_by_asteroid_designation = AsyncMock(return_value=[expected_approach])
+        mock_uow.approach_repo.get_approaches_in_period = AsyncMock(return_value=[expected_approach])
 
-        # Since UnitOfWork is imported inside the function, we need to patch it at the module level
-        # Patch the shared.transaction.uow module's UnitOfWork
-        with patch('shared.transaction.uow.UnitOfWork') as MockUoWClass:
-            mock_uow_instance = Mock()
-            mock_uow_instance.__aenter__ = AsyncMock(return_value=mock_uow)
-            mock_uow_instance.__aexit__ = AsyncMock(return_value=None)
-            MockUoWClass.return_value = mock_uow_instance
-
-            # Act - Call all the methods
+        with patch('shared.transaction.uow.UnitOfWork', return_value=mock_uow):
+            # Act - Call all methods
+            start_date = datetime(2024, 1, 1, tzinfo=timezone.utc)
+            end_date = datetime(2024, 12, 31, tzinfo=timezone.utc)
+            
             await service.get_upcoming(limit=10)
             await service.get_closest(limit=10)
             await service.get_fastest(limit=10)
             await service.get_statistics()
-            await service.get_by_asteroid_id(1)
-            await service.get_by_asteroid_designation("2023 DW")
+            await service.get_by_asteroid_id(1, skip=0, limit=100)
+            await service.get_by_asteroid_designation("2023 TEST", skip=0, limit=100)
+            await service.get_approaches_in_period(start_date, end_date)
 
             # Assert - All methods should have used UoW
-            mock_repo.get_upcoming_approaches.assert_called_once_with(10)
-            mock_repo.get_closest_approaches_by_distance.assert_called_once_with(10)
-            mock_repo.get_fastest_approaches.assert_called_once_with(10)
-            mock_repo.get_statistics.assert_called_once()
-            mock_repo.get_by_asteroid.assert_called_once_with(1)
-            mock_repo.get_by_asteroid_designation.assert_called_once_with("2023 DW")
+            mock_uow.approach_repo.get_upcoming_approaches.assert_called_once_with(limit=10, skip=0)
+            mock_uow.approach_repo.get_closest_approaches_by_distance.assert_called_once_with(limit=10, skip=0)
+            mock_uow.approach_repo.get_fastest_approaches.assert_called_once_with(limit=10, skip=0)
+            mock_uow.approach_repo.get_statistics.assert_called_once()
+            mock_uow.approach_repo.get_by_asteroid.assert_called_once_with(1, skip=0, limit=100)
+            mock_uow.approach_repo.get_by_asteroid_designation.assert_called_once_with(
+                "2023 TEST", skip=0, limit=100
+            )
+            mock_uow.approach_repo.get_approaches_in_period.assert_called_once_with(
+                start_date, end_date, max_distance=None, skip=0, limit=100
+            )

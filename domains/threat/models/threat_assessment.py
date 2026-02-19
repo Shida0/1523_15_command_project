@@ -1,6 +1,6 @@
 from sqlalchemy import Float, String, ForeignKey, CheckConstraint, Integer, JSON, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 import logging
 
@@ -136,13 +136,13 @@ class ThreatAssessmentModel(Base):
     
     sentry_last_update: Mapped[datetime] = mapped_column(
         nullable=False,
-        default=lambda: datetime.now(),
+        default=lambda: datetime.now(timezone.utc),
         comment="Время последнего обновления данных из Sentry API"
     )
     
     # Связи
     asteroid: Mapped['AsteroidModel'] = relationship( # type: ignore
-        back_populates='threat_assessment',  # ✅ ИЗМЕНЕНО: единственное число
+        back_populates='threat_assessment',  
         lazy='selectin'
     )
     

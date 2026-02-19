@@ -41,7 +41,8 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
     
     async def get_high_risk_threats(
         self,
-        limit: int = 20
+        limit: int = 20,
+        skip: int = 0
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы с высоким уровнем риска (ts_max >= 5).
@@ -49,6 +50,7 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
         """
         return await self.filter(
             filters={"ts_max__ge": 5},
+            skip=skip,
             limit=limit,
             order_by="ts_max",
             order_desc=True

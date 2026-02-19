@@ -224,8 +224,11 @@ class BaseService:
                 # Это связанная модель, рекурсивно преобразуем
                 value = self._model_to_dict(value)
             elif isinstance(value, list):
-                # Это список связанных моделей
-                value = [self._model_to_dict(item) for item in value]
+                # Это список связанных моделей или простых значений
+                if value and hasattr(value[0], '__table__'):
+                    # Список моделей
+                    value = [self._model_to_dict(item) for item in value]
+                # else: список простых значений, оставляем как есть
             
             result[column.name] = value
 

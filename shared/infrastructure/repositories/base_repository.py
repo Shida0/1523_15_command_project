@@ -13,6 +13,7 @@ import unittest.mock
 import asyncio
 
 from shared.models.base import Base
+from shared.utils.datetime_utils import normalize_datetime
 # Remove the import as it would create circular dependency
 
 # Тип для обобщенных моделей
@@ -411,7 +412,7 @@ class BaseRepository(Generic[ModelType]):
     def _build_filter_conditions(self, filters: Dict[str, Any]) -> list:
         """Преобразует словарь фильтров в условия SQLAlchemy."""
         conditions = []
-        
+
         for key, value in filters.items():
             if "__" in key:
                 field_name, operator = key.split("__", 1)
@@ -420,11 +421,14 @@ class BaseRepository(Generic[ModelType]):
                 field_name = key
                 operator = "eq"
                 field = getattr(self.model, key, None)
-            
+
             # Skip if field doesn't exist
             if field is None:
                 continue
-            
+
+            # КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: нормализуем datetime значения
+            value = normalize_datetime(value)
+
             # Try to create the condition
             try:
                 if operator == "eq":
@@ -451,7 +455,7 @@ class BaseRepository(Generic[ModelType]):
                     condition = field.is_(None)
                 elif operator == "is_not_null":
                     condition = field.is_not(None)
-                
+
                 # Check if this is an unknown field scenario
                 # When using a basic Mock field that wasn't set up for testing,
                 # comparisons return False rather than a condition object
@@ -463,7 +467,7 @@ class BaseRepository(Generic[ModelType]):
             except:
                 # If we can't create the condition, skip
                 continue
-        
+
         return conditions
     
     async def bulk_create(

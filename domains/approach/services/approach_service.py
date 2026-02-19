@@ -2,6 +2,7 @@
 Сервис для работы со сближениями.
 """
 from typing import Dict, Any, List, Optional
+from datetime import datetime
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 import logging
 
@@ -31,7 +32,7 @@ class ApproachService(BaseService):
 
     # === СПЕЦИАЛИЗИРОВАННЫЕ МЕТОДЫ ===
 
-    async def get_upcoming(self, limit: int = 10) -> List[Dict[str, Any]]:
+    async def get_upcoming(self, limit: int = 10, skip: int = 0) -> List[Dict[str, Any]]:
         """
         📅 Получение ближайших сближений астероидов с Землей.
 
@@ -39,6 +40,7 @@ class ApproachService(BaseService):
 
         Args:
             limit (int): Максимальное количество возвращаемых сближений (по умолчанию 10)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
 
         Returns:
             List[Dict[str, Any]]: Список ближайших сближений
@@ -51,10 +53,10 @@ class ApproachService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                approaches = await uow.approach_repo.get_upcoming_approaches(limit)
+                approaches = await uow.approach_repo.get_upcoming_approaches(limit=limit, skip=skip)
                 return [self._model_to_dict(a) for a in approaches]
 
-    async def get_closest(self, limit: int = 10) -> List[Dict[str, Any]]:
+    async def get_closest(self, limit: int = 10, skip: int = 0) -> List[Dict[str, Any]]:
         """
         📏 Получение самых близких по расстоянию сближений.
 
@@ -62,6 +64,7 @@ class ApproachService(BaseService):
 
         Args:
             limit (int): Максимальное количество возвращаемых сближений (по умолчанию 10)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
 
         Returns:
             List[Dict[str, Any]]: Список сближений, отсортированных по расстоянию
@@ -74,10 +77,10 @@ class ApproachService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                approaches = await uow.approach_repo.get_closest_approaches_by_distance(limit)
+                approaches = await uow.approach_repo.get_closest_approaches_by_distance(limit=limit, skip=skip)
                 return [self._model_to_dict(a) for a in approaches]
 
-    async def get_fastest(self, limit: int = 10) -> List[Dict[str, Any]]:
+    async def get_fastest(self, limit: int = 10, skip: int = 0) -> List[Dict[str, Any]]:
         """
         ⚡ Получение сближений с наибольшей скоростью.
 
@@ -85,6 +88,7 @@ class ApproachService(BaseService):
 
         Args:
             limit (int): Максимальное количество возвращаемых сближений (по умолчанию 10)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
 
         Returns:
             List[Dict[str, Any]]: Список сближений, отсортированных по скорости
@@ -97,15 +101,22 @@ class ApproachService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                approaches = await uow.approach_repo.get_fastest_approaches(limit)
+                approaches = await uow.approach_repo.get_fastest_approaches(limit=limit, skip=skip)
                 return [self._model_to_dict(a) for a in approaches]
 
-    async def get_by_asteroid_id(self, asteroid_id: int) -> List[Dict[str, Any]]:
+    async def get_by_asteroid_id(
+        self,
+        asteroid_id: int,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """
         🔍 Получение всех сближений для астероида по его ID.
 
         Args:
             asteroid_id (int): Уникальный идентификатор астероида
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
 
         Returns:
             List[Dict[str, Any]]: Список всех сближений для указанного астероида
@@ -118,15 +129,24 @@ class ApproachService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                approaches = await uow.approach_repo.get_by_asteroid(asteroid_id)
+                approaches = await uow.approach_repo.get_by_asteroid(
+                    asteroid_id, skip=skip, limit=limit
+                )
                 return [self._model_to_dict(a) for a in approaches]
 
-    async def get_by_asteroid_designation(self, designation: str) -> List[Dict[str, Any]]:
+    async def get_by_asteroid_designation(
+        self,
+        designation: str,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """
         🔍 Получение всех сближений для астероида по его обозначению NASA.
 
         Args:
             designation (str): Обозначение астероида в системе NASA
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
 
         Returns:
             List[Dict[str, Any]]: Список всех сближений для астероида с указанным обозначением
@@ -139,7 +159,49 @@ class ApproachService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                approaches = await uow.approach_repo.get_by_asteroid_designation(designation)
+                approaches = await uow.approach_repo.get_by_asteroid_designation(
+                    designation, skip=skip, limit=limit
+                )
+                return [self._model_to_dict(a) for a in approaches]
+
+    async def get_approaches_in_period(
+        self,
+        start_date: datetime,
+        end_date: datetime,
+        max_distance: Optional[float] = None,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[Dict[str, Any]]:
+        """
+        📅 Получение сближений в указанном временном периоде.
+
+        Метод возвращает сближения, произошедшие (или запланированные) в указанный
+        временной период, с возможностью фильтрации по максимальному расстоянию.
+
+        Args:
+            start_date (datetime): Начало временного периода
+            end_date (datetime): Конец временного периода
+            max_distance (Optional[float]): Максимальное расстояние в а.е. для фильтрации (по умолчанию None)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
+
+        Returns:
+            List[Dict[str, Any]]: Список сближений в заданном временном периоде
+
+        Example:
+            >>> from datetime import datetime, timedelta
+            >>> service = ApproachService(session_factory)
+            >>> start = datetime.now()
+            >>> end = start + timedelta(days=365)
+            >>> approaches = await service.get_approaches_in_period(start, end, max_distance=0.05)
+            >>> print(f"Сближения в следующем году в пределах 0.05 а.е.: {len(approaches)}")
+        """
+        async with self.session_factory() as session:
+            from shared.transaction.uow import UnitOfWork
+            async with UnitOfWork(self.session_factory) as uow:
+                approaches = await uow.approach_repo.get_approaches_in_period(
+                    start_date, end_date, max_distance=max_distance, skip=skip, limit=limit
+                )
                 return [self._model_to_dict(a) for a in approaches]
 
     async def get_statistics(self) -> Dict[str, Any]:

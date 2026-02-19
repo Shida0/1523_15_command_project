@@ -12,12 +12,13 @@ import logging
 
 from domains.approach.models.close_approach import CloseApproachModel
 from shared.infrastructure import BaseRepository
+from shared.utils.datetime_utils import now_aware
 
 logger = logging.getLogger(__name__)
 
 class ApproachRepository(BaseRepository[CloseApproachModel]):
     """Репозиторий для операций со сближениями астероидов."""
-    
+
     def __init__(self):
         """Инициализирует репозиторий для модели CloseApproachModel."""
         super().__init__(CloseApproachModel)
@@ -69,6 +70,11 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
         Получает сближения в указанном временном периоде.
         Без коммита (чтение).
         """
+        # Ensure datetime objects are timezone-aware
+        from shared.utils.datetime_utils import to_aware
+        start_date = to_aware(start_date)
+        end_date = to_aware(end_date)
+        
         filters = {
             "approach_time__ge": start_date,
             "approach_time__le": end_date
@@ -86,23 +92,26 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     
     async def get_upcoming_approaches(
         self,
-        limit: int = 10
+        limit: int = 10,
+        skip: int = 0
     ) -> List[CloseApproachModel]:
         """
         Получает ближайшие по времени сближения.
         Без коммита (чтение).
         """
-        now = datetime.now(timezone.utc)
+        now = now_aware()
 
         return await self.filter(
             filters={"approach_time__ge": now},
+            skip=skip,
             limit=limit,
             order_by="approach_time"
         )
-    
+
     async def get_closest_approaches_by_distance(
         self,
-        limit: int = 10
+        limit: int = 10,
+        skip: int = 0
     ) -> List[CloseApproachModel]:
         """
         Получает самые близкие по расстоянию сближения.
@@ -110,13 +119,15 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
         """
         return await self.filter(
             filters={},
+            skip=skip,
             limit=limit,
             order_by="distance_au"
         )
-    
+
     async def get_fastest_approaches(
         self,
-        limit: int = 10
+        limit: int = 10,
+        skip: int = 0
     ) -> List[CloseApproachModel]:
         """
         Получает сближения с наибольшей скоростью.
@@ -124,6 +135,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
         """
         return await self.filter(
             filters={},
+            skip=skip,
             limit=limit,
             order_by="velocity_km_s",
             order_desc=True
@@ -157,6 +169,9 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
         """
         Удаляет устаревшие сближения (которые уже произошли) с коммитом.
         """
+        from shared.utils.datetime_utils import to_aware
+        cutoff_date = to_aware(cutoff_date)
+        
         return await self.bulk_delete(
             filters={"approach_time__lt": cutoff_date}
         )
@@ -171,7 +186,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
             total = await self.count()
 
             # Количество будущих сближений
-            now = datetime.now(timezone.utc)
+            now = now_aware()
             future_query = select(func.count()).where(self.model.approach_time >= now)
             future_result = await self.session.execute(future_query)
             future_scalar = future_result.scalar()
@@ -222,7 +237,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
                 "average_velocity_km_s": avg_velocity,
                 "closest_distance_au": closest_au,
                 "closest_distance_km": closest_au * 149597870.7,
-                "last_updated": datetime.now().isoformat()
+                "last_updated": now_aware().isoformat()
             }
 
         except Exception as e:

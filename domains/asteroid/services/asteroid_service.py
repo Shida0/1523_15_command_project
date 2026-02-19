@@ -52,7 +52,12 @@ class AsteroidService(BaseService):
                 asteroid = await uow.asteroid_repo.get_by_designation(designation)
                 return self._model_to_dict(asteroid) if asteroid else None
 
-    async def get_by_moid(self, max_moid: float = 0.05) -> List[Dict[str, Any]]:
+    async def get_by_moid(
+        self,
+        max_moid: float = 0.05,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """
         🔍 Получение астероидов с MOID (минимальное расстояние пересечения орбит) меньше указанного.
 
@@ -61,6 +66,8 @@ class AsteroidService(BaseService):
 
         Args:
             max_moid (float): Максимальное значение MOID для фильтрации (по умолчанию 0.05 а.е.)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
 
         Returns:
             List[Dict[str, Any]]: Список астероидов с MOID меньше указанного значения
@@ -73,10 +80,17 @@ class AsteroidService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                asteroids = await uow.asteroid_repo.get_asteroids_by_earth_moid(max_moid)
+                asteroids = await uow.asteroid_repo.get_asteroids_by_earth_moid(
+                    max_moid, skip=skip, limit=limit
+                )
                 return [self._model_to_dict(a) for a in asteroids]
 
-    async def get_by_orbit_class(self, orbit_class: str) -> List[Dict[str, Any]]:
+    async def get_by_orbit_class(
+        self,
+        orbit_class: str,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """
         📊 Получение астероидов по классу орбиты.
 
@@ -87,6 +101,8 @@ class AsteroidService(BaseService):
 
         Args:
             orbit_class (str): Класс орбиты (например, "Apollo", "Aten", "Amor")
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
 
         Returns:
             List[Dict[str, Any]]: Список астероидов указанного класса орбиты
@@ -99,15 +115,25 @@ class AsteroidService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                asteroids = await uow.asteroid_repo.get_asteroids_by_orbit_class(orbit_class)
+                asteroids = await uow.asteroid_repo.get_asteroids_by_orbit_class(
+                    orbit_class, skip=skip, limit=limit
+                )
                 return [self._model_to_dict(a) for a in asteroids]
 
-    async def get_with_accurate_diameter(self) -> List[Dict[str, Any]]:
+    async def get_with_accurate_diameter(
+        self,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """
         📏 Получение астероидов с точными данными о диаметре.
 
         Астероиды с точными данными о диаметре имеют установленный флаг accurate_diameter=True.
         Эти данные обычно получены из прямых наблюдений, а не из расчетов.
+
+        Args:
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
 
         Returns:
             List[Dict[str, Any]]: Список астероидов с точными данными о диаметре
@@ -120,7 +146,9 @@ class AsteroidService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                asteroids = await uow.asteroid_repo.get_asteroids_with_accurate_diameter()
+                asteroids = await uow.asteroid_repo.get_asteroids_with_accurate_diameter(
+                    skip=skip, limit=limit
+                )
                 return [self._model_to_dict(a) for a in asteroids]
 
     async def get_statistics(self) -> Dict[str, Any]:

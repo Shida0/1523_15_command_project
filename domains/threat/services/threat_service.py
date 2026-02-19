@@ -75,7 +75,7 @@ class ThreatService(BaseService):
                 threat = await uow.threat_repo.get_by_asteroid_id(asteroid_id)
                 return self._model_to_dict(threat) if threat else None
 
-    async def get_high_risk(self, limit: int = 20) -> List[Dict[str, Any]]:
+    async def get_high_risk(self, limit: int = 20, skip: int = 0) -> List[Dict[str, Any]]:
         """
         ⚠️ Получение угроз с высоким уровнем риска (туринская шкала >= 5).
 
@@ -85,6 +85,7 @@ class ThreatService(BaseService):
 
         Args:
             limit (int): Максимальное количество возвращаемых угроз (по умолчанию 20)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
 
         Returns:
             List[Dict[str, Any]]: Список угроз с высоким уровнем риска
@@ -97,13 +98,15 @@ class ThreatService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                threats = await uow.threat_repo.get_high_risk_threats(limit)
+                threats = await uow.threat_repo.get_high_risk_threats(limit=limit, skip=skip)
                 return [self._model_to_dict(t) for t in threats]
 
     async def get_by_risk_level(
         self,
         min_ts: int = 0,
-        max_ts: int = 10
+        max_ts: int = 10,
+        skip: int = 0,
+        limit: int = 100
     ) -> List[Dict[str, Any]]:
         """
         📊 Получение угроз по диапазону значений Туринской шкалы.
@@ -114,6 +117,8 @@ class ThreatService(BaseService):
         Args:
             min_ts (int): Минимальное значение по Туринской шкале (по умолчанию 0)
             max_ts (int): Максимальное значение по Туринской шкале (по умолчанию 10)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
 
         Returns:
             List[Dict[str, Any]]: Список угроз в заданном диапазоне значений Туринской шкалы
@@ -126,7 +131,9 @@ class ThreatService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                threats = await uow.threat_repo.get_threats_by_risk_level(min_ts, max_ts)
+                threats = await uow.threat_repo.get_threats_by_risk_level(
+                    min_ts, max_ts, skip=skip, limit=limit
+                )
                 return [self._model_to_dict(t) for t in threats]
 
     async def get_statistics(self) -> Dict[str, Any]:
@@ -153,10 +160,47 @@ class ThreatService(BaseService):
             async with UnitOfWork(self.session_factory) as uow:
                 return await uow.threat_repo.get_statistics()
 
+    async def get_by_probability(
+        self,
+        min_probability: float = 0.0,
+        max_probability: float = 1.0,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[Dict[str, Any]]:
+        """
+        🎯 Получение угроз по диапазону вероятности столкновения.
+
+        Вероятность столкновения (impact probability) - это вероятность того,
+        что астероид столкнется с Землей в определенный момент времени.
+
+        Args:
+            min_probability (float): Минимальная вероятность столкновения (по умолчанию 0.0)
+            max_probability (float): Максимальная вероятность столкновения (по умолчанию 1.0)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
+
+        Returns:
+            List[Dict[str, Any]]: Список угроз в заданном диапазоне вероятности столкновения
+
+        Example:
+            >>> service = ThreatService(session_factory)
+            >>> probable_threats = await service.get_by_probability(0.001, 0.01)
+            >>> print(f"Угрозы с вероятностью 0.1%-1%: {len(probable_threats)}")
+        """
+        async with self.session_factory() as session:
+            from shared.transaction.uow import UnitOfWork
+            async with UnitOfWork(self.session_factory) as uow:
+                threats = await uow.threat_repo.get_threats_by_probability(
+                    min_probability, max_probability, skip=skip, limit=limit
+                )
+                return [self._model_to_dict(t) for t in threats]
+
     async def get_by_energy(
         self,
         min_energy: float = 0.0,
-        max_energy: Optional[float] = None
+        max_energy: Optional[float] = None,
+        skip: int = 0,
+        limit: int = 100
     ) -> List[Dict[str, Any]]:
         """
         💥 Получение угроз по диапазону энергии воздействия.
@@ -168,6 +212,8 @@ class ThreatService(BaseService):
         Args:
             min_energy (float): Минимальная энергия воздействия в мегатоннах (по умолчанию 0.0)
             max_energy (Optional[float]): Максимальная энергия воздействия в мегатоннах (по умолчанию None)
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
 
         Returns:
             List[Dict[str, Any]]: Список угроз в заданном диапазоне энергии воздействия
@@ -180,10 +226,12 @@ class ThreatService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                threats = await uow.threat_repo.get_threats_by_energy(min_energy, max_energy)
+                threats = await uow.threat_repo.get_threats_by_energy(
+                    min_energy, max_energy, skip=skip, limit=limit
+                )
                 return [self._model_to_dict(t) for t in threats]
 
-    async def get_by_category(self, category: str) -> List[Dict[str, Any]]:
+    async def get_by_category(self, category: str, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
         """
         📋 Получение угроз по категории воздействия.
 
@@ -196,6 +244,8 @@ class ThreatService(BaseService):
 
         Args:
             category (str): Категория воздействия (например, "Mercury", "Venus", "Earth", "Mars", "Jupiter")
+            skip (int): Количество пропускаемых записей (для пагинации, по умолчанию 0)
+            limit (int): Максимальное количество возвращаемых записей (по умолчанию 100)
 
         Returns:
             List[Dict[str, Any]]: Список угроз указанной категории воздействия
@@ -208,5 +258,7 @@ class ThreatService(BaseService):
         async with self.session_factory() as session:
             from shared.transaction.uow import UnitOfWork
             async with UnitOfWork(self.session_factory) as uow:
-                threats = await uow.threat_repo.get_threats_by_impact_category(category)
+                threats = await uow.threat_repo.get_threats_by_impact_category(
+                    category, skip=skip, limit=limit
+                )
                 return [self._model_to_dict(t) for t in threats]

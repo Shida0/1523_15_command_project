@@ -1,7 +1,8 @@
 """
 Pydantic схемы для астероидов.
 """
-from typing import Optional
+from __future__ import annotations
+from typing import Optional, List
 from pydantic import Field
 from shared.infrastructure import BaseSchema, CreateSchema
 
@@ -38,3 +39,13 @@ class AsteroidCreate(CreateSchema):
 class AsteroidResponse(AsteroidBase):
     """Схема для ответа API с астероидом."""
     pass
+
+
+class AsteroidDetailResponse(AsteroidResponse):
+    """
+    Расширенная схема ответа с полной информацией об астероиде.
+    
+    Включает все данные астероида, плюс список сближений и оценку угрозы.
+    """
+    close_approaches: List[dict] = []
+    threat_assessment: Optional[dict] = None
