@@ -228,7 +228,7 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             avg_prob_query = select(func.avg(self.model.ip))
             avg_prob_result = await self.session.execute(avg_prob_query)
             avg_prob_scalar = avg_prob_result.scalar()
-            # Handle the case where scalar returns a coroutine due to mocking in tests
+            
             if hasattr(avg_prob_scalar, '__await__'):
                 avg_prob_value = await avg_prob_scalar
             else:
@@ -244,13 +244,13 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             max_energy_query = select(func.max(self.model.energy_megatons))
             max_energy_result = await self.session.execute(max_energy_query)
             max_energy_scalar = max_energy_result.scalar()
-            # Handle the case where scalar returns a coroutine due to mocking in tests
+            
             if hasattr(max_energy_scalar, '__await__'):
                 max_energy_value = await max_energy_scalar
             else:
                 max_energy_value = max_energy_scalar
             
-            # Handle None value when there are no records
+            
             if max_energy_value is None:
                 max_energy = 0.0
             else:
@@ -266,7 +266,7 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             else:
                 avg_energy_value = avg_energy_scalar
             
-            # Handle None value when there are no records
+            
             if avg_energy_value is None:
                 avg_energy = 0.0
             else:
@@ -276,7 +276,7 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             non_zero_query = select(func.count()).where(self.model.ip > 0)
             non_zero_result = await self.session.execute(non_zero_query)
             non_zero_scalar = non_zero_result.scalar()
-            # Handle the case where scalar returns a coroutine due to mocking in tests
+            
             if hasattr(non_zero_scalar, '__await__'):
                 non_zero_value = await non_zero_scalar
             else:
@@ -287,7 +287,7 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             high_risk_query = select(func.count()).where(self.model.ts_max >= 5)
             high_risk_result = await self.session.execute(high_risk_query)
             high_risk_scalar = high_risk_result.scalar()
-            # Handle the case where scalar returns a coroutine due to mocking in tests
+            
             if hasattr(high_risk_scalar, '__await__'):
                 high_risk_value = await high_risk_scalar
             else:

@@ -11,8 +11,6 @@ from domains.approach.services.approach_service import ApproachService
 router = APIRouter(prefix="/approaches", tags=["Approaches"])
 
 
-# === СПЕЦИФИЧНЫЕ МАРШРУТЫ (должны быть ПЕРЕД параметрами пути) ===
-
 @router.get("/upcoming", response_model=List[dict])
 async def get_upcoming_approaches(
     limit: int = Query(10, ge=1, le=100, description="Максимальное количество сближений"),
@@ -98,8 +96,6 @@ async def get_approach_statistics(
     """
     return await approach_service.get_statistics()
 
-
-# === МАРШРУТЫ С ПАРАМЕТРАМИ ПУТИ (должны быть ПОСЛЕ специфичных) ===
 
 @router.get("/by-id/{asteroid_id}", response_model=List[dict])
 async def get_approaches_by_asteroid_id(

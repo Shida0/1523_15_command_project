@@ -10,8 +10,6 @@ from domains.threat.services.threat_service import ThreatService
 router = APIRouter(prefix="/threats", tags=["Threats"])
 
 
-# === СПЕЦИФИЧНЫЕ МАРШРУТЫ (должны быть ПЕРЕД параметрами пути) ===
-
 @router.get("/current", response_model=List[dict])
 async def get_current_threats(
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
@@ -119,8 +117,6 @@ async def get_threat_statistics(
     """
     return await threat_service.get_statistics()
 
-
-# === МАРШРУТЫ С ПАРАМЕТРАМИ ПУТИ (должны быть ПОСЛЕ специфичных) ===
 
 @router.get("/{designation}")
 async def get_threat_by_designation(

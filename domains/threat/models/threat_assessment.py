@@ -58,7 +58,7 @@ class ThreatAssessmentModel(Base):
         comment="Максимальное значение по Палермской шкале"
     )
     
-    # Физические характеристики из Sentry (переименованные поля)
+    # Физические характеристики из Sentry 
     diameter: Mapped[float] = mapped_column(
         Float,
         nullable=False,
@@ -189,9 +189,9 @@ class ThreatAssessmentModel(Base):
         """
         # Поля, которые могут приходить под разными именами
         field_mapping = {
-            'diameter_km': 'diameter',  # Threat assessment model has 'diameter' field
-            'velocity_km_s': 'v_inf',   # Threat assessment model has 'v_inf' field
-            'absolute_magnitude': 'h'   # Threat assessment model has 'h' field
+            'diameter_km': 'diameter',  
+            'velocity_km_s': 'v_inf',   
+            'absolute_magnitude': 'h'   
         }
         
         # Применяем маппинг полей
@@ -199,8 +199,6 @@ class ThreatAssessmentModel(Base):
             if old_name in kwargs and new_name not in kwargs:
                 kwargs[new_name] = kwargs.pop(old_name)
         
-        # Additional mapping from potential external sources
-        # Handle case where asteroid model field names might be passed
         if 'estimated_diameter_km' in kwargs and 'diameter' not in kwargs:
             kwargs['diameter'] = kwargs['estimated_diameter_km']
         

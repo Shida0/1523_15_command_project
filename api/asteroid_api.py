@@ -13,8 +13,6 @@ from domains.threat.services.threat_service import ThreatService
 router = APIRouter(prefix="/asteroids", tags=["Asteroids"])
 
 
-# === СПЕЦИФИЧНЫЕ МАРШРУТЫ (должны быть ПЕРЕД параметрами пути) ===
-
 @router.get("/near-earth", response_model=List[AsteroidResponse])
 async def get_near_earth_asteroids(
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
@@ -98,8 +96,6 @@ async def get_asteroid_statistics(
     """
     return await asteroid_service.get_statistics()
 
-
-# === МАРШРУТЫ С ПАРАМЕТРАМИ ПУТИ (должны быть ПОСЛЕ специфичных) ===
 
 @router.get("/{designation}", response_model=AsteroidDetailResponse)
 async def get_asteroid_by_designation(
