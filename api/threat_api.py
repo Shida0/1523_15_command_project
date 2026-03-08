@@ -143,7 +143,7 @@ async def get_threats_by_category(
     """
     📋 Получить угрозы по категории воздействия.
     
-    Категории: Mercury, Venus, Earth, Mars, Jupiter
+    Категории: локальный, региональный, глобальный
     """
     return await threat_service.get_by_category(
         category=category,

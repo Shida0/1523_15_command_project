@@ -3,3 +3,7 @@
 .vscode
 .env
 .roomodes
+.pytest_cache
+.roomodes
+.roo
+__pycache__
