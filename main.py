@@ -43,7 +43,7 @@ API предоставляет доступ к данным о:
 # === НАСТРОЙКА CORS ===
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # В продакшене ограничить до конкретных доменов
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

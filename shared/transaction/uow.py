@@ -1,13 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Type, Any, Optional, Protocol
-from contextlib import asynccontextmanager
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
-from functools import wraps
-import asyncio
-from contextlib import asynccontextmanager
-from typing import TypeVar, Generic
+from typing import TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +50,6 @@ T = TypeVar('T', bound=AbstractRepository)
 class UnitOfWork:
     """ 
     🔄 Реализация паттерна Unit of Work для управления транзакциями.
-    
-    Этот класс обеспечивает централизованное управление транзакциями и сессиями базы данных,
-    позволяя выполнять несколько операций в рамках одной транзакции и обеспечивая
-    согласованность данных.
     """
 
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]):

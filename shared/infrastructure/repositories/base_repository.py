@@ -9,12 +9,9 @@ from sqlalchemy import and_, or_, select, func
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 import logging
 import time
-import unittest.mock
-import asyncio
 
 from shared.models.base import Base
 from shared.utils.datetime_utils import normalize_datetime
-# Remove the import as it would create circular dependency
 
 # Тип для обобщенных моделей
 ModelType = TypeVar('ModelType', bound=Base)
@@ -41,12 +38,11 @@ def handle_repository_errors(default_return=None):
             try:
                 return await func(self, *args, **kwargs)
             except Exception as e:
-                # Check if we're in a test environment - if so, propagate the exception
                 import os
                 if os.getenv('PYTEST_CURRENT_TEST'):
                     raise
                 logger.error(
-                    f"Ошибка в методе {func.__name__} контроллера {self.__class__.__name__}: {e}",
+                    f"Ошибка в методе {func.__name__} репозитория {self.__class__.__name__}: {e}",
                     exc_info=True
                 )
                 return default_return
@@ -70,19 +66,16 @@ class BaseRepository(Generic[ModelType]):
             model: Класс модели SQLAlchemy
         """
         self.model = model
-        self._session = None  # Will be set by UnitOfWork
+        self._session = None  
 
-        # КЕШИРИРОВАНИЕ: Сохраняем метаданные модели один раз
-        # Handle case where model might be a mock during testing
+        # КЕШИРОВАНИЕ: Сохраняем метаданные модели один раз
         try:
             self._model_columns = {c.name for c in self.model.__table__.columns}
             self._model_column_types = {c.name: c.type for c in self.model.__table__.columns}
         except AttributeError:
-            # This happens when model is a mock in tests
             self._model_columns = set()
             self._model_column_types = {}
 
-        # Get model name safely for logging
         try:
             model_name = model.__name__
         except AttributeError:
@@ -103,38 +96,29 @@ class BaseRepository(Generic[ModelType]):
     def session(self, session: AsyncSession):
         self._session = session
     
-    # UOW Interface Methods - Implementation to satisfy AbstractRepository interface
     async def add(self, entity):
         """Add an entity to the database - UOW interface method."""
         if self.session:
-            # Use the stored session when available (UOW context)
             self.session.add(entity)
             await self.session.flush()
             await self.session.refresh(entity)
             return entity
         else:
-            # Fallback behavior when not in UOW context
-            data = {c.name: getattr(entity, c.name) for c in entity.__table__.columns if hasattr(entity, c.name) and c.name != 'id'}
-            # For this fallback, we'd need to have a session, so we raise an exception
             raise ValueError("No session available for add operation")
     
     async def get(self, id):
         """Get an entity by ID - UOW interface method."""
         if self.session:
-            # Use the stored session when available (UOW context)
             query = select(self.model).where(self.model.id == id)
             result = await self.session.execute(query)
             instance = result.scalar_one_or_none()
             return instance
         else:
-            # Without session, we can't perform the operation
             raise ValueError("No session available for get operation")
     
     async def update(self, entity):
         """Update an entity - UOW interface method."""
         if self.session:
-            # Entity should already be attached to session, or we attach it
-            # For entities that aren't attached, we refresh them to the session
             await self.session.flush()
             await self.session.refresh(entity)
             return entity
@@ -206,7 +190,6 @@ class BaseRepository(Generic[ModelType]):
             await self.session.flush()
             await self.session.refresh(instance)
 
-            # КОММИТ транзакции
             await self.session.commit()
 
             logger.info(f"Создана запись {self.model.__name__} с ID {instance.id}")
@@ -297,29 +280,29 @@ class BaseRepository(Generic[ModelType]):
     
     @handle_repository_errors(default_return=False)
     async def delete(self, id: int) -> bool:
-        """Удаляет запись по ID и выполняет коммит."""
+        """
+        🗑️ Удаляет запись по ID и выполняет коммит.
+        
+        Args:
+            id (int): Уникальный идентификатор записи для удаления
+            
+        Returns:
+            bool: True, если запись была удалена, False если запись не найдена
+            
+        Example:
+            >>> async with UnitOfWork(session_factory) as uow:
+            >>>     success = await uow.asteroid_repo.delete(123)
+            >>>     if success:
+            >>>         print("Астероид удален")
+        """
         try:
-            # Проверяем существование записи
             instance = await self.get_by_id(id)
             if not instance:
                 logger.warning(f"Попытка удаления несуществующей записи {self.model.__name__} с ID {id}")
                 return False
 
-            # Удаляем запись - check if session.delete is a mock that shouldn't be awaited
-            # If it's a real async method, await it; if it's a mock, call directly
-            import unittest.mock
-            if isinstance(self.session.delete, unittest.mock.Mock) and not isinstance(self.session.delete, unittest.mock.AsyncMock):
-                self.session.delete(instance)
-            else:
-                # This includes AsyncMock (which is also a Mock), so we await
-                try:
-                    await self.session.delete(instance)
-                except TypeError:
-                    # If await fails, call directly (for real sync functions)
-                    self.session.delete(instance)
+            await self.session.delete(instance)
             await self.session.flush()
-
-            # КОММИТ транзакции
             await self.session.commit()
 
             logger.info(f"Удалена запись {self.model.__name__} с ID {id}")
@@ -336,7 +319,21 @@ class BaseRepository(Generic[ModelType]):
         skip: int = 0,
         limit: Optional[int] = 100
     ) -> List[ModelType]:
-        """Получает все записи с пагинацией. Без коммита (чтение)."""
+        """
+        📋 Получает все записи с пагинацией. Без коммита (чтение).
+        
+        Args:
+            skip (int): Количество записей для пропуска (по умолчанию 0)
+            limit (Optional[int]): Максимальное количество возвращаемых записей (по умолчанию 100)
+            
+        Returns:
+            List[ModelType]: Список всех записей
+            
+        Example:
+            >>> async with UnitOfWork(session_factory) as uow:
+            >>>     asteroids = await uow.asteroid_repo.get_all(skip=0, limit=10)
+            >>>     print(f"Получено {len(asteroids)} астероидов")
+        """
         query = select(self.model).offset(skip)
         if limit:
             query = query.limit(limit)
@@ -349,7 +346,17 @@ class BaseRepository(Generic[ModelType]):
     
     @handle_repository_errors(default_return=0)
     async def count(self) -> int:
-        """Подсчитывает общее количество записей. Без коммита (чтение)."""
+        """
+        🔢 Подсчитывает общее количество записей. Без коммита (чтение).
+        
+        Returns:
+            int: Количество записей в таблице
+            
+        Example:
+            >>> async with UnitOfWork(session_factory) as uow:
+            >>>     total = await uow.asteroid_repo.count()
+            >>>     print(f"Всего астероидов: {total}")
+        """
         query = select(func.count()).select_from(self.model)
         result = await self.session.execute(query)
         count = result.scalar()
@@ -422,14 +429,11 @@ class BaseRepository(Generic[ModelType]):
                 operator = "eq"
                 field = getattr(self.model, key, None)
 
-            # Skip if field doesn't exist
             if field is None:
                 continue
 
-            # КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: нормализуем datetime значения
             value = normalize_datetime(value)
 
-            # Try to create the condition
             try:
                 if operator == "eq":
                     condition = field == value
@@ -455,17 +459,12 @@ class BaseRepository(Generic[ModelType]):
                     condition = field.is_(None)
                 elif operator == "is_not_null":
                     condition = field.is_not(None)
-
-                # Check if this is an unknown field scenario
-                # When using a basic Mock field that wasn't set up for testing,
-                # comparisons return False rather than a condition object
-                if condition is False:
-                    # This indicates an unknown field in mock scenarios, skip it
-                    continue
                 else:
+                    continue
+
+                if condition is not None:
                     conditions.append(condition)
-            except:
-                # If we can't create the condition, skip
+            except Exception:
                 continue
 
         return conditions
@@ -477,7 +476,15 @@ class BaseRepository(Generic[ModelType]):
         conflict_fields: Optional[List[str]] = None
     ) -> Tuple[int, int]:
         """
-        ОПТИМИЗИРОВАННОЕ массовое создание записей с коммитом.
+        📦 Массовое создание записей с коммитом.
+        
+        Args:
+            data_list (List[Dict[str, Any]]): Список словарей с данными для создания
+            conflict_action (str): Действие при конфликте: "update" или "ignore"
+            conflict_fields (Optional[List[str]]): Поля для определения конфликта
+            
+        Returns:
+            Tuple[int, int]: Количество созданных и обновленных записей
         """
         if not data_list:
             return 0, 0
@@ -489,15 +496,10 @@ class BaseRepository(Generic[ModelType]):
 
         try:
             # Используем PostgreSQL-specific bulk операцию
-            # Check if bind exists (it might be a mock in tests)
-            if hasattr(self.session, 'bind') and self.session.bind and hasattr(self.session.bind, 'dialect') and self.session.bind.dialect.name == 'postgresql' and conflict_action == "update":
-                return await self._bulk_create_postgresql(
-                    data_list, conflict_fields
-                )
+            if conflict_action == "update" and conflict_fields:
+                return await self._bulk_create_postgresql(data_list, conflict_fields)
             else:
-                return await self._bulk_create_generic(
-                    data_list, conflict_action, conflict_fields
-                )
+                return await self._bulk_create_generic(data_list, conflict_action, conflict_fields)
 
         except Exception as e:
             await self.session.rollback()
@@ -537,7 +539,7 @@ class BaseRepository(Generic[ModelType]):
                 set_=update_dict
             )
 
-            # Выполняем и КОММИТИМ
+            # Выполняем и коммитим
             result = await self.session.execute(stmt)
             await self.session.commit()
 
@@ -639,7 +641,28 @@ class BaseRepository(Generic[ModelType]):
         skip: int = 0,
         limit: Optional[int] = 50
     ) -> List[ModelType]:
-        """Поиск по нескольким текстовым полям. Без коммита (чтение)."""
+        """
+        🔎 Поиск по нескольким текстовым полям. Без коммита (чтение).
+        
+        Args:
+            search_term (str): Строка для поиска
+            search_fields (List[str]): Список полей, по которым производится поиск
+            skip (int): Количество записей для пропуска (по умолчанию 0)
+            limit (Optional[int]): Максимальное количество возвращаемых записей (по умолчанию 50)
+            
+        Returns:
+            List[ModelType]: Список найденных записей
+            
+        Example:
+            >>> async with UnitOfWork(session_factory) as uow:
+            >>>     results = await uow.asteroid_repo.search(
+            ...         search_term="apophis",
+            ...         search_fields=["name", "designation"],
+            ...         skip=0,
+            ...         limit=10
+            ...     )
+            >>>     print(f"Найдено {len(results)} результатов")
+        """
         if not search_fields:
             return []
 
@@ -668,26 +691,30 @@ class BaseRepository(Generic[ModelType]):
         self,
         filters: Dict[str, Any]
     ) -> int:
-        """Массовое удаление записей по фильтру с коммитом."""
+        """
+        🗑️ Массовое удаление записей по фильтру с коммитом.
+        
+        Args:
+            filters (Dict[str, Any]): Словарь фильтров для выбора записей на удаление
+            
+        Returns:
+            int: Количество удаленных записей
+            
+        Example:
+            >>> async with UnitOfWork(session_factory) as uow:
+            >>>     deleted = await uow.asteroid_repo.bulk_delete(
+            ...         filters={"estimated_diameter_km__lt": 0.01}
+            ...     )
+            >>>     print(f"Удалено {deleted} маленьких астероидов")
+        """
         try:
             records = await self.filter(filters, limit=None)
 
             deleted_count = 0
             for record in records:
-                # Handle the case where session.delete might be a mock
-                import unittest.mock
-                if isinstance(self.session.delete, unittest.mock.Mock) and not isinstance(self.session.delete, unittest.mock.AsyncMock):
-                    self.session.delete(record)
-                else:
-                    # This includes AsyncMock (which is also a Mock), so we await
-                    try:
-                        await self.session.delete(record)
-                    except TypeError:
-                        # If await fails, call directly (for real sync functions)
-                        self.session.delete(record)
+                await self.session.delete(record)
                 deleted_count += 1
 
-            # КОММИТ транзакции
             await self.session.commit()
 
             logger.info(f"Удалено {deleted_count} записей {self.model.__name__}")

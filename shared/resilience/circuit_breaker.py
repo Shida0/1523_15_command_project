@@ -1,6 +1,3 @@
-"""
-Circuit Breaker implementation for handling NASA API failures.
-"""
 import asyncio
 import time
 import logging
@@ -30,9 +27,6 @@ class CircuitBreakerConfig:
 class CircuitBreaker:
     """
     🛡️ Реализация паттерна Circuit Breaker для обеспечения отказоустойчивости.
-    
-    Circuit Breaker помогает предотвратить каскадные сбои в системе, временно
-    блокируя вызовы компонентов, которые постоянно терпят неудачу.
     """
     
     def __init__(self, config: CircuitBreakerConfig):

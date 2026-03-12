@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
 Репозиторий для работы с данными о сближениях астероидов с Землей.
-Использует общие методы BaseController.
 """
 import asyncio
 from typing import List, Dict, Any, Optional
@@ -32,7 +30,6 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает все сближения для конкретного астероида.
-        Без коммита (чтение).
         """
         return await self.filter(
             filters={"asteroid_id": asteroid_id},
@@ -49,7 +46,6 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает все сближения для астероида с указанным обозначением.
-        Без коммита (чтение).
         """
         return await self.filter(
             filters={"asteroid_designation": designation},
@@ -68,7 +64,6 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает сближения в указанном временном периоде.
-        Без коммита (чтение).
         """
         # Ensure datetime objects are timezone-aware
         from shared.utils.datetime_utils import to_aware
@@ -97,7 +92,6 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает ближайшие по времени сближения.
-        Без коммита (чтение).
         """
         now = now_aware()
 
@@ -115,7 +109,6 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает самые близкие по расстоянию сближения.
-        Без коммита (чтение).
         """
         return await self.filter(
             filters={},
@@ -131,7 +124,6 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     ) -> List[CloseApproachModel]:
         """
         Получает сближения с наибольшей скоростью.
-        Без коммита (чтение).
         """
         return await self.filter(
             filters={},
@@ -179,7 +171,6 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     async def get_statistics(self) -> Dict[str, Any]:
         """
         Возвращает статистику по сближениям.
-        Без коммита (чтение).
         """
         try:
             # Общее количество
@@ -190,7 +181,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
             future_query = select(func.count()).where(self.model.approach_time >= now)
             future_result = await self.session.execute(future_query)
             future_scalar = future_result.scalar()
-            # Handle case where scalar returns a coroutine (in test environment with improper mocks)
+
             if hasattr(future_scalar, '__await__'):
                 future_count = await future_scalar or 0
             else:
@@ -200,7 +191,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
             avg_distance_query = select(func.avg(self.model.distance_au))
             avg_distance_result = await self.session.execute(avg_distance_query)
             avg_distance_scalar = avg_distance_result.scalar()
-            # Handle case where scalar returns a coroutine (in test environment with improper mocks)
+  
             if hasattr(avg_distance_scalar, '__await__'):
                 avg_distance_raw = await avg_distance_scalar or 0
             else:
@@ -211,7 +202,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
             avg_velocity_query = select(func.avg(self.model.velocity_km_s))
             avg_velocity_result = await self.session.execute(avg_velocity_query)
             avg_velocity_scalar = avg_velocity_result.scalar()
-            # Handle case where scalar returns a coroutine (in test environment with improper mocks)
+
             if hasattr(avg_velocity_scalar, '__await__'):
                 avg_velocity_raw = await avg_velocity_scalar or 0
             else:
@@ -222,7 +213,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
             closest_query = select(func.min(self.model.distance_au))
             closest_result = await self.session.execute(closest_query)
             closest_scalar = closest_result.scalar()
-            # Handle case where scalar returns a coroutine (in test environment with improper mocks)
+
             if hasattr(closest_scalar, '__await__'):
                 closest_raw = await closest_scalar or 0
             else:
@@ -249,7 +240,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
         Safely extract scalar result, handling both real results and mock coroutines.
         """
         scalar_value = result.scalar()
-        # If scalar_value is a coroutine (from mock), await it
+
         if hasattr(scalar_value, '__await__'):
             return await scalar_value
         return scalar_value

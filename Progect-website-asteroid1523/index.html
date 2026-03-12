@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналитик астероидной опасности</title>
+    <link rel="stylesheet" href="./css/reset.css"> 
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="content-wrapper">
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Аналитик астероидной опасности</h1>
+                    <p>Космический мониторинг — понятный каждому</p>
+                    <a href="#monitoring" class="cta-button">Смотреть опасные сближения</a>
+                </div>
+            </section>
+            <div id="monitoring">
+                <section class="stats-bar">
+                    <div class="stat-item">
+                        <span>Общее число астероидов в базе:</span>
+                        <strong id="totalCount">0</strong>
+                    </div>
+                </section>
+
+                <section class="asteroid-section">
+                    <div class="glass-card">
+                        <h2 class="card-title">Мониторинг объектов</h2>
+                        
+                        <div class="controls-row">
+                            <div class="search-wrapper">
+                                <input type="text" id="asteroidSearch" placeholder="Поиск по названию...">
+                            </div>
+                            
+                        <div class="filters-level">
+                            <div class="filter-group">
+                                <span class="label">Угроза:</span>
+                                <div class="btn-stack">
+                                    <button class="threat-btn active" data-threat="all">Все</button>
+                                    <button class="threat-btn" data-threat="red">Опасные</button>
+                                    <button class="threat-btn" data-threat="yellow">Средние</button>
+                                    <button class="threat-btn" data-threat="green">Безопасные</button>
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <span class="label">Сортировка:</span>
+                                <div class="btn-stack">
+                                    <button class="filter-btn active" data-sort="date">Дате</button>
+                                    <button class="filter-btn" data-sort="size">Размеру</button>
+                                    <button class="filter-btn" data-sort="distance">Расстоянию</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="cardsGrid" class="table-container">
+                            </div>
+                        
+                        <div class="load-more-container">
+                            <button id="loadMoreBtn" class="cta-button secondary">Показать еще</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+            <footer class="footer">
+                <div class="footer-gallery">
+                    <img src="./img/foto1.jpg" alt="Space">
+                    <img src="./img/foto2.jpg" alt="Space">
+                    <img src="./img/foto3.jpg" alt="Space">
+                    <img src="./img/foto4.jpg" alt="Space">
+                </div>
+                
+                <div class="footer-content">
+                    <div class="footer-col main-info">
+                        <h3>Астероидный<br>аналитик</h3>
+                        <span class="fade-text">Напишите нам</span>
+                        <a href="mailto:nikaeva55@xmail.ru" class="email-link">nikaeva55@xmail.ru</a>
+                    </div>
+                    
+                    <div class="footer-col links-col">
+                        <a href="#">Сервисы</a>
+                        <a href="#">О нас</a>
+                    </div>
+                    
+                    <div class="footer-col links-col right-links">
+                        <a href="#">Политика конфиденциальности</a>
+                        <a href="#">Правила & Условия</a>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    <script src="./code.js"></script>
+</body>
+</html>

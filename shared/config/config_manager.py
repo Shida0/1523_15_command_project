@@ -11,10 +11,7 @@ from pydantic_settings import BaseSettings
 import yaml
 from dotenv import load_dotenv
 
-
-# Load environment variables from .env file
 load_dotenv()
-
 
 logger = logging.getLogger(__name__)
 

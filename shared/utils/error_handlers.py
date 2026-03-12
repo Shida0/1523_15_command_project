@@ -6,20 +6,10 @@ import asyncio
 import logging
 import time
 from functools import wraps
-from typing import Callable, Any, Type, Union, Optional, Dict
-from datetime import datetime, timedelta
+from typing import Callable, Any, Optional
 
 import aiohttp
 import requests
-from tenacity import (
-    retry, 
-    stop_after_attempt, 
-    wait_exponential, 
-    retry_if_exception_type,
-    before_sleep_log,
-    after_log,
-    RetryError
-)
 
 logger = logging.getLogger(__name__)
 

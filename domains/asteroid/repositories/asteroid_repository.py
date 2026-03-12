@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Репозиторий для работы с астероидами.
 """
@@ -24,7 +23,6 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
     async def get_by_designation(self, designation: str) -> Optional[AsteroidModel]:
         """
         Находит астероид по обозначению NASA.
-        Без коммита (чтение).
         """
         return await self._find_by_fields({"designation": designation})
     
@@ -36,7 +34,6 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Ищет астероиды по названию или обозначению.
-        Без коммита (чтение).
         """
         return await self.search(
             search_term=search_term,
@@ -54,7 +51,6 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Фильтрует астероиды по диапазону диаметров.
-        Без коммита (чтение).
         """
         filters = {}
         if min_diameter is not None:
@@ -77,7 +73,6 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Получает астероиды с MOID меньше указанного значения.
-        Без коммита (чтение).
         """
         return await self.filter(
             filters={"earth_moid_au__le": max_moid},
@@ -93,7 +88,6 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Получает астероиды с точными данными о диаметре.
-        Без коммита (чтение).
         """
         return await self.filter(
             filters={"accurate_diameter": True},
@@ -110,7 +104,6 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
     ) -> List[AsteroidModel]:
         """
         Получает астероиды по классу орбиты.
-        Без коммита (чтение).
         """
         return await self.filter(
             filters={"orbit_class": orbit_class},
@@ -122,7 +115,6 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
     async def get_statistics(self) -> Dict[str, Any]:
         """
         Возвращает статистику по астероидам.
-        Без коммита (чтение).
         """
         try:
             # Общее количество

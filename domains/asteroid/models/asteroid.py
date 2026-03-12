@@ -12,7 +12,6 @@ class AsteroidModel(Base):
     Модель для хранения данных о потенциально опасных астероидах (PHA).
     Соответствует таблице 'asteroid_models'.
     """
-    
     # Основные идентификаторы
     designation: Mapped[str] = mapped_column(
         String(50),
@@ -98,7 +97,6 @@ class AsteroidModel(Base):
         uselist=False
     )
     
-    # Обновленные CheckConstraint с добавленными полями (УБРАН UniqueConstraint на mpc_number)
     __table_args__ = (
         UniqueConstraint('designation', name='uq_asteroid_designation'),
         CheckConstraint(

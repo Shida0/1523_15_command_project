@@ -2,7 +2,7 @@
 API роутеры для работы с астероидами.
 """
 from fastapi import APIRouter, Depends, status, HTTPException, Query
-from typing import List, Optional
+from typing import List 
 
 from .dependencies import get_asteroid_service, get_approach_service, get_threat_service
 from domains.asteroid.schemas import AsteroidResponse, AsteroidDetailResponse

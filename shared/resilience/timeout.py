@@ -1,6 +1,3 @@
-"""
-Timeout handling for NASA API calls.
-"""
 import asyncio
 import logging
 from typing import Callable, Any

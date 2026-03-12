@@ -1,6 +1,3 @@
-"""
-Bulkhead pattern implementation for isolating NASA API calls.
-"""
 import asyncio
 import logging
 from typing import Callable, Any, Optional
@@ -16,7 +13,7 @@ logger = logging.getLogger(__name__)
 class BulkheadConfig:
     max_concurrent_calls: int = 10
     queue_size: int = 50
-    timeout: float = 30.0  # seconds
+    timeout: float = 30.0 
 
 
 class Bulkhead:
@@ -28,7 +25,6 @@ class Bulkhead:
         self._lock = asyncio.Lock()
 
     async def execute(self, func: Callable, *args, **kwargs) -> Any:
-        # Try to acquire a slot immediately
         if not self.semaphore.locked() or self.queue.qsize() < self.config.queue_size:
             async with self.semaphore:
                 start_time = time.time()
@@ -42,7 +38,6 @@ class Bulkhead:
                     logger.warning(f"Bulkhead execution failed for {func.__name__} after {execution_time:.2f}s: {e}")
                     raise
         else:
-            # Queue is full, reject the call
             raise Exception(f"Bulkhead queue is full ({self.config.queue_size} items). Call to {func.__name__} rejected.")
 
 
@@ -54,8 +49,7 @@ def bulkhead(config: BulkheadConfig):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             return await bulkhead_instance.execute(func, *args, **kwargs)
-        
-        # Attach the bulkhead instance for potential manual control
+
         wrapper.bulkhead = bulkhead_instance
         return wrapper
     

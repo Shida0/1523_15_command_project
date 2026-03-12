@@ -1,18 +1,7 @@
-# space_math.py
-from typing import Dict, Any, Optional
-from datetime import datetime
-
 def get_size_by_albedo(albedo: float, h_mag: float) -> float:
     """
     Рассчитывает диаметр астероида в км по альбедо и абсолютной звездной величине (H).
     Формула: diameter = 1329 / sqrt(albedo) * 10^(-0.2*H)
-    
-    Args:
-        albedo: Альбедо (отражательная способность) в диапазоне 0.0-1.0
-        h_mag: Абсолютная звездная величина H
-        
-    Returns:
-        Диаметр в километрах
     """
     # Проверка на None, 0, отрицательные значения
     if albedo is None or albedo <= 0:

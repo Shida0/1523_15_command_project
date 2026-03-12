@@ -148,7 +148,7 @@ class ThreatAssessmentModel(Base):
     
     # Ограничения на уровне таблицы
     __table_args__ = (
-        UniqueConstraint('asteroid_id', name='uq_threat_assessment_asteroid'),  # One-to-One
+        UniqueConstraint('asteroid_id', name='uq_threat_assessment_asteroid'),  
         UniqueConstraint('designation', name='uq_threat_assessment_designation'),
         CheckConstraint(
             "ts_max >= 0 AND ts_max <= 10",
@@ -243,7 +243,7 @@ class ThreatAssessmentModel(Base):
             # Энергия в джоулях
             energy_joules = 0.5 * mass_kg * (velocity_km_s * 1000) ** 2
             
-            # Конвертация в мегатонны тротила (1 мегатонна = 4.184e15 джоулей)
+            # Конвертация в мегатонны тротила
             energy_megatons = energy_joules / 4.184e15
             
             return round(energy_megatons, 2)

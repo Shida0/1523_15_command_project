@@ -1,6 +1,4 @@
-from typing import Generator
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
-from shared.database.engine import AsyncSessionLocal, async_sessionmaker
+from shared.database.engine import AsyncSessionLocal
 from shared.transaction.uow import UnitOfWork
 
 from domains.asteroid.services.asteroid_service import AsteroidService

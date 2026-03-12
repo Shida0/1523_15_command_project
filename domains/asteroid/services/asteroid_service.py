@@ -7,26 +7,18 @@ import logging
 
 from shared.infrastructure.services.base_service import BaseService
 from domains.asteroid.models.asteroid import AsteroidModel
+from shared.transaction.uow import UnitOfWork
 
 logger = logging.getLogger(__name__)
 
 
 class AsteroidService(BaseService):
     """
-    🪨 Сервис для работы с астероидами.
-
-    Этот класс предоставляет методы для получения информации об астероидах,
-    фильтрации по различным критериям и получения статистики.
+    Сервис для работы с астероидами.
     Наследуется от BaseService для общих CRUD операций.
     """
 
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]):
-        """
-        Инициализация сервиса для астероидов.
-
-        Args:
-            session_factory: Фабрика для создания сессий SQLAlchemy
-        """
         super().__init__(session_factory, AsteroidModel)
 
     # === СПЕЦИАЛИЗИРОВАННЫЕ МЕТОДЫ ===
@@ -46,11 +38,9 @@ class AsteroidService(BaseService):
             >>> asteroid = await service.get_by_designation("433")
             >>> print(asteroid['name'])  # Выведет имя астероида
         """
-        async with self.session_factory() as session:
-            from shared.transaction.uow import UnitOfWork
-            async with UnitOfWork(self.session_factory) as uow:
-                asteroid = await uow.asteroid_repo.get_by_designation(designation)
-                return self._model_to_dict(asteroid) if asteroid else None
+        async with UnitOfWork(self.session_factory) as uow:
+            asteroid = await uow.asteroid_repo.get_by_designation(designation)
+            return self._model_to_dict(asteroid) if asteroid else None
 
     async def get_by_moid(
         self,
@@ -60,7 +50,6 @@ class AsteroidService(BaseService):
     ) -> List[Dict[str, Any]]:
         """
         🔍 Получение астероидов с MOID (минимальное расстояние пересечения орбит) меньше указанного.
-
         MOID (Minimum Orbit Intersection Distance) - это минимальное расстояние между
         орбитами двух тел. Для астероидов PHA (Potentially Hazardous Asteroids) MOID ≤ 0.05 а.е.
 
@@ -77,13 +66,11 @@ class AsteroidService(BaseService):
             >>> nearby_asteroids = await service.get_by_moid(0.02)
             >>> print(f"Найдено {len(nearby_asteroids)} близких астероидов")
         """
-        async with self.session_factory() as session:
-            from shared.transaction.uow import UnitOfWork
-            async with UnitOfWork(self.session_factory) as uow:
-                asteroids = await uow.asteroid_repo.get_asteroids_by_earth_moid(
-                    max_moid, skip=skip, limit=limit
-                )
-                return [self._model_to_dict(a) for a in asteroids]
+        async with UnitOfWork(self.session_factory) as uow:
+            asteroids = await uow.asteroid_repo.get_asteroids_by_earth_moid(
+                max_moid, skip=skip, limit=limit
+            )
+            return [self._model_to_dict(a) for a in asteroids]
 
     async def get_by_orbit_class(
         self,
@@ -93,7 +80,6 @@ class AsteroidService(BaseService):
     ) -> List[Dict[str, Any]]:
         """
         📊 Получение астероидов по классу орбиты.
-
         Поддерживаемые классы орбит:
         - Apollo: орбита пересекает орбиту Земли, большая полуось > 1 а.е.
         - Aten: орбита пересекает орбиту Земли, большая полуось < 1 а.е.
@@ -112,13 +98,11 @@ class AsteroidService(BaseService):
             >>> apollo_asteroids = await service.get_by_orbit_class("Apollo")
             >>> print(f"Найдено {len(apollo_asteroids)} астероидов класса Apollo")
         """
-        async with self.session_factory() as session:
-            from shared.transaction.uow import UnitOfWork
-            async with UnitOfWork(self.session_factory) as uow:
-                asteroids = await uow.asteroid_repo.get_asteroids_by_orbit_class(
-                    orbit_class, skip=skip, limit=limit
-                )
-                return [self._model_to_dict(a) for a in asteroids]
+        async with UnitOfWork(self.session_factory) as uow:
+            asteroids = await uow.asteroid_repo.get_asteroids_by_orbit_class(
+                orbit_class, skip=skip, limit=limit
+            )
+            return [self._model_to_dict(a) for a in asteroids]
 
     async def get_with_accurate_diameter(
         self,
@@ -127,7 +111,6 @@ class AsteroidService(BaseService):
     ) -> List[Dict[str, Any]]:
         """
         📏 Получение астероидов с точными данными о диаметре.
-
         Астероиды с точными данными о диаметре имеют установленный флаг accurate_diameter=True.
         Эти данные обычно получены из прямых наблюдений, а не из расчетов.
 
@@ -143,18 +126,15 @@ class AsteroidService(BaseService):
             >>> accurate_diameter_asteroids = await service.get_with_accurate_diameter()
             >>> print(f"Найдено {len(accurate_diameter_asteroids)} астероидов с точными данными о диаметре")
         """
-        async with self.session_factory() as session:
-            from shared.transaction.uow import UnitOfWork
-            async with UnitOfWork(self.session_factory) as uow:
-                asteroids = await uow.asteroid_repo.get_asteroids_with_accurate_diameter(
-                    skip=skip, limit=limit
-                )
-                return [self._model_to_dict(a) for a in asteroids]
+        async with UnitOfWork(self.session_factory) as uow:
+            asteroids = await uow.asteroid_repo.get_asteroids_with_accurate_diameter(
+                skip=skip, limit=limit
+            )
+            return [self._model_to_dict(a) for a in asteroids]
 
     async def get_statistics(self) -> Dict[str, Any]:
         """
         📈 Возвращает статистику по астероидам.
-
         Статистика включает:
         - Общее количество астероидов
         - Средний диаметр
@@ -171,7 +151,5 @@ class AsteroidService(BaseService):
             >>> print(f"Всего астероидов: {stats['total_asteroids']}")
             >>> print(f"Средний диаметр: {stats['average_diameter_km']} км")
         """
-        async with self.session_factory() as session:
-            from shared.transaction.uow import UnitOfWork
-            async with UnitOfWork(self.session_factory) as uow:
-                return await uow.asteroid_repo.get_statistics()
+        async with UnitOfWork(self.session_factory) as uow:
+            return await uow.asteroid_repo.get_statistics()

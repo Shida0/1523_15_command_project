@@ -5,10 +5,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Получаем конфигурацию базы данных
 config = get_config()
 
-# Создаём асинхронный движок для подключения к PostgreSQL
 async_engine = create_async_engine(
     url=config.get_database_url(),
     echo=False,
@@ -16,7 +14,6 @@ async_engine = create_async_engine(
     pool_recycle=3600
 )
 
-# Создаём фабрику для асинхронных сессий
 AsyncSessionLocal = async_sessionmaker(
     bind=async_engine,
     class_=AsyncSession,
