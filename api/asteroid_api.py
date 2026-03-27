@@ -2,7 +2,7 @@
 API роутеры для работы с астероидами.
 """
 from fastapi import APIRouter, Depends, status, HTTPException, Query
-from typing import List 
+from typing import List, Optional 
 
 from .dependencies import get_asteroid_service, get_approach_service, get_threat_service
 from domains.asteroid.schemas import AsteroidResponse, AsteroidDetailResponse
@@ -16,7 +16,7 @@ router = APIRouter(prefix="/asteroids", tags=["Asteroids"])
 @router.get("/near-earth", response_model=List[AsteroidResponse])
 async def get_near_earth_asteroids(
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=1000, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     max_moid: float = Query(
         0.05, 
         ge=0.0, 
@@ -38,7 +38,7 @@ async def get_near_earth_asteroids(
 @router.get("/all", response_model=List[AsteroidResponse])
 async def get_all_asteroids(
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=1000, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     asteroid_service: AsteroidService = Depends(get_asteroid_service)
 ) -> List[dict]:
     """
@@ -53,7 +53,7 @@ async def get_all_asteroids(
 async def get_asteroids_by_orbit_class(
     orbit_class: str,
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=1000, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     asteroid_service: AsteroidService = Depends(get_asteroid_service)
 ) -> List[dict]:
     """
@@ -72,7 +72,7 @@ async def get_asteroids_by_orbit_class(
 @router.get("/accurate-diameter", response_model=List[AsteroidResponse])
 async def get_asteroids_with_accurate_diameter(
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=1000, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     asteroid_service: AsteroidService = Depends(get_asteroid_service)
 ) -> List[dict]:
     """

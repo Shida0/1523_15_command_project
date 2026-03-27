@@ -46,7 +46,7 @@ class AsteroidService(BaseService):
         self,
         max_moid: float = 0.05,
         skip: int = 0,
-        limit: int = 100
+        limit: int|None = 100
     ) -> List[Dict[str, Any]]:
         """
         🔍 Получение астероидов с MOID (минимальное расстояние пересечения орбит) меньше указанного.
@@ -76,7 +76,7 @@ class AsteroidService(BaseService):
         self,
         orbit_class: str,
         skip: int = 0,
-        limit: int = 100
+        limit: int|None = 100
     ) -> List[Dict[str, Any]]:
         """
         📊 Получение астероидов по классу орбиты.
@@ -107,7 +107,7 @@ class AsteroidService(BaseService):
     async def get_with_accurate_diameter(
         self,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[Dict[str, Any]]:
         """
         📏 Получение астероидов с точными данными о диаметре.

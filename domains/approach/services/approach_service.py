@@ -24,7 +24,7 @@ class ApproachService(BaseService):
 
     # === СПЕЦИАЛИЗИРОВАННЫЕ МЕТОДЫ ===
 
-    async def get_upcoming(self, limit: int = 10, skip: int = 0) -> List[Dict[str, Any]]:
+    async def get_upcoming(self, limit: Optional[int] = 100, skip: int = 0) -> List[Dict[str, Any]]:
         """
         📅 Получение ближайших сближений астероидов с Землей.
         Возвращает сближения, отсортированные по времени (ближайшие первыми).
@@ -45,7 +45,7 @@ class ApproachService(BaseService):
             approaches = await uow.approach_repo.get_upcoming_approaches(limit=limit, skip=skip)
             return [self._model_to_dict(a) for a in approaches]
 
-    async def get_closest(self, limit: int = 10, skip: int = 0) -> List[Dict[str, Any]]:
+    async def get_closest(self, limit: Optional[int] = 100, skip: int = 0) -> List[Dict[str, Any]]:
         """
         📏 Получение самых близких по расстоянию сближений.
         Возвращает сближения, отсортированные по расстоянию (самые близкие первыми).
@@ -66,7 +66,7 @@ class ApproachService(BaseService):
             approaches = await uow.approach_repo.get_closest_approaches_by_distance(limit=limit, skip=skip)
             return [self._model_to_dict(a) for a in approaches]
 
-    async def get_fastest(self, limit: int = 10, skip: int = 0) -> List[Dict[str, Any]]:
+    async def get_fastest(self, limit: Optional[int] = 100, skip: int = 0) -> List[Dict[str, Any]]:
         """
         ⚡ Получение сближений с наибольшей скоростью.
         Возвращает сближения, отсортированные по скорости (самые быстрые первыми).
@@ -91,7 +91,7 @@ class ApproachService(BaseService):
         self,
         asteroid_id: int,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[Dict[str, Any]]:
         """
         🔍 Получение всех сближений для астероида по его ID.
@@ -119,7 +119,7 @@ class ApproachService(BaseService):
         self,
         designation: str,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[Dict[str, Any]]:
         """
         🔍 Получение всех сближений для астероида по его обозначению NASA.
@@ -149,7 +149,7 @@ class ApproachService(BaseService):
         end_date: datetime,
         max_distance: Optional[float] = None,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[Dict[str, Any]]:
         """
         📅 Получение сближений в указанном временном периоде.

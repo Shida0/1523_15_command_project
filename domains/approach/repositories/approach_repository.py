@@ -26,7 +26,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
         self,
         asteroid_id: int,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 1000
     ) -> List[CloseApproachModel]:
         """
         Получает все сближения для конкретного астероида.
@@ -42,7 +42,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
         self,
         designation: str,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 1000
     ) -> List[CloseApproachModel]:
         """
         Получает все сближения для астероида с указанным обозначением.
@@ -60,7 +60,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
         end_date: datetime,
         max_distance: Optional[float] = None,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 1000
     ) -> List[CloseApproachModel]:
         """
         Получает сближения в указанном временном периоде.
@@ -87,7 +87,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     
     async def get_upcoming_approaches(
         self,
-        limit: int = 10,
+        limit: Optional[int] = 100,
         skip: int = 0
     ) -> List[CloseApproachModel]:
         """
@@ -104,7 +104,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
 
     async def get_closest_approaches_by_distance(
         self,
-        limit: int = 10,
+        limit: Optional[int] = 100,
         skip: int = 0
     ) -> List[CloseApproachModel]:
         """
@@ -119,7 +119,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
 
     async def get_fastest_approaches(
         self,
-        limit: int = 10,
+        limit: Optional[int] = 100,
         skip: int = 0
     ) -> List[CloseApproachModel]:
         """

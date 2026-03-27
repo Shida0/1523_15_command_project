@@ -41,7 +41,7 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
     
     async def get_high_risk_threats(
         self,
-        limit: int = 20,
+        limit: Optional[int] = 100,
         skip: int = 0
     ) -> List[ThreatAssessmentModel]:
         """
@@ -314,7 +314,7 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
         self,
         search_term: str,
         skip: int = 0,
-        limit: int = 50
+        limit: Optional[int] = 100
     ) -> List[ThreatAssessmentModel]:
         """
         Ищет угрозы по обозначению или полному названию астероида.

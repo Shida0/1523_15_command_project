@@ -13,7 +13,7 @@ router = APIRouter(prefix="/approaches", tags=["Approaches"])
 
 @router.get("/upcoming", response_model=List[dict])
 async def get_upcoming_approaches(
-    limit: int = Query(10, ge=1, le=100, description="Максимальное количество сближений"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     approach_service: ApproachService = Depends(get_approach_service)
 ) -> List[dict]:
     """
@@ -26,7 +26,7 @@ async def get_upcoming_approaches(
 
 @router.get("/closest", response_model=List[dict])
 async def get_closest_approaches(
-    limit: int = Query(10, ge=1, le=100, description="Максимальное количество сближений"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
     approach_service: ApproachService = Depends(get_approach_service)
 ) -> List[dict]:
@@ -40,7 +40,7 @@ async def get_closest_approaches(
 
 @router.get("/fastest", response_model=List[dict])
 async def get_fastest_approaches(
-    limit: int = Query(10, ge=1, le=100, description="Максимальное количество сближений"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
     approach_service: ApproachService = Depends(get_approach_service)
 ) -> List[dict]:
@@ -57,7 +57,7 @@ async def get_approaches_in_period(
     start_date: datetime = Query(..., description="Начало временного периода"),
     end_date: datetime = Query(..., description="Конец временного периода"),
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=1000, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     max_distance: Optional[float] = Query(
         None, 
         ge=0.0, 
@@ -101,7 +101,7 @@ async def get_approach_statistics(
 async def get_approaches_by_asteroid_id(
     asteroid_id: int,
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=1000, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     approach_service: ApproachService = Depends(get_approach_service)
 ) -> List[dict]:
     """
@@ -120,7 +120,7 @@ async def get_approaches_by_asteroid_id(
 async def get_approaches_by_asteroid_designation(
     designation: str,
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=1000, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     approach_service: ApproachService = Depends(get_approach_service)
 ) -> List[dict]:
     """

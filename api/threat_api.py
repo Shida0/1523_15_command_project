@@ -13,7 +13,7 @@ router = APIRouter(prefix="/threats", tags=["Threats"])
 @router.get("/current", response_model=List[dict])
 async def get_current_threats(
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=500, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     min_ts: int = Query(
         0, 
         ge=0, 
@@ -34,7 +34,7 @@ async def get_current_threats(
 
 @router.get("/high-risk", response_model=List[dict])
 async def get_high_risk_threats(
-    limit: int = Query(20, ge=1, le=100, description="Максимальное количество угроз"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
     threat_service: ThreatService = Depends(get_threat_service)
 ) -> List[dict]:
@@ -50,7 +50,7 @@ async def get_high_risk_threats(
 @router.get("/by-probability", response_model=List[dict])
 async def get_threats_by_probability(
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=500, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     min_probability: float = Query(
         0.0, 
         ge=0.0, 
@@ -79,7 +79,7 @@ async def get_threats_by_probability(
 @router.get("/by-energy", response_model=List[dict])
 async def get_threats_by_energy(
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=500, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     min_energy: float = Query(
         0.0, 
         ge=0.0, 
@@ -137,7 +137,7 @@ async def get_threat_by_designation(
 async def get_threats_by_category(
     category: str,
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
-    limit: int = Query(100, ge=1, le=500, description="Максимальное количество записей"),
+    limit: Optional[int] = Query(None, ge=0, description="Максимальное количество записей (None — все)"),
     threat_service: ThreatService = Depends(get_threat_service)
 ) -> List[dict]:
     """

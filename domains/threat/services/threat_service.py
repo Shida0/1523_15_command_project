@@ -63,7 +63,7 @@ class ThreatService(BaseService):
             threat = await uow.threat_repo.get_by_asteroid_id(asteroid_id)
             return self._model_to_dict(threat) if threat else None
 
-    async def get_high_risk(self, limit: int = 20, skip: int = 0) -> List[Dict[str, Any]]:
+    async def get_high_risk(self, limit: Optional[int] = 100, skip: int = 0) -> List[Dict[str, Any]]:
         """
         ⚠️ Получение угроз с высоким уровнем риска (туринская шкала >= 5).
         Туринская шкала (Torino Scale) - это шкала от 0 до 10 для оценки риска
@@ -91,7 +91,7 @@ class ThreatService(BaseService):
         min_ts: int = 0,
         max_ts: int = 10,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[Dict[str, Any]]:
         """
         📊 Получение угроз по диапазону значений Туринской шкалы.
@@ -144,7 +144,7 @@ class ThreatService(BaseService):
         min_probability: float = 0.0,
         max_probability: float = 1.0,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[Dict[str, Any]]:
         """
         🎯 Получение угроз по диапазону вероятности столкновения.
@@ -176,7 +176,7 @@ class ThreatService(BaseService):
         min_energy: float = 0.0,
         max_energy: Optional[float] = None,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[Dict[str, Any]]:
         """
         💥 Получение угроз по диапазону энергии воздействия.
@@ -203,7 +203,7 @@ class ThreatService(BaseService):
             )
             return [self._model_to_dict(t) for t in threats]
 
-    async def get_by_category(self, category: str, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
+    async def get_by_category(self, category: str, skip: int = 0, limit: Optional[int] = 100) -> List[Dict[str, Any]]:
         """
         📋 Получение угроз по категории воздействия.
         Категории: локальный, региональный, глобальный

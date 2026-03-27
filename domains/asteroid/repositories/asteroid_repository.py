@@ -30,7 +30,7 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
         self,
         search_term: str,
         skip: int = 0,
-        limit: int = 50
+        limit: Optional[int] = 100
     ) -> List[AsteroidModel]:
         """
         Ищет астероиды по названию или обозначению.
@@ -47,7 +47,7 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
         min_diameter: Optional[float] = None,
         max_diameter: Optional[float] = None,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[AsteroidModel]:
         """
         Фильтрует астероиды по диапазону диаметров.
@@ -69,7 +69,7 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
         self,
         max_moid: float,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[AsteroidModel]:
         """
         Получает астероиды с MOID меньше указанного значения.
@@ -84,7 +84,7 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
     async def get_asteroids_with_accurate_diameter(
         self,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = 100
     ) -> List[AsteroidModel]:
         """
         Получает астероиды с точными данными о диаметре.
@@ -100,7 +100,7 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
         self,
         orbit_class: str,
         skip: int = 0,
-        limit: int = 100
+        limit: int|None = 100
     ) -> List[AsteroidModel]:
         """
         Получает астероиды по классу орбиты.
