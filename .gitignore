@@ -5,5 +5,6 @@
 .roomodes
 .pytest_cache
 .roomodes
-.roo
 __pycache__
+.qwen
+.roo
