@@ -69,7 +69,7 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
         self,
         max_moid: float,
         skip: int = 0,
-        limit: Optional[int] = 100
+        limit: Optional[int] = None
     ) -> List[AsteroidModel]:
         """
         Получает астероиды с MOID меньше указанного значения.
@@ -80,11 +80,23 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
             limit=limit,
             order_by="earth_moid_au"
         )
+
+    async def get_asteroids_count(self, max_moid: float = 1.0) -> int:
+        """
+        Получает общее количество астероидов с MOID меньше указанного значения.
+        """
+        try:
+            query = select(func.count()).where(self.model.earth_moid_au <= max_moid)
+            result = await self.session.execute(query)
+            return result.scalar() or 0
+        except Exception as e:
+            logger.error(f"Ошибка получения количества астероидов: {e}")
+            return 0
     
     async def get_asteroids_with_accurate_diameter(
         self,
         skip: int = 0,
-        limit: Optional[int] = 100
+        limit: Optional[int] = None
     ) -> List[AsteroidModel]:
         """
         Получает астероиды с точными данными о диаметре.
@@ -95,12 +107,12 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
             limit=limit,
             order_by="estimated_diameter_km"
         )
-    
+
     async def get_asteroids_by_orbit_class(
         self,
         orbit_class: str,
         skip: int = 0,
-        limit: int|None = 100
+        limit: Optional[int] = None
     ) -> List[AsteroidModel]:
         """
         Получает астероиды по классу орбиты.
@@ -194,4 +206,26 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
         )
 
         return created, updated
+
+    async def delete_asteroids_not_in_designations(
+        self,
+        designations: List[str]
+    ) -> int:
+        """
+        Удаляет астероиды, которых нет в списке designations.
+        """
+        try:
+            from sqlalchemy import delete
+            query = delete(self.model).where(
+                self.model.designation.notin_(designations)
+            )
+            result = await self.session.execute(query)
+            await self.session.commit()
+            deleted_count = result.rowcount
+            logger.info(f"Удалено {deleted_count} астероидов, которых нет в списке NASA")
+            return deleted_count
+        except Exception as e:
+            await self.session.rollback()
+            logger.error(f"Ошибка удаления астероидов: {e}")
+            return 0
 

@@ -7,21 +7,6 @@ from typing import TypeVar
 
 logger = logging.getLogger(__name__)
 
-class RepositoryProtocol(Protocol):
-    """Protocol for repositories that can participate in UoW."""
-    async def add(self, entity: Any) -> Any:
-        ...
-
-    async def update(self, entity: Any) -> Any:
-        ...
-
-    async def delete(self, entity: Any) -> Any:
-        ...
-
-    async def get(self, id: Any) -> Optional[Any]:
-        ...
-
-
 class AbstractRepository(ABC):
     """Abstract base class for repositories."""
     
@@ -44,12 +29,9 @@ class AbstractRepository(ABC):
     async def get(self, id: Any) -> Optional[Any]:
         pass
 
-
-T = TypeVar('T', bound=AbstractRepository)
-
 class UnitOfWork:
-    """ 
-    🔄 Реализация паттерна Unit of Work для управления транзакциями.
+    """
+    Unit of Work для управления транзакциями.
     """
 
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]):
@@ -57,7 +39,6 @@ class UnitOfWork:
         self._session: Optional[AsyncSession] = None
         self._repositories: Dict[Type[AbstractRepository], AbstractRepository] = {}
 
-        # Additional properties for the new architecture
         self.asteroid_repo = None
         self.approach_repo = None
         self.threat_repo = None
@@ -65,18 +46,7 @@ class UnitOfWork:
     @property
     def session(self) -> AsyncSession:
         """
-        📤 Получить текущую сессию или создать новую.
-
-        Returns:
-            AsyncSession: Асинхронная сессия SQLAlchemy
-
-        Raises:
-            RuntimeError: Если UnitOfWork не инициализирован
-
-        Example:
-            >>> async with UnitOfWork(session_factory) as uow:
-            >>>     session = uow.session
-            >>>     # Работа с сессией
+        Получить текущую сессию или создать новую.
         """
         if self._session is None:
             raise RuntimeError("UnitOfWork not initialized. Use as context manager or initialize manually.")
@@ -84,18 +54,7 @@ class UnitOfWork:
 
     def get_session(self) -> AsyncSession:
         """
-        📤 Получить текущую сессию или создать новую.
-
-        Returns:
-            AsyncSession: Асинхронная сессия SQLAlchemy
-
-        Raises:
-            RuntimeError: Если UnitOfWork не инициализирован
-
-        Example:
-            >>> async with UnitOfWork(session_factory) as uow:
-            >>>     session = uow.get_session()
-            >>>     # Работа с сессией
+        Получить текущую сессию или создать новую.
         """
         if self._session is None:
             raise RuntimeError("UnitOfWork not initialized. Use as context manager or initialize manually.")
@@ -103,25 +62,11 @@ class UnitOfWork:
 
     def get_repository(self, repository_cls: Type[AbstractRepository]) -> AbstractRepository:
         """
-        🏪 Получить или создать экземпляр репозитория, привязанный к текущей сессии.
-        
-        Args:
-            repository_cls: Класс репозитория для получения или создания
-            
-        Returns:
-            AbstractRepository: Экземпляр репозитория, привязанный к текущей сессии
-            
-        Example:
-            >>> from domains.asteroid.repositories.asteroid_repository import AsteroidRepository
-            >>> async with UnitOfWork(session_factory) as uow:
-            >>>     repo = uow.get_repository(AsteroidRepository)
-            >>>     # Работа с репозиторием
+        Получить или создать экземпляр репозитория привязанный к текущей сессии.
         """
         if repository_cls not in self._repositories:
             session = self.get_session()
-            # Create repository instance without session parameter
             repo_instance = repository_cls()
-            # Then assign the session to the repository
             repo_instance.session = session
             self._repositories[repository_cls] = repo_instance
 
@@ -129,15 +74,7 @@ class UnitOfWork:
 
     async def commit(self):
         """
-        ✅ Зафиксировать текущую транзакцию.
-        
-        Метод применяет все изменения, сделанные в рамках текущей транзакции,
-        и очищает кэш репозиториев.
-        
-        Example:
-            >>> async with UnitOfWork(session_factory) as uow:
-            >>>     # Выполнение операций
-            >>>     await uow.commit()  # Фиксация изменений
+        Зафиксировать текущую транзакцию.
         """
         if self._session:
             try:
@@ -152,18 +89,7 @@ class UnitOfWork:
 
     async def rollback(self):
         """
-        🔄 Откатить текущую транзакцию.
-        
-        Метод откатывает все изменения, сделанные в рамках текущей транзакции,
-        и очищает кэш репозиториев.
-        
-        Example:
-            >>> async with UnitOfWork(session_factory) as uow:
-            >>>     try:
-            >>>         # Выполнение операций
-            >>>         pass
-            >>>     except Exception:
-            >>>         await uow.rollback()  # Откат изменений
+        Откатить текущую транзакцию.
         """
         if self._session:
             await self._session.rollback()
@@ -172,10 +98,7 @@ class UnitOfWork:
 
     def _clear_repositories(self):
         """
-        🗑️ Очистить кэшированные репозитории при завершении транзакции.
-        
-        Этот метод очищает внутренний кэш репозиториев, чтобы избежать
-        использования устаревших экземпляров в следующей транзакции.
+        Очистить кэшированные репозитории при завершении транзакции.
         """
         self._repositories.clear()
 

@@ -87,16 +87,15 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
     
     async def get_upcoming_approaches(
         self,
-        limit: Optional[int] = 100,
+        limit: Optional[int] = None,
         skip: int = 0
     ) -> List[CloseApproachModel]:
         """
-        Получает ближайшие по времени сближения.
+        Получает все сближения из базы данных.
+        Возвращает ВСЕ сближения без фильтрации по времени.
         """
-        now = now_aware()
-
         return await self.filter(
-            filters={"approach_time__ge": now},
+            filters={},
             skip=skip,
             limit=limit,
             order_by="approach_time"
@@ -104,7 +103,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
 
     async def get_closest_approaches_by_distance(
         self,
-        limit: Optional[int] = 100,
+        limit: Optional[int] = None,
         skip: int = 0
     ) -> List[CloseApproachModel]:
         """
@@ -119,7 +118,7 @@ class ApproachRepository(BaseRepository[CloseApproachModel]):
 
     async def get_fastest_approaches(
         self,
-        limit: Optional[int] = 100,
+        limit: Optional[int] = None,
         skip: int = 0
     ) -> List[CloseApproachModel]:
         """

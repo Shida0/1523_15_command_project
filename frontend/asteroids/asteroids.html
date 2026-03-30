@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Астероиды (PHA) - Asteroid Watch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link rel="stylesheet" href="asteroids.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="stars"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index/index.html" class="logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index/index.html">Главная</a></li>
+                <li><a href="../asteroids/asteroids.html">Астероиды</a></li>
+                <li><a href="../approaches/approaches.html">Сближения</a></li>
+                <li><a href="../threats/threats.html">Угрозы</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="page-header-content">
+            <div class="breadcrumbs">
+                <a href="../index/index.html">Главная</a>
+                <span>/</span>
+                <span style="color: var(--text-primary);">Астероиды</span>
+            </div>
+            <h1 class="page-title">Каталог PHA астероидов</h1>
+            <p class="page-subtitle">Полная база данных потенциально опасных околоземных объектов</p>
+        </div>
+    </header>
+
+    <section class="table-section">
+        <div class="table-container">
+            <div class="table-info-bar">
+                <span class="pha-badge">🛡️ Только PHA астероиды</span>
+                <div class="quick-filters">
+                    <button class="quick-filter-btn active" onclick="quickFilter('all')">Все</button>
+                    <button class="quick-filter-btn" onclick="quickFilter('apollo')">Apollo</button>
+                    <button class="quick-filter-btn" onclick="quickFilter('aten')">Aten</button>
+                    <button class="quick-filter-btn" onclick="quickFilter('amor')">Amor</button>
+                </div>
+                <span class="results-count">Найдено: <span id="total-results">0</span></span>
+            </div>
+
+            <div class="table-header">
+                <div class="table-title">
+                    Все астероиды
+                    <span class="table-title-badge" id="filtered-count">0</span>
+                </div>
+                <div class="table-filters">
+                    <div class="filter-group">
+                        <span class="filter-label">Риск:</span>
+                        <button class="filter-btn active" onclick="filterByRisk('all')">Все</button>
+                        <button class="filter-btn" onclick="filterByRisk('high')">Высокий</button>
+                        <button class="filter-btn" onclick="filterByRisk('near-earth')">Околоземные</button>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Диаметр:</span>
+                        <button class="filter-btn" onclick="filterByDiameter('nasa')">Измерен NASA</button>
+                        <button class="filter-btn" onclick="filterByDiameter('calculated')">Расчётный</button>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Сортировка:</span>
+                        <button class="filter-btn" onclick="sortTable('designation')">Обозначение</button>
+                        <button class="filter-btn" onclick="sortTable('diameter')">Диаметр</button>
+                        <button class="filter-btn" onclick="sortTable('moid')">MOID</button>
+                        <button class="filter-btn" onclick="sortTable('risk')">Риск</button>
+                        <button class="filter-btn" onclick="sortTable('magnitude')">Величина</button>
+                        <button class="filter-btn" onclick="sortTable('albedo')">Альбедо</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="asteroids-table">
+                    <thead>
+                        <tr>
+                            <th>Обозначение</th>
+                            <th>Название</th>
+                            <th>Диаметр (км)</th>
+                            <th>MOID (а.е.)</th>
+                            <th>Абс. величина (H)</th>
+                            <th>Альбедо</th>
+                            <th>Класс орбиты</th>
+                            <th>Уровень угрозы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="asteroids-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <div class="table-info">
+                    <span>Всего: <span id="total-count">0</span></span>
+                </div>
+                <div class="table-actions">
+                    <button class="reset-filters-btn" onclick="resetAllFilters()">
+                        🔄 Сбросить фильтры
+                    </button>
+                    <a href="../index/index.html" class="view-all-btn">
+                        ← На главную
+                    </a>
+                </div>
+            </div>
+
+            <div class="pagination-container" id="pagination-container">
+            </div>
+        </div>
+
+        <div class="api-notice">
+            <span class="api-notice-icon">📡</span>
+            <span>Данные получены из NASA Sentry API и NASA CAD API. Обновление каждые 24 часа.</span>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">API Документация</a></li>
+                <li><a href="#">О проекте</a></li>
+                <li><a href="#">Контакты</a></li>
+                <li><a href="#">GitHub</a></li>
+            </ul>
+            <div class="footer-copy">
+                © 2025 Asteroid Watch. Данные: NASA JPL Sentry API, NASA CAD API. Только PHA астероиды.
+            </div>
+        </div>
+    </footer>
+
+    <script src="../api.js"></script>
+    <script src="../main.js"></script>
+    <script src="asteroids.js"></script>
+</body>
+</html>

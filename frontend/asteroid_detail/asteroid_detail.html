@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Астероид - Asteroid Watch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link rel="stylesheet" href="asteroid_detail.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="stars"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index/index.html" class="logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index/index.html">Главная</a></li>
+                <li><a href="../asteroids/asteroids.html">Астероиды</a></li>
+                <li><a href="../approaches/approaches.html">Сближения</a></li>
+                <li><a href="../threats/threats.html">Угрозы</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="page-header-content">
+            <div class="breadcrumbs">
+                <a href="../index/index.html">Главная</a>
+                <span>/</span>
+                <a href="../asteroids/asteroids.html">Астероиды</a>
+                <span>/</span>
+                <span style="color: var(--text-primary);" id="breadcrumb-asteroid">Астероид</span>
+            </div>
+            <h1 class="page-title" id="asteroid-title">Загрузка...</h1>
+            <p class="page-subtitle" id="asteroid-subtitle">Подробная информация об астероиде</p>
+        </div>
+    </header>
+
+    <main class="detail-section">
+        <div class="detail-container">
+            <div class="detail-card main-info">
+                <div class="card-header">
+                    <h2>🪨 Основная информация</h2>
+                </div>
+                <div class="card-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Обозначение</span>
+                            <span class="info-value" id="designation">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Название</span>
+                            <span class="info-value" id="name">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Диаметр (км)</span>
+                            <span class="info-value" id="diameter">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Источник диаметра</span>
+                            <span class="info-value" id="diameter-source">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Абсолютная величина (H)</span>
+                            <span class="info-value" id="absolute-magnitude">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Альбедо</span>
+                            <span class="info-value" id="albedo">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-card orbit-info">
+                <div class="card-header">
+                    <h2>🛰️ Орбитальная информация</h2>
+                </div>
+                <div class="card-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Класс орбиты</span>
+                            <span class="info-value" id="orbit-class">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">ID орбиты</span>
+                            <span class="info-value" id="orbit-id">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Перигелий (а.е.)</span>
+                            <span class="info-value" id="perihelion">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Афелий (а.е.)</span>
+                            <span class="info-value" id="aphelion">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">MOID (Земля, а.е.)</span>
+                            <span class="info-value" id="moid">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-card threat-info">
+                <div class="card-header">
+                    <h2>⚠️ Оценка угрозы (NASA Sentry)</h2>
+                </div>
+                <div class="card-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Вероятность удара</span>
+                            <span class="info-value" id="impact-probability">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Туринская шкала</span>
+                            <span class="info-value torino-scale-value" id="turin-scale">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Палермская шкала</span>
+                            <span class="info-value" id="palermo-scale">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Энергия удара (Мт)</span>
+                            <span class="info-value" id="energy">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Категория воздействия</span>
+                            <span class="info-value" id="impact-category">—</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Уровень угрозы</span>
+                            <span class="info-value" id="threat-level">—</span>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-years-section" id="risk-years-section" style="display: none;">
+                        <h3>📅 Года риска</h3>
+                        <div class="risk-years" id="risk-years">
+                        </div>
+                    </div>
+
+                    <div class="sentry-notice">
+                        <span class="sentry-notice-icon">📡</span>
+                        <span>Данные об угрозах получены из NASA Sentry API. Наша система не рассчитывает угрозы самостоятельно.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-card approaches-info">
+                <div class="card-header">
+                    <h2>🌍 Сближения с Землёй</h2>
+                </div>
+                <div class="card-content">
+                    <div id="approaches-content">
+                        <p class="no-data">Данные о сближениях загружаются...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <a href="../asteroids/asteroids.html" class="nav-btn btn-secondary">
+                    ← Назад к каталогу
+                </a>
+                <a href="../index/index.html" class="nav-btn btn-primary">
+                    🏠 На главную
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">API Документация</a></li>
+                <li><a href="#">О проекте</a></li>
+                <li><a href="#">Контакты</a></li>
+                <li><a href="#">GitHub</a></li>
+            </ul>
+            <div class="footer-copy">
+                © 2025 Asteroid Watch. Данные: NASA JPL Sentry API, NASA CAD API. Только PHA астероиды.
+            </div>
+        </div>
+    </footer>
+
+    <script src="../api.js"></script>
+    <script src="../main.js"></script>
+    <script src="asteroid_detail.js"></script>
+</body>
+</html>

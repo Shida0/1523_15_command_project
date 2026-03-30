@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сводка угроз - Asteroid Watch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link rel="stylesheet" href="threats.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="stars"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index/index.html" class="logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index/index.html">Главная</a></li>
+                <li><a href="../asteroids/asteroids.html">Астероиды</a></li>
+                <li><a href="../approaches/approaches.html">Сближения</a></li>
+                <li><a href="threats.html" class="active">Угрозы</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="page-header-content">
+            <div class="breadcrumbs">
+                <a href="../index/index.html">Главная</a>
+                <span>/</span>
+                <span style="color: var(--text-primary);">Угрозы</span>
+            </div>
+            <h1 class="page-title">⚠️ Сводка угроз</h1>
+            <p class="page-subtitle">Оценки риска столкновения астероидов с Землёй (NASA Sentry)</p>
+        </div>
+    </header>
+
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="total-threats">0</div>
+                    <div class="stat-label">Всего угроз</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔴</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="high-risk-count">0</div>
+                    <div class="stat-label">Высокий риск (TS ≥ 5)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🟠</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="medium-risk-count">0</div>
+                    <div class="stat-label">Средний риск (TS 2-4)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🟢</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="low-risk-count">0</div>
+                    <div class="stat-label">Низкий риск (TS 0-1)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="table-section">
+        <div class="table-container">
+            <div class="info-banner" id="no-threats-banner" style="display: none;">
+                <div class="banner-icon">✅</div>
+                <div class="banner-content">
+                    <h3>Угроз не обнаружено</h3>
+                    <p>На данный момент нет астероидов с значительной вероятностью столкновения с Землёй. Это нормальная ситуация — большинство астероидов имеют нулевую или крайне низкую вероятность удара.</p>
+                </div>
+            </div>
+
+            <div class="table-header">
+                <div class="table-title">
+                    Все угрозы
+                    <span class="table-title-badge" id="threats-count-badge">0</span>
+                </div>
+                <div class="table-filters">
+                    <div class="filter-group">
+                        <span class="filter-label">Сортировка:</span>
+                        <button class="filter-btn active" onclick="sortTable('ts_max')">Туринская</button>
+                        <button class="filter-btn" onclick="sortTable('ps_max')">Палермская</button>
+                        <button class="filter-btn" onclick="sortTable('probability')">Вероятность</button>
+                        <button class="filter-btn" onclick="sortTable('energy')">Энергия</button>
+                        <button class="filter-btn" onclick="sortTable('designation')">Название</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters-bar">
+                <div class="filter-item">
+                    <label>Уровень риска:</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="risk-filter" value="all" checked onchange="filterByRisk('all')"> Все</label>
+                        <label class="radio-label"><input type="radio" name="risk-filter" value="high" onchange="filterByRisk('high')"> Высокий (TS≥5)</label>
+                        <label class="radio-label"><input type="radio" name="risk-filter" value="medium" onchange="filterByRisk('medium')"> Средний (TS 2-4)</label>
+                        <label class="radio-label"><input type="radio" name="risk-filter" value="low" onchange="filterByRisk('low')"> Низкий (TS 0-1)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="threats-table">
+                    <thead>
+                        <tr>
+                            <th>Астероид</th>
+                            <th>Туринская шкала</th>
+                            <th>Палермская шкала</th>
+                            <th>Вероятность</th>
+                            <th>Энергия (Мт)</th>
+                            <th>Категория</th>
+                            <th>Года риска</th>
+                            <th>Уровень угрозы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="threats-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <div class="table-info">
+                    <span>Всего: <span id="total-count">0</span></span>
+                </div>
+                <a href="../index/index.html" class="view-all-btn">
+                    ← На главную
+                </a>
+            </div>
+
+            <div class="pagination-container" id="pagination-container">
+            </div>
+        </div>
+
+        <div class="api-notice">
+            <span class="api-notice-icon">📡</span>
+            <span>Данные об угрозах получены из NASA Sentry API. Наша система не рассчитывает угрозы самостоятельно.</span>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">API Документация</a></li>
+                <li><a href="#">О проекте</a></li>
+                <li><a href="#">Контакты</a></li>
+                <li><a href="#">GitHub</a></li>
+            </ul>
+            <div class="footer-copy">
+                © 2025 Asteroid Watch. Данные: NASA JPL Sentry API, NASA CAD API. Только PHA астероиды.
+            </div>
+        </div>
+    </footer>
+
+    <script src="../api.js"></script>
+    <script src="../main.js"></script>
+    <script src="threats.js"></script>
+</body>
+</html>

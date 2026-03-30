@@ -150,7 +150,7 @@ class SentryClient:
         fullname = self._safe_extract_str(item, 'fullname', designation)
         last_obs = self._safe_extract_str(item, 'last_obs', 'Неизвестно')
         
-        # Извлечение числовых значений. Сначала пробуем 'max', затем 'cum'[citation:2][citation:4]
+        # Извлечение числовых значений
         ip = self._safe_extract_float(item, 'ip', 0.0)
         
         ts_max = self._safe_extract_int(item, 'ts_max', 0)
@@ -219,7 +219,7 @@ class SentryClient:
         if value is None:
             return default
         try:
-            return int(float(value))  # Сначала в float, если строка "22.5"
+            return int(float(value))  # Сначала в float если строка "22.5"
         except (ValueError, TypeError):
             logger.debug(f"Не удалось преобразовать '{value}' в int для ключа '{key}'. Используется значение по умолчанию {default}.")
             return default

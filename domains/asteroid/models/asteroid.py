@@ -122,14 +122,9 @@ class AsteroidModel(Base):
     )
     
     def __init__(self, **kwargs):
-        """
-        Инициализирует экземпляр модели астероида с валидацией данных.
-        
-        Args:
-            **kwargs: Параметры астероида для инициализации
-        """
+        """Инициализирует экземпляр модели астероида с валидацией данных."""
         super().__init__(**kwargs)
-        
+
         # валидация альбедо
         if self.albedo is None:
             # Значение не было передано - используем по умолчанию
@@ -151,13 +146,13 @@ class AsteroidModel(Base):
             except (ValueError, TypeError):
                 logger.warning(f"Cannot convert albedo '{self.albedo}' to float for {self.designation}, using 0.15")
                 self.albedo = 0.15
-        
+
         # валидация diameter_source
         valid_sources = {'measured', 'computed', 'calculated'}
         if self.diameter_source not in valid_sources:
             logger.warning(f"Invalid diameter_source '{self.diameter_source}' for {self.designation}, using 'calculated'")
             self.diameter_source = 'calculated'
-        
+
         # Диаметр
         if not hasattr(self, 'estimated_diameter_km') or self.estimated_diameter_km is None:
             self.estimated_diameter_km = 0.05

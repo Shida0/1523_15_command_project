@@ -402,6 +402,8 @@ class NASASBDBClient:
             'limit': limit or 3000
         }
         
+        logger.info(f"Отправка запроса к {self.SBDB_QUERY_URL} с параметрами {params}")
+        
         async with self.session.get(self.SBDB_QUERY_URL, params=params) as response:
             response.raise_for_status()
             data = await response.json()

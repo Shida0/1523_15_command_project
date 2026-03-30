@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Watch - Система мониторинга PHA астероидов</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../main.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="stars"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../asteroids/asteroids.html">Астероиды</a></li>
+                <li><a href="../approaches/approaches.html">Сближения</a></li>
+                <li><a href="../threats/threats.html">Угрозы</a></li>
+                <li><a href="#about">О системе</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">Система мониторинга астероидов в реальном времени</div>
+            <h1>Защита Земли от астероидной опасности</h1>
+            <p>
+                Asteroid Watch — это комплексная система мониторинга <strong>потенциально опасных астероидов (PHA)</strong>,
+                которая отслеживает околоземные объекты, анализирует их орбиты и оценивает риск столкновения с Землёй.
+                Мы используем данные <strong>NASA Sentry API</strong> для оценок угроз и <strong>NASA CAD API</strong> для сближений.
+            </p>
+            <div class="hero-buttons">
+                <a href="#table-section" class="btn btn-primary">
+                    🔭 Смотреть астероиды
+                </a>
+                <a href="#about" class="btn btn-secondary">
+                    📚 Узнать больше
+                </a>
+            </div>
+            <div class="api-notice">
+                <span class="api-notice-icon">ℹ️</span>
+                <span>Оценки угроз получены из NASA Sentry API — мы переводим и визуализируем данные, не рассчитываем их самостоятельно</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-icon">🪨</div>
+                <div class="stat-value" id="stat-total-asteroids">—</div>
+                <div class="stat-label">PHA астероидов в базе</div>
+            </div>
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-icon">🌍</div>
+                    <div class="stat-value" id="stat-total-approaches">—</div>
+                    <div class="stat-label">Сближений отслежено</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-value" id="stat-total-threats">—</div>
+                    <div class="stat-label">Оценок угроз (Sentry)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔴</div>
+                    <div class="stat-value" id="stat-high-risk">—</div>
+                    <div class="stat-label">Высокий риск (TS ≥ 5)</div>
+                </div>
+                </div>
+            </div>
+            <div class="info-notice">
+                <span class="info-notice-icon">⚠️</span>
+                <div class="info-notice-content">
+                    <h4>Важно: только PHA астероиды</h4>
+                    <p>В нашей базе данных содержатся только <strong>потенциально опасные астероиды (PHA).</strong> Это наиболее опасные околоземные объекты, требующие постоянного мониторинга.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="info-section" id="about">
+        <div class="section-header">
+            <h2>Почему это важно?</h2>
+            <p>Астероидная опасность — реальная угроза, которую необходимо отслеживать и изучать</p>
+        </div>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-card-icon">☄️</div>
+                <h3>Исторические прецеденты</h3>
+                <p>
+                    65 миллионов лет назад астероид диаметром ~10 км привёл к вымиранию динозавров.
+                    В 1908 году Тунгусский метеорит разрушил 2000 км² тайги. В 2013 году Челябинский
+                    метеорит повредил здания и ранил 1500 человек.
+                </p>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">🎯</div>
+                <h3>Потенциальная опасность</h3>
+                <p>
+                    В настоящее время известно более 32,000 околоземных астероидов. Из них около 2,400
+                    классифицируются как потенциально опасные (PHA). Даже астероид диаметром 140 метров
+                    может вызвать региональную катастрофу.
+                </p>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">🔬</div>
+                <h3>Научное значение</h3>
+                <p>
+                    Изучение астероидов помогает понять происхождение Солнечной системы,
+                    состав первичного вещества, а также оценить ресурсы для будущего
+                    космического освоения. Многие астероиды содержат ценные металлы.
+                </p>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">🛡️</div>
+                <h3>Защита планеты</h3>
+                <p>
+                    Раннее обнаружение опасных объектов даёт время для разработки миссий
+                    по отклонению астероида. Миссия DART NASA в 2022 году успешно продемонстрировала
+                    возможность изменения орбиты астероида.
+                </p>
+            </div>
+        </div>
+        <div class="info-notice">
+            <span class="info-notice-icon">📡</span>
+            <div class="info-notice-content">
+                <h4>Источник данных об угрозах</h4>
+                <p>Все оценки угроз столкновений (Туринская шкала, Палермская шкала, вероятность удара) получены из <strong>NASA Sentry API</strong>. Наша система не рассчитывает угрозы самостоятельно — мы агрегируем, переводим и визуализируем официальные данные NASA для удобного мониторинга.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="torino-section">
+        <div class="torino-container">
+            <div class="section-header">
+                <h2>Туринская шкала опасности</h2>
+                <p>Международная шкала для оценки опасности столкновения астероидов с Землёй (данные NASA Sentry)</p>
+            </div>
+            <div class="torino-scale">
+                <div class="torino-level torino-0" onclick="showTorinoInfo(0)">0<span>Нет риска</span></div>
+                <div class="torino-level torino-1" onclick="showTorinoInfo(1)">1<span>Нормальный</span></div>
+                <div class="torino-level torino-2" onclick="showTorinoInfo(2)">2<span>Внимание</span></div>
+                <div class="torino-level torino-3" onclick="showTorinoInfo(3)">3<span>Угроза</span></div>
+                <div class="torino-level torino-4" onclick="showTorinoInfo(4)">4<span>Высокий</span></div>
+                <div class="torino-level torino-5" onclick="showTorinoInfo(5)">5<span>Серьёзный</span></div>
+                <div class="torino-level torino-6" onclick="showTorinoInfo(6)">6<span>Угроза</span></div>
+                <div class="torino-level torino-7" onclick="showTorinoInfo(7)">7<span>Опасный</span></div>
+                <div class="torino-level torino-8" onclick="showTorinoInfo(8)">8<span>Катастрофа</span></div>
+                <div class="torino-level torino-9" onclick="showTorinoInfo(9)">9<span>Глобальный</span></div>
+                <div class="torino-level torino-10" onclick="showTorinoInfo(10)">10<span>Коллизия</span></div>
+            </div>
+            <div class="torino-legend">
+                <div class="torino-legend-item">
+                    <strong style="color: #10b981;">Уровень 0 (Зелёный)</strong>
+                    Вероятность столкновения практически нулевая, или объект слишком мал.
+                </div>
+                <div class="torino-legend-item">
+                    <strong style="color: #84cc16;">Уровень 1 (Зелёный)</strong>
+                    Обычное открытие. Вероятность столкновения очень низкая.
+                </div>
+                <div class="torino-legend-item">
+                    <strong style="color: #eab308;">Уровень 2-4 (Жёлтый/Оранжевый)</strong>
+                    Требует внимания астрономов. Вероятность столкновения 1% или выше.
+                </div>
+                <div class="torino-legend-item">
+                    <strong style="color: #ef4444;">Уровень 5-7 (Красный)</strong>
+                    Серьёзная угроза. Вероятность столкновения значительная.
+                </div>
+                <div class="torino-legend-item">
+                    <strong style="color: #7f1d1d;">Уровень 8-10 (Бордовый)</strong>
+                    Неизбежное столкновение с локальными или глобальными последствиями.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="table-section" id="table-section">
+        <div class="section-header">
+            <h2>Мониторинг астероидов</h2>
+            <p>Данные о потенциально опасных околоземных объектах</p>
+        </div>
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">
+                    Потенциально опасные астероиды (PHA)
+                </div>
+                <div class="desktop-filters table-filters">
+                    <div class="filter-group">
+                        <span class="filter-label">Риск:</span>
+                        <button class="filter-btn active" onclick="filterTable('all')">Все</button>
+                        <button class="filter-btn" onclick="filterTable('high-risk')">Высокий риск</button>
+                        <button class="filter-btn" onclick="filterTable('near-earth')">Околоземные (≤0.05 а.е.)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mobile-filters">
+                <button class="mobile-filters-toggle" onclick="toggleMobileFilters()">
+                    <span>🔍 Фильтры таблицы</span>
+                    <span id="filter-toggle-icon">▼</span>
+                </button>
+                <div class="mobile-filters-panel" id="mobile-filters-panel">
+                    <div class="filter-section">
+                        <div class="filter-section-title">Риск</div>
+                        <button class="filter-btn active" onclick="filterTable('all', this)">Все</button>
+                        <button class="filter-btn" onclick="filterTable('high-risk', this)">Высокий риск</button>
+                        <button class="filter-btn" onclick="filterTable('near-earth', this)">Околоземные (≤0.05 а.е.)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="asteroid-table">
+                    <thead>
+                        <tr>
+                            <th>Обозначение</th>
+                            <th>Название</th>
+                            <th>Диаметр (км)</th>
+                            <th>MOID (а.е.)</th>
+                            <th>Абс. величина (H)</th>
+                            <th>Альбедо</th>
+                            <th>Класс орбиты</th>
+                            <th>Уровень угрозы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="asteroid-table-body">
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer">
+                <div class="table-info">
+                    <span>Всего: <span id="total-count">2547</span></span>
+                </div>
+                <a href="../asteroids/asteroids.html" class="view-all-btn">
+                    📋 Посмотреть все астероиды
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+        <div class="api-notice" style="margin-top: 1rem;">
+            <span class="api-notice-icon">📡</span>
+            <span>Оценки угроз (Туринская шкала, Палермская шкала, вероятность) получены из NASA Sentry API. Данные о сближениях — из NASA CAD API.</span>
+        </div>
+    </section>
+
+    <section class="nav-cards-section">
+        <div class="section-header">
+            <h2>Разделы системы</h2>
+            <p>Перейдите к подробной информации по каждому направлению</p>
+        </div>
+        <div class="nav-cards">
+            <a href="../asteroids/asteroids.html" class="nav-card">
+                <div class="nav-card-icon">🪨</div>
+                <h3>База PHA астероидов</h3>
+                <p>Полный каталог потенциально опасных околоземных астероидов с данными об орбитах, размерах и физических характеристиках. Фильтрация по классу орбиты, диаметру и MOID.</p>
+                <div class="nav-card-arrow">→</div>
+            </a>
+            <a href="../approaches/approaches.html" class="nav-card">
+                <div class="nav-card-icon">🌍</div>
+                <h3>Сближения с Землёй</h3>
+                <p>Календарь ближайших сближений астероидов с Землёй. Данные о расстоянии, скорости и времени максимального сближения из NASA CAD API.</p>
+                <div class="nav-card-arrow">→</div>
+            </a>
+            <a href="../threats/threats.html" class="nav-card">
+                <div class="nav-card-icon">⚠️</div>
+                <h3>Оценка угроз (Sentry)</h3>
+                <p>Анализ риска столкновения с использованием шкал Турина и Палермо из NASA Sentry API. Расчёт энергии воздействия и категоризация по потенциальным последствиям.</p>
+                <div class="nav-card-arrow">→</div>
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">API Документация</a></li>
+                <li><a href="#">О проекте</a></li>
+                <li><a href="#">Контакты</a></li>
+                <li><a href="#">GitHub</a></li>
+            </ul>
+            <div class="footer-copy">
+                © 2025 Asteroid Watch. Данные: NASA JPL Sentry API, NASA CAD API. Только PHA астероиды.
+            </div>
+        </div>
+    </footer>
+
+    <script src="../api.js"></script>
+    <script src="../main.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

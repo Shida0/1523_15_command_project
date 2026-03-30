@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Репозиторий для работы с оценками угроз из NASA Sentry API.
 Использует общие методы BaseController.
@@ -41,7 +40,7 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
     
     async def get_high_risk_threats(
         self,
-        limit: Optional[int] = 100,
+        limit: Optional[int] = None,
         skip: int = 0
     ) -> List[ThreatAssessmentModel]:
         """
@@ -55,13 +54,13 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             order_by="ts_max",
             order_desc=True
         )
-    
+
     async def get_threats_by_risk_level(
         self,
         min_ts: int = 0,
         max_ts: int = 10,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = None
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы по диапазону значений Туринской шкалы.
@@ -79,13 +78,13 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             order_by="ts_max",
             order_desc=True
         )
-    
+
     async def get_threats_by_probability(
         self,
         min_probability: float = 0.0,
         max_probability: float = 1.0,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = None
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы по диапазону вероятности столкновения.
@@ -103,13 +102,13 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             order_by="ip",
             order_desc=True
         )
-    
+
     async def get_threats_by_energy(
         self,
         min_energy: float = 0.0,
         max_energy: Optional[float] = None,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = None
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы по диапазону энергии воздействия.
@@ -127,12 +126,12 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             order_by="energy_megatons",
             order_desc=True
         )
-    
+
     async def get_threats_by_impact_category(
         self,
         category: str,
         skip: int = 0,
-        limit: int = 100
+        limit: Optional[int] = None
     ) -> List[ThreatAssessmentModel]:
         """
         Получает угрозы по категории воздействия.
@@ -326,3 +325,58 @@ class ThreatRepository(BaseRepository[ThreatAssessmentModel]):
             skip=skip,
             limit=limit
         )
+
+    async def delete_threats_not_in_designations(
+        self,
+        designations: List[str]
+    ) -> int:
+        """
+        Удаляет угрозы, которых нет в списке designations.
+        """
+        try:
+            from sqlalchemy import delete
+            query = delete(self.model).where(
+                self.model.designation.notin_(designations)
+            )
+            result = await self.session.execute(query)
+            await self.session.commit()
+            deleted_count = result.rowcount
+            logger.info(f"Удалено {deleted_count} угроз, которых нет в списке NASA")
+            return deleted_count
+        except Exception as e:
+            await self.session.rollback()
+            logger.error(f"Ошибка удаления угроз: {e}")
+            return 0
+
+    async def delete_threats_with_expired_years(
+        self,
+        current_year: int
+    ) -> int:
+        """
+        Удаляет угрозы у которых все года риска в прошлом.
+        """
+        try:
+            from sqlalchemy import select
+            # Находим все угрозы
+            threats = await self.get_all(skip=0, limit=None)
+            
+            deleted_count = 0
+            for threat in threats:
+                # Проверяем есть ли хотя бы один будущий год
+                has_future_year = any(year >= current_year for year in threat.impact_years)
+                
+                if not has_future_year and threat.impact_years:
+                    # Все года в прошлом - удаляем угрозу
+                    await self.delete(threat.id)
+                    deleted_count += 1
+                    logger.info(f"Удалена угроза {threat.designation} - все года риска в прошлом")
+            
+            if deleted_count > 0:
+                await self.session.commit()
+                logger.info(f"Удалено {deleted_count} угроз с истёкшими годами риска")
+            
+            return deleted_count
+        except Exception as e:
+            await self.session.rollback()
+            logger.error(f"Ошибка удаления угроз с истёкшими годами: {e}")
+            return 0

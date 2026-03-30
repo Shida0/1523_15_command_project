@@ -11,25 +11,18 @@ from domains.threat.services.threat_service import ThreatService
 from shared.external_api.wrappers.get_data import get_asteroid_data
 from shared.external_api.wrappers.get_approaches import get_current_close_approaches
 from shared.external_api.wrappers.get_threat import get_all_treats
+from shared.transaction.uow import UnitOfWork
 
 logger = logging.getLogger(__name__)
 
 
 class UpdateService:
-    """
-    Сервис для периодического обновления данных из NASA API.
-    """
+    """Сервис для периодического обновления данных из NASA API."""
 
     def __init__(self, session_factory):
-        """
-        Инициализация сервиса обновления.
-
-        Args:
-            session_factory: Фабрика для создания сессий SQLAlchemy
-        """
+        """Инициализация сервиса обновления."""
         self.session_factory = session_factory
 
-        # Инициализируем сервисы с фабрикой сессий
         self.asteroid_service = AsteroidService(session_factory)
         self.approach_service = ApproachService(session_factory)
         self.threat_service = ThreatService(session_factory)
@@ -46,6 +39,8 @@ class UpdateService:
                 logger.warning("Нет данных об астероидах")
                 return 0
 
+            nasa_designations = [a.get('designation') for a in asteroids_data if a.get('designation')]
+
             count = 0
             for asteroid in asteroids_data:
                 try:
@@ -54,7 +49,6 @@ class UpdateService:
                         logger.warning("Пропуск астероида без designation")
                         continue
 
-                    # Подготовка данных
                     data = {
                         'designation': designation,
                         'name': asteroid.get('name') or None,
@@ -74,20 +68,22 @@ class UpdateService:
                         'diameter_source': asteroid.get('diameter_source') or 'calculated'
                     }
 
-                    # Проверяем существование астероида
                     existing = await self.asteroid_service.get_by_designation(designation)
                     if existing:
-                        # Обновляем существующий
                         await self.asteroid_service.update(existing['id'], data)
                     else:
-                        # Создаём новый
                         await self.asteroid_service.create(data)
 
                     count += 1
 
                 except Exception as e:
                     logger.error(f"Ошибка обработки астероида {designation}: {e}")
-                    continue  
+                    continue
+
+            if nasa_designations:
+                deleted = await self.asteroid_service.delete_asteroids_not_in_designations(nasa_designations)
+                if deleted > 0:
+                    logger.info(f"Удалено {deleted} астероидов, отсутствующих в NASA API")
 
             logger.info(f"Успешно обновлено астероидов: {count}")
             return count
@@ -108,6 +104,7 @@ class UpdateService:
             return default
 
     async def update_approaches(self, days: int = 3650) -> int:
+        """Обновление сближений."""
         logger.info(f"Обновление сближений на {days} дней")
         try:
             asteroids_dicts = await self.asteroid_service.get_all(skip=0, limit=1000)
@@ -135,25 +132,21 @@ class UpdateService:
 
                 approach['asteroid_id'] = asteroid['id']
 
-                # Поиск существующего сближения
                 existing = await self.approach_service.filter(
                     filters={'asteroid_id': asteroid['id'], 'approach_time': approach['approach_time']},
                     limit=1
                 )
                 if existing:
-                    # Обновляем
                     await self.approach_service.update(existing[0]['id'], approach)
                 else:
-                    # Создаём
                     await self.approach_service.create(approach)
                 count += 1
 
+            cutoff_date = datetime.now()
+            await self.approach_service.delete_old_approaches(cutoff_date)
+
             logger.info(f"Обновлено сближений: {count}")
             return count
-        except Exception as e:
-            logger.error(f"Ошибка обновления сближений: {e}")
-            return 0
-
         except Exception as e:
             logger.error(f"Ошибка обновления сближений: {e}")
             return 0
@@ -166,11 +159,23 @@ class UpdateService:
             threats_data = await get_all_treats()
             if not threats_data:
                 logger.warning("Нет данных об угрозах")
+                from sqlalchemy import delete
+                from domains.threat.models.threat_assessment import ThreatAssessmentModel
+
+                async with UnitOfWork(self.asteroid_service.session_factory) as uow:
+                    query = delete(ThreatAssessmentModel)
+                    result = await uow.session.execute(query)
+                    await uow.session.commit()
+                    deleted = result.rowcount
+
+                if deleted > 0:
+                    logger.info(f"Удалено {deleted} угроз (нет данных от NASA)")
                 return 0
 
-            # Получаем астероиды для связи
             asteroids_dicts = await self.asteroid_service.get_all(skip=0, limit=None)
             asteroid_dict = {a['designation']: a for a in asteroids_dicts if a.get('designation')}
+
+            nasa_designations = [t.get('designation') for t in threats_data if t.get('designation')]
 
             count = 0
             for threat in threats_data:
@@ -185,7 +190,6 @@ class UpdateService:
 
                     threat['asteroid_id'] = asteroid['id']
 
-                    # Проверяем существование угрозы
                     existing = await self.threat_service.get_by_designation(designation)
                     if existing:
                         await self.threat_service.update(existing['id'], threat)
@@ -198,6 +202,16 @@ class UpdateService:
                     logger.error(f"Ошибка обработки угрозы для {designation}: {e}")
                     continue
 
+            if nasa_designations:
+                deleted = await self.threat_service.delete_threats_not_in_designations(nasa_designations)
+                if deleted > 0:
+                    logger.info(f"Удалено {deleted} угроз, отсутствующих в NASA API")
+
+            current_year = datetime.now().year
+            deleted_expired = await self.threat_service.delete_threats_with_expired_years(current_year)
+            if deleted_expired > 0:
+                logger.info(f"Удалено {deleted_expired} угроз с истёкшими годами риска")
+
             logger.info(f"Обновлено угроз: {count}")
             return count
 
@@ -207,18 +221,16 @@ class UpdateService:
 
     async def update_all(self) -> dict:
         """Полное обновление всех данных."""
-        logger.info("=== ЗАПУСК ПОЛНОГО ОБНОВЛЕНИЯ ===")
+        logger.info("Запуск полного обновления данных")
         start_time = datetime.now()
 
-        # Обновляем данные
         asteroids = await self.update_asteroids(limit=100000)
         approaches = await self.update_approaches(days=3650)
         threats = await self.update_threats()
 
         duration = (datetime.now() - start_time).total_seconds()
 
-        logger.info(f"=== ОБНОВЛЕНИЕ ЗАВЕРШЕНО ===")
-        logger.info(f"Время: {duration:.2f} сек")
+        logger.info(f"Обновление завершено за {duration:.2f} сек")
         logger.info(f"Астероиды: {asteroids}, Сближения: {approaches}, Угрозы: {threats}")
 
         return {

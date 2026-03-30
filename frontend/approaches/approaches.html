@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Календарь сближений - Asteroid Watch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link rel="stylesheet" href="approaches.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="stars"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index/index.html" class="logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index/index.html">Главная</a></li>
+                <li><a href="../asteroids/asteroids.html">Астероиды</a></li>
+                <li><a href="approaches.html" class="active">Сближения</a></li>
+                <li><a href="../threats/threats.html">Угрозы</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="page-header-content">
+            <div class="breadcrumbs">
+                <a href="../index/index.html">Главная</a>
+                <span>/</span>
+                <span style="color: var(--text-primary);">Сближения</span>
+            </div>
+            <h1 class="page-title">🌍 Календарь сближений</h1>
+            <p class="page-subtitle">Предстоящие прохождения астероидов вблизи Земли</p>
+        </div>
+    </header>
+
+    <section class="table-section">
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">
+                    Все сближения
+                    <span class="table-title-badge" id="filtered-count">0</span>
+                </div>
+                <div class="table-filters">
+                    <div class="filter-group">
+                        <span class="filter-label">Сортировка:</span>
+                        <button class="filter-btn active" onclick="sortBy('date')">Дата</button>
+                        <button class="filter-btn" onclick="sortBy('distance')">Расстояние</button>
+                        <button class="filter-btn" onclick="sortBy('velocity')">Скорость</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters-bar">
+                <div class="filter-item">
+                    <label>Дата с:</label>
+                    <input type="datetime-local" id="filter-date-from">
+                </div>
+                <div class="filter-item">
+                    <label>Дата по:</label>
+                    <input type="datetime-local" id="filter-date-to">
+                </div>
+                <div class="filter-item">
+                    <label>Макс. расстояние (а.е.):</label>
+                    <input type="number" id="filter-max-distance" step="0.001" min="0" max="0.1" placeholder="0.05">
+                </div>
+                <button class="filter-apply-btn" onclick="applyFilters()">Применить</button>
+                <button class="filter-reset-btn" onclick="resetFilters()">Сброс</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="approaches-table">
+                    <thead>
+                        <tr>
+                            <th>Дата сближения</th>
+                            <th>Астероид</th>
+                            <th>Расстояние (а.е.)</th>
+                            <th>Расстояние (км)</th>
+                            <th>Скорость (км/с)</th>
+                            <th>Видимая величина</th>
+                            <th>Диаметр (км)</th>
+                            <th>Класс орбиты</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approaches-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <div class="table-info">
+                    <span>Всего: <span id="total-count">0</span></span>
+                </div>
+                <a href="../index/index.html" class="view-all-btn">
+                    ← На главную
+                </a>
+            </div>
+
+            <div class="pagination-container" id="pagination-container">
+            </div>
+        </div>
+
+        <div class="api-notice">
+            <span class="api-notice-icon">📡</span>
+            <span>Данные о сближениях получены из NASA CAD API. Обновление каждые 24 часа.</span>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="logo-icon">🪨</div>
+                <span>Asteroid Watch</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">API Документация</a></li>
+                <li><a href="#">О проекте</a></li>
+                <li><a href="#">Контакты</a></li>
+                <li><a href="#">GitHub</a></li>
+            </ul>
+            <div class="footer-copy">
+                © 2025 Asteroid Watch. Данные: NASA JPL Sentry API, NASA CAD API. Только PHA астероиды.
+            </div>
+        </div>
+    </footer>
+
+    <script src="../api.js"></script>
+    <script src="../main.js"></script>
+    <script src="approaches.js"></script>
+</body>
+</html>

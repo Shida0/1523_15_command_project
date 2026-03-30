@@ -1,490 +1,485 @@
-# 🚀 **РАЗВЕРТЫВАНИЕ**
+# 🚀 Руководство по запуску проекта Asteroid Watch для Windows
 
-## 📋 **ОБЗОР РАЗВЕРТЫВАНИЯ**
+> **Для кого этот гайд:** Этот документ создан специально для членов команды, которые работали над фронтендом, но не имеют опыта работы с Python и бэкендом. Инструкция максимально подробная и рассчитана на пользователей Windows.
 
-В этом разделе описаны процессы настройки, развертывания и эксплуатации системы Asteroid Watch. Включает в себя настройку окружения, конфигурацию, запуск приложения и рекомендации по эксплуатации.
+---
 
-## ⚙️ **НАСТРОЙКА ОКРУЖЕНИЯ**
+## 📋 Что вам нужно знать перед началом
 
-### **1. Требования к системе**
-- Python 3.11 или выше
-- PostgreSQL 12 или выше
-- pip (для установки зависимостей)
-- virtualenv или venv (рекомендуется)
+**Вам НЕ нужно:**
+- Знать Python
+- Уметь программировать на бэкенде
+- Понимать, как работают базы данных
 
-### **2. Установка зависимостей**
-```bash
-# Создание виртуального окружения
+**Вам НУЖНО:**
+- Уметь скачивать файлы из интернета
+- Уметь запускать программы
+- Внимательно следовать инструкции
+
+**Время настройки:** 30-60 минут (первый запуск)
+**Время запуска:** 2 минуты (последующие разы)
+
+---
+
+## 📥 Шаг 1: Скачивание проекта
+
+### Вариант А: Через GitHub Desktop (рекомендуется для новичков)
+
+1. **Скачайте GitHub Desktop:**
+   - Откройте браузер и перейдите на: https://desktop.github.com/
+   - Нажмите кнопку "Download for Windows"
+   - Запустите скачанный файл `GitHubDesktopSetup.exe`
+   - Следуйте инструкциям установщика
+
+2. **Настройте GitHub Desktop:**
+   - Запустите GitHub Desktop
+   - Войдите через свой GitHub аккаунт (или создайте новый)
+   - Нажмите "Clone a repository from the internet"
+
+3. **Скачайте проект:**
+   - В поле "URL or username/repository" вставьте:
+     ```
+     https://github.com/Shida0/1523_15_command_project.git
+     ```
+   - Нажмите "Clone"
+   - Выберите папку куда скачать проект (например, `C:\Projects\asteroid-watch`)
+   - Дождитесь окончания загрузки
+
+### Вариант Б: Через архив (если не хотите устанавливать GitHub)
+
+1. **Скачайте архив:**
+   - Откройте: https://github.com/Shida0/1523_15_command_project.git
+   - Нажмите зелёную кнопку "Code"
+   - Выберите "Download ZIP"
+   - Сохраните архив в удобную папку (например, `C:\Projects`)
+
+2. **Распакуйте архив:**
+   - Найдите скачанный файл `1523_15_command_project-main.zip`
+   - Нажмите правой кнопкой → "Извлечь всё..."
+   - Извлеките в папку `C:\Projects\asteroid-watch`
+
+---
+
+## 🐍 Шаг 2: Установка Python
+
+Python — это язык программирования, на котором написан бэкенд.
+
+### 1. Скачайте Python
+
+1. Откройте браузер и перейдите на: https://www.python.org/downloads/
+2. Сайт автоматически определит вашу систему и предложит нужную версию
+3. Нажмите жёлтую кнопку **"Download Python 3.11.x"** (или новее)
+
+### 2. Установите Python
+
+**⚠️ ВНИМАНИЕ! Самый важный шаг!**
+
+1. Запустите скачанный файл установки Python
+2. **Поставьте галочку ✅ "Add Python to PATH"** (это обязательно!)
+3. Нажмите "Install Now"
+4. Дождитесь окончания установки
+5. Нажмите "Close"
+
+### 3. Проверьте установку
+
+1. Нажмите `Win + R` на клавиатуре
+2. Введите `cmd` и нажмите Enter
+3. В чёрном окне введите:
+   ```
+   python --version
+   ```
+4. Должно появиться что-то вроде: `Python 3.11.5`
+
+**Если появилось "python не является внутренней или внешней командой":**
+- Закройте окно
+- Откройте его заново
+- Попробуйте снова
+
+---
+
+## 📁 Шаг 3: Подготовка проекта
+
+### 1. Откройте терминал в папке проекта
+
+**Способ 1 (простой):**
+1. Откройте папку с проектом: `C:\Projects\asteroid-watch`
+2. В адресной строке проводника введите `cmd` и нажмите Enter
+3. Откроется чёрное окно с путём к проекту
+
+**Способ 2 (через меню):**
+1. Откройте папку с проектом
+2. Зажмите `Shift` и нажмите правой кнопкой мыши в пустом месте
+3. Выберите "Открыть окно PowerShell здесь" или "Открыть в терминале"
+
+### 2. Создайте виртуальное окружение
+
+Виртуальное окружение — это изолированное место для библиотек проекта.
+
+В терминале введите:
+```
 python -m venv venv
+```
 
-# Активация виртуального окружения
-# Linux/Mac:
-source venv/bin/activate
-# Windows:
+Нажмите Enter и подождите 10-30 секунд.
+
+**Как понять что готово:** В папке проекта появится новая папка `venv`
+
+### 3. Активируйте виртуальное окружение
+
+В терминале введите:
+```
 venv\Scripts\activate
+```
 
-# Установка зависимостей
+**Как понять что получилось:** В начале строки терминала появится `(venv)`
+
+Теперь ваш терминал должен выглядеть примерно так:
+```
+(venv) C:\Projects\asteroid-watch>
+```
+
+---
+
+## 📦 Шаг 4: Установка всех библиотек
+
+Теперь нужно установить все библиотеки, которые нужны проекту.
+
+### 1. Установите зависимости
+
+В терминале (с активной `(venv)`) введите:
+```
 pip install -r requirements.txt
 ```
 
-### **3. Установка дополнительных пакетов для разработки**
-```bash
-# Установка зависимостей для разработки
-pip install -e .
+Нажмите Enter и ждите. Это может занять 2-5 минут.
 
-# Установка инструментов для тестирования
-pip install pytest pytest-asyncio pytest-cov
+**Что будет происходить:**
+- Терминал будет показывать прогресс установки
+- Появятся сообщения "Collecting...", "Downloading...", "Installing..."
+- В конце будет "Successfully installed..."
 
-# Установка инструментов для форматирования кода
-pip install black flake8 mypy
+**⚠️ Если появились красные ошибки:**
+- Не паникуйте! Некоторые предупреждения нормальны
+- Если установка прервалась — попробуйте команду снова
+- Убедитесь что интернет работает
+
+### 2. Проверьте что всё установилось
+
+Введите в терминале:
+```
+pip list
 ```
 
-## 🗄️ **НАСТРОЙКА БАЗЫ ДАННЫХ**
+Вы увидите список установленных библиотек. Их должно быть много (50+).
 
-### **1. Создание базы данных PostgreSQL**
-```sql
--- Подключение к PostgreSQL как суперпользователь
-CREATE USER asteroid_user WITH PASSWORD 'secure_password';
-CREATE DATABASE asteroid_db OWNER asteroid_user;
-GRANT ALL PRIVILEGES ON DATABASE asteroid_db TO asteroid_user;
-```
+---
 
-### **2. Настройка конфигурации базы данных**
-Создайте файл `config.yaml` в корне проекта:
+## 🗄️ Шаг 5: Установка PostgreSQL (база данных)
+
+PostgreSQL — это программа для хранения данных (как Excel, но мощнее).
+
+### 1. Скачайте PostgreSQL
+
+1. Откройте: https://www.postgresql.org/download/windows/
+2. Нажмите "Download the installer"
+3. Выберите версию **PostgreSQL 15** или **16**
+4. Скачайте установщик
+
+### 2. Установите PostgreSQL
+
+1. Запустите скачанный файл
+2. Нажмите "Next" на всех экранах
+3. **Запомните пароль** который вы зададите для пользователя `postgres`!
+4. Порт оставьте по умолчанию: **5432**
+5. Нажмите "Next" → "Next" → "Finish"
+
+### 3. Проверьте установку
+
+1. Нажмите `Win + R`
+2. Введите `cmd` и нажмите Enter
+3. Введите:
+   ```
+   psql -U postgres
+   ```
+4. Введите пароль который вы задали при установке
+5. Если появилось `postgres=#` — всё работает!
+6. Введите `\q` чтобы выйти
+
+---
+
+## ⚙️ Шаг 6: Настройка базы данных
+
+### 1. Откройте pgAdmin
+
+pgAdmin — это программа для управления базой данных.
+
+1. Найдите в меню Пуск "pgAdmin 4"
+2. Запустите её
+3. Придумайте и введите мастер-пароль (запомните его!)
+4. Откроется окно программы
+
+### 2. Создайте базу данных
+
+1. В левой панели раскройте "Servers" → "PostgreSQL 15"
+2. Введите пароль от postgres (который вы задавали при установке)
+3. Нажмите правой кнопкой на "Databases" → "Create" → "Database"
+4. В поле "Database" введите: `asteroid_db`
+5. Нажмите "Save"
+
+### 3. Создайте пользователя
+
+1. Нажмите правой кнопкой на "Login/Group Roles" → "Create" → "Login/Group Role"
+2. Вкладка "General":
+   - Name: `asteroid_user`
+3. Вкладка "Definition":
+   - Password: `asteroid_password` (или придумайте свой)
+4. Вкладка "Privileges":
+   - Поставьте галочку "Can login?"
+5. Нажмите "Save"
+
+### 4. Дайте права пользователю
+
+1. Нажмите правой кнопкой на вашу базу `asteroid_db` → "Properties"
+2. Вкладка "Security"
+3. В поле "Owner" выберите `asteroid_user`
+4. Нажмите "Save"
+
+---
+
+## 🔧 Шаг 7: Настройка конфигурации
+
+### 1. Найдите файл конфигурации
+
+В папке проекта найдите файл `config.yaml`
+
+### 2. Откройте файл
+
+Нажмите правой кнопкой → "Открыть с помощью" → "Блокнот"
+
+### 3. Проверьте настройки базы данных
+
+Найдите секцию `database:` и убедитесь что там указано:
 
 ```yaml
 database:
   host: "localhost"
   port: 5432
   user: "asteroid_user"
-  password: "secure_password"
+  password: "asteroid_password"  # Ваш пароль!
   db_name: "asteroid_db"
-
-nasa_api:
-  base_url: "https://api.nasa.gov"
-  rate_limit_requests: 1000
-  rate_limit_period: 3600
-  timeout: 30
-  retry_attempts: 3
-  sbdb_timeout: 60
-  cad_timeout: 120
-  sentry_timeout: 180
-
-application:
-  environment: "development"
-  log_level: "INFO"
-  debug: true
-  update_interval_minutes: 60
-  max_concurrent_updates: 5
-  enable_monitoring: true
-  monitoring_port: 8000
 ```
 
-### **3. Инициализация базы данных**
-```bash
-# Используя скрипт инициализации из проекта
-bash create_db.sh
+**Измените `password` на тот который вы задали!**
 
-# Или вручную через alembic (если используется)
-alembic upgrade head
-```
+### 4. Сохраните файл
 
-## 🚀 **ЗАПУСК ПРИЛОЖЕНИЯ**
-
-### **1. Запуск в режиме разработки**
-```bash
-# Установка переменной окружения для пути к конфигурации
-export CONFIG_PATH=./config.yaml
-
-# Запуск приложения через uvicorn
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### **2. Запуск в режиме продакшн**
-```bash
-# Запуск с настройками продакшн
-export CONFIG_PATH=./prod_config.yaml
-export PYTHONPATH=/path/to/project:$PYTHONPATH
-
-# Запуск через uvicorn с производительными настройками
-uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4 --timeout-keep-alive 30
-```
-
-### **3. Запуск с использованием Docker**
-Создайте `Dockerfile`:
-
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 8000
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-Создайте `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-
-services:
-  web:
-    build: .
-    ports:
-      - "8000:8000"
-    environment:
-      - CONFIG_PATH=/app/config.yaml
-    depends_on:
-      - db
-    volumes:
-      - ./config.yaml:/app/config.yaml
-
-  db:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: asteroid_db
-      POSTGRES_USER: asteroid_user
-      POSTGRES_PASSWORD: secure_password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
-```
-
-Запуск через Docker:
-```bash
-docker-compose up -d
-```
-
-## 🧪 **ТЕСТИРОВАНИЕ В РАЗВЕРТЫВАНИИ**
-
-### **1. Запуск тестов в окружении развертывания**
-```bash
-# Запуск всех тестов
-pytest
-
-# Запуск тестов с покрытием
-pytest --cov=. --cov-report=html
-
-# Запуск интеграционных тестов (требуется работающая БД)
-pytest tests/integration/ -v
-```
-
-### **2. Проверка работоспособности API**
-```bash
-# Проверка состояния API
-curl http://localhost:8000/health
-
-# Проверка получения астероидов
-curl http://localhost:8000/asteroids?limit=10
-
-# Проверка получения сближений
-curl http://localhost:8000/approaches?limit=10
-```
-
-## 🔄 **ОБНОВЛЕНИЕ ДАННЫХ**
-
-### **1. Ручное обновление данных из NASA API**
-```python
-# Пример скрипта для обновления данных
-import asyncio
-from shared.external_api.clients.sbdb_api import NASASBDBClient
-from shared.external_api.clients.cad_api import CADClient
-from shared.external_api.clients.sentry_api import SentryClient
-from shared.transaction.uow import UnitOfWork
-from shared.database.engine import AsyncSessionLocal
-from datetime import datetime, timedelta
-
-async def update_asteroid_data():
-    """Обновление данных об астероидах из NASA API"""
-    print("Начало обновления данных об астероидах...")
-    
-    async with NASASBDBClient() as client:
-        asteroids = await client.get_asteroids(limit=100)
-        print(f"Получено {len(asteroids)} астероидов из NASA SBDB")
-    
-    async with UnitOfWork(AsyncSessionLocal) as uow:
-        created, updated = await uow.asteroid_repo.bulk_create_asteroids(asteroids)
-        await uow.commit()
-        print(f"Обновлено: создано {created}, обновлено {updated}")
-    
-    print("Обновление данных об астероидах завершено.")
-
-async def update_approach_data():
-    """Обновление данных о сближениях из NASA API"""
-    print("Начало обновления данных о сближениях...")
-    
-    async with CADClient() as client:
-        approaches = await client.get_close_approaches(
-            start_date=datetime.now(),
-            end_date=datetime.now() + timedelta(days=365),
-            max_distance_au=0.05
-        )
-        total_approaches = sum(len(v) for v in approaches.values())
-        print(f"Получено {total_approaches} сближений из NASA CAD")
-    
-    # Преобразование данных для сохранения
-    all_approaches = []
-    async with UnitOfWork(AsyncSessionLocal) as uow:
-        for designation, approach_list in approaches.items():
-            asteroid = await uow.asteroid_repo.get_by_designation(designation)
-            if asteroid:
-                for approach in approach_list:
-                    approach['asteroid_id'] = asteroid.id
-                    all_approaches.append(approach)
-        
-        if all_approaches:
-            created = await uow.approach_repo.bulk_create_approaches(
-                all_approaches, 
-                f"update_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            )
-            await uow.commit()
-            print(f"Создано {created} записей о сближениях")
-    
-    print("Обновление данных о сближениях завершено.")
-
-async def update_threat_data():
-    """Обновление данных об угрозах из NASA API"""
-    print("Начало обновления данных об угрозах...")
-    
-    async with SentryClient() as client:
-        threats = await client.fetch_current_impact_risks()
-        print(f"Получено {len(threats)} угроз из NASA Sentry")
-    
-    # Преобразование данных для сохранения
-    threats_to_save = []
-    async with UnitOfWork(AsyncSessionLocal) as uow:
-        for threat in threats:
-            asteroid = await uow.asteroid_repo.get_by_designation(threat.designation)
-            if asteroid:
-                threat_dict = threat.to_dict()
-                threat_dict['asteroid_id'] = asteroid.id
-                threats_to_save.append(threat_dict)
-        
-        if threats_to_save:
-            created, updated = await uow.threat_repo.bulk_create_threats(threats_to_save)
-            await uow.commit()
-            print(f"Создано {created}, обновлено {updated} записей об угрозах")
-    
-    print("Обновление данных об угрозах завершено.")
-
-async def full_update():
-    """Полное обновление всех данных"""
-    print("=== НАЧАЛО ПОЛНОГО ОБНОВЛЕНИЯ ДАННЫХ ===")
-    
-    await update_asteroid_data()
-    await update_approach_data()
-    await update_threat_data()
-    
-    print("=== ПОЛНОЕ ОБНОВЛЕНИЕ ДАННЫХ ЗАВЕРШЕНО ===")
-
-# Запуск обновления
-if __name__ == "__main__":
-    asyncio.run(full_update())
-```
-
-### **2. Настройка регулярного обновления (cron)**
-Создайте скрипт `update_data.sh`:
-
-```bash
-#!/bin/bash
-
-# Установка переменных окружения
-export CONFIG_PATH=/path/to/config.yaml
-export PYTHONPATH=/path/to/project:$PYTHONPATH
-
-# Запуск обновления данных
-cd /path/to/project
-source venv/bin/activate
-python scripts/update_data.py
-
-echo "Обновление данных завершено: $(date)"
-```
-
-Добавьте в cron для регулярного обновления:
-```bash
-# Обновление каждый день в 2 часа ночи
-0 2 * * * /path/to/project/scripts/update_data.sh >> /var/log/asteroid_update.log 2>&1
-```
-
-## 📊 **МОНИТОРИНГ И ЛОГИРОВАНИЕ**
-
-### **1. Настройка логирования**
-Конфигурация логирования находится в `config.yaml`:
-
-```yaml
-application:
-  log_level: "INFO"  # Уровень логирования
-  # другие настройки...
-```
-
-### **2. Пример настройки логирования в Python**
-```python
-import logging
-import logging.config
-import yaml
-
-def setup_logging(config_path: str = 'logging_config.yaml'):
-    """Настройка логирования из конфигурационного файла"""
-    with open(config_path, 'r') as f:
-        config = yaml.safe_load(f.read())
-        logging.config.dictConfig(config)
-
-# Пример logging_config.yaml
-"""
-version: 1
-disable_existing_loggers: false
-
-formatters:
-  standard:
-    format: '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
-  detailed:
-    format: '%(asctime)s [%(levelname)s] %(name)s:%(lineno)d: %(message)s'
-
-handlers:
-  console:
-    class: logging.StreamHandler
-    level: INFO
-    formatter: standard
-    stream: ext://sys.stdout
-  
-  file:
-    class: logging.handlers.RotatingFileHandler
-    level: DEBUG
-    formatter: detailed
-    filename: logs/app.log
-    maxBytes: 10485760 # 10MB
-    backupCount: 20
-    encoding: utf8
-
-loggers:
-  '': # root logger
-    handlers: [console, file]
-    level: DEBUG
-    propagate: false
-
-  app:
-    level: DEBUG
-    handlers: [console, file]
-    propagate: false
-"""
-```
-
-### **3. Мониторинг производительности**
-```python
-# Пример middleware для мониторинга производительности
-import time
-import logging
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-
-logger = logging.getLogger(__name__)
-
-class PerformanceMonitoringMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        start_time = time.time()
-        response = await call_next(request)
-        end_time = time.time()
-        
-        processing_time = end_time - start_time
-        logger.info(f"{request.method} {request.url.path} - {response.status_code} - {processing_time:.4f}s")
-        
-        return response
-```
-
-## 🔒 **БЕЗОПАСТЬ И БЕКАПЫ**
-
-### **1. Резервное копирование базы данных**
-```bash
-# Ежедневный бекап базы данных
-pg_dump -h localhost -U asteroid_user -d asteroid_db > backup_$(date +%Y%m%d_%H%M%S).sql
-
-# Скрипт автоматического бекапа
-#!/bin/bash
-BACKUP_DIR="/path/to/backups"
-DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="$BACKUP_DIR/asteroid_backup_$DATE.sql"
-
-pg_dump -h localhost -U asteroid_user -d asteroid_db > $BACKUP_FILE
-
-# Удаление бекапов старше 30 дней
-find $BACKUP_DIR -name "asteroid_backup_*.sql" -mtime +30 -delete
-```
-
-### **2. Защита API ключей**
-- Не храните API ключи в коде
-- Используйте переменные окружения или безопасные хранилища
-- Ограничьте права доступа к конфигурационным файлам
-
-### **3. Обновление безопасности**
-```bash
-# Проверка уязвимостей в зависимостях
-pip install safety
-safety check
-
-# Обновление зависимостей
-pip list --outdated
-pip install --upgrade package_name
-```
-
-## 🧪 **ПРОВЕРКА РАЗВЕРТЫВАНИЯ**
-
-### **1. Тестирование производительности**
-```bash
-# Тестирование нагрузки с помощью Apache Bench
-ab -n 1000 -c 10 http://localhost:8000/asteroids?limit=10
-
-# Тестирование с помощью wrk
-wrk -t12 -c400 -d30s http://localhost:8000/asteroids?limit=10
-```
-
-### **2. Проверка масштабируемости**
-- Проверьте работу с несколькими воркерами uvicorn
-- Проверьте работу с балансировщиком нагрузки (nginx)
-- Проверьте использование connection pool
-
-### **3. Проверка отказоустойчивости**
-- Проверьте работу при падении базы данных
-- Проверьте работу при превышении лимитов API NASA
-- Проверьте восстановление после сбоев
-
-## 🔄 **ОБНОВЛЕНИЕ ПРИЛОЖЕНИЯ**
-
-### **1. Процесс обновления**
-```bash
-# 1. Остановка текущего приложения
-pkill -f uvicorn
-
-# 2. Обновление кода
-git pull origin main
-
-# 3. Обновление зависимостей
-pip install -r requirements.txt
-
-# 4. Обновление схемы базы данных (если необходимо)
-alembic upgrade head
-
-# 5. Запуск обновленного приложения
-uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
-```
-
-### **2. Blue-Green деплоймент**
-Для минимизации времени простоя можно использовать blue-green деплоймент:
-
-1. Запустить новую версию приложения на другом порту
-2. Перенаправить трафик на новую версию
-3. Проверить работоспособность новой версии
-4. Остановить старую версию
+Нажмите `Ctrl + S` и закройте файл
 
 ---
 
-**Документация завершена.** Эта документация предоставляет полное руководство по развертыванию и эксплуатации системы Asteroid Watch.
+## 🚀 Шаг 8: Первый запуск проекта
+
+### 1. Убедитесь что виртуальное окружение активно
+
+В терминале должно быть `(venv)` в начале строки.
+
+Если нет — активируйте:
+```
+venv\Scripts\activate
+```
+
+### 2. Запустите сервер
+
+В терминале введите:
+```
+python main.py
+```
+
+Нажмите Enter.
+
+### 3. Что должно произойти
+
+Терминал начнёт показывать сообщения:
+```
+INFO:     Started server process
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000
+```
+
+**⚠️ Если появились ошибки:**
+- Прочитайте сообщение об ошибке
+- Чаще всего проблема в базе данных или конфигурации
+- Проверьте что PostgreSQL запущен
+- Проверьте пароль в `config.yaml`
+
+### 4. Проверьте что сервер работает
+
+1. Откройте браузер
+2. Введите в адресной строке: `http://localhost:8000/docs`
+3. Должна открыться страница с документацией API
+
+**Если открылась страница с надписью "Asteroid Watch API" — поздравляем! Сервер работает! 🎉**
+
+---
+
+## 🌐 Шаг 9: Запуск фронтенда
+
+Теперь нужно запустить красивую часть сайта.
+
+### 1. Откройте НОВЫЙ терминал
+
+Не закрывайте первый терминал с сервером!
+
+1. Нажмите `Win + R`
+2. Введите `cmd` и нажмите Enter
+3. Откроется новое чёрное окно
+
+### 2. Перейдите в папку фронтенда
+
+Во втором терминале введите:
+```
+cd C:\Projects\asteroid-watch\frontend
+```
+
+### 3. Запустите простой веб-сервер
+
+Введите:
+```
+python -m http.server 8080
+```
+
+Должно появиться:
+```
+Serving HTTP on :: port 8080 (http://[::]:8080/) ...
+```
+
+### 4. Откройте сайт
+
+1. Откройте браузер
+2. Введите: `http://localhost:8080/index/index.html`
+3. Должен открыться сайт Asteroid Watch!
+
+---
+
+## ✅ Проверка что всё работает
+
+### Чек-лист:
+
+- [ ] Сервер запущен (первый терминал показывает "Uvicorn running")
+- [ ] Фронтенд запущен (второй терминал показывает "Serving HTTP")
+- [ ] Страница `http://localhost:8000/docs` открывается
+- [ ] Страница `http://localhost:8080/index/index.html` открывается
+- [ ] На сайте видны данные (таблицы, цифры)
+
+### Если данные не загружаются:
+
+1. Проверьте что сервер запущен (терминал 1)
+2. Проверьте что фронтенд запущен (терминал 2)
+3. Обновите страницу фронтенда (`F5`)
+4. Посмотрите в первый терминал — там могут быть ошибки
+
+---
+
+## 🔄 Как запускать проект в следующий раз
+
+### Быстрый запуск (2 минуты):
+
+**1. Запустите сервер:**
+```
+# Откройте терминал в папке проекта
+cd C:\Projects\asteroid-watch
+venv\Scripts\activate
+python main.py
+```
+
+**2. Запустите фронтенд (в новом терминале):**
+```
+cd C:\Projects\asteroid-watch\frontend
+python -m http.server 8080
+```
+
+**3. Откройте в браузере:**
+- Фронтенд: `http://localhost:8080/index/index.html`
+
+---
+
+## ❓ Частые проблемы и решения
+
+### "python не является внутренней или внешней командой"
+
+**Решение:**
+1. Закройте терминал
+2. Откройте новый
+3. Убедитесь что Python установлен с галочкой "Add to PATH"
+4. Перезагрузите компьютер
+
+### "ModuleNotFoundError: No module named '...'"
+
+**Решение:**
+1. Убедитесь что виртуальное окружение активно (есть `(venv)`)
+2. Если нет — выполните `venv\Scripts\activate`
+3. Выполните `pip install -r requirements.txt` снова
+
+### "Connection refused" или "Cannot connect to database"
+
+**Решение:**
+1. Убедитесь что PostgreSQL запущен
+2. Проверьте пароль в `config.yaml`
+3. Проверьте что база данных `asteroid_db` создана
+
+### "Port 8000 is already in use"
+
+**Решение:**
+1. Закройте все терминалы с Python
+2. Откройте Диспетчер задач (`Ctrl + Shift + Esc`)
+3. Найдите процессы "Python" и завершите их
+4. Запустите сервер снова
+
+### Сайт открывается но данных нет
+
+**Решение:**
+1. Проверьте что сервер запущен (терминал 1)
+2. Откройте `http://localhost:8000/asteroids/all?limit=5` в браузере
+3. Если видите JSON с данными — сервер работает
+4. Обновите страницу фронтенда
+
+---
+
+## 📞 Куда обращаться за помощью
+
+Если что-то не работает:
+
+1. **Прочитайте ошибку внимательно** — часто решение в тексте ошибки
+2. **Проверьте этот гайд** — возможно вы пропустили шаг
+3. **Спросите в чате команды** — приложите скриншот ошибки
+
+---
+
+## 🎯 Краткая шпаргалка
+
+### Запуск проекта:
+```
+# Терминал 1 - сервер
+cd C:\Projects\asteroid-watch
+venv\Scripts\activate
+python main.py
+
+# Терминал 2 - фронтенд
+cd C:\Projects\asteroid-watch\frontend
+python -m http.server 8080
+```
+
+### Адреса:
+- **Фронтенд:** http://localhost:8080/index/index.html
+- **API документация:** http://localhost:8000/docs
+- **База данных:** localhost:5432
+
+### Папки:
+- **Проект:** `C:\Projects\asteroid-watch`
+- **Фронтенд:** `C:\Projects\asteroid-watch\frontend`
+- **Конфигурация:** `config.yaml`
+
+---
+
+**Поздравляем! Теперь вы можете запускать проект Asteroid Watch! 🚀**

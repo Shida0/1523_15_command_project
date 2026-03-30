@@ -94,29 +94,24 @@ class CloseApproachModel(Base):
     )
     
     def __init__(self, **kwargs):
-        """
-        Инициализирует экземпляр модели сближения с валидацией данных.
-        
-        Args:
-            **kwargs: Параметры сближения для инициализации
-        """
+        """Инициализирует экземпляр модели сближения с валидацией данных."""
         super().__init__(**kwargs)
-        
+
         # Автоматический расчет расстояния в км, если не задано
         if 'distance_km' not in kwargs and 'distance_au' in kwargs:
             self.distance_km = self.distance_au * 149597870.7
-        
+
         # Автоматическое заполнение полей, если не заданы
         if not hasattr(self, 'asteroid_designation') or not self.asteroid_designation:
             if 'asteroid_number' in kwargs:
                 self.asteroid_designation = kwargs['asteroid_number']
-        
+
         if not hasattr(self, 'asteroid_name') or not self.asteroid_name:
             if 'asteroid_name' in kwargs:
                 self.asteroid_name = kwargs['asteroid_name']
-        
+
         if not hasattr(self, 'data_source') or not self.data_source:
             self.data_source = 'NASA CAD API'
-    
+
     def __repr__(self) -> str:
         return f"CloseApproachModel(id={self.id}, asteroid={self.asteroid_designation}, time={self.approach_time})"

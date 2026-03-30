@@ -181,32 +181,27 @@ class ThreatAssessmentModel(Base):
     )
     
     def __init__(self, **kwargs):
-        """
-        Инициализирует экземпляр модели оценки угрозы с валидацией и нормализацией данных.
-        
-        Args:
-            **kwargs: Параметры оценки угрозы для инициализации
-        """
+        """Инициализирует экземпляр модели оценки угрозы с валидацией и нормализацией данных."""
         # Поля, которые могут приходить под разными именами
         field_mapping = {
-            'diameter_km': 'diameter',  
-            'velocity_km_s': 'v_inf',   
-            'absolute_magnitude': 'h'   
+            'diameter_km': 'diameter',
+            'velocity_km_s': 'v_inf',
+            'absolute_magnitude': 'h'
         }
-        
+
         # Применяем маппинг полей
         for old_name, new_name in field_mapping.items():
             if old_name in kwargs and new_name not in kwargs:
                 kwargs[new_name] = kwargs.pop(old_name)
-        
+
         if 'estimated_diameter_km' in kwargs and 'diameter' not in kwargs:
             kwargs['diameter'] = kwargs['estimated_diameter_km']
-        
+
         # Сохраняем переданную энергию
         self.energy_provided = 'energy_megatons' in kwargs
-        
+
         super().__init__(**kwargs)
-        
+
         # Расчет энергии ТОЛЬКО если не была предоставлена
         if not self.energy_provided or self.energy_megatons == 0:
             calculated_energy = self._calculate_energy()

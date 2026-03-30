@@ -31,7 +31,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     try:
         logger.debug("Сессия БД открыта (зависимость FastAPI)")
         yield session
-        # НЕТ автокомита - контроллеры сами коммитят
+
     except Exception as e:
         logger.error(f"Ошибка в сессии БД: {e}")
         raise
@@ -39,7 +39,6 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
         await session.close()
         logger.debug("Сессия БД закрыта (зависимость FastAPI)")
 
-# Функция для закрытия соединения (при завершении приложения)
 async def close_async_engine():
    """Корректно закрывает соединение с базой данных."""
    await async_engine.dispose()
