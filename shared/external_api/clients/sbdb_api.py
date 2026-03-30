@@ -9,7 +9,6 @@ from shared.utils.error_handlers import (
     nasa_api_endpoint,
     retry_with_exponential_backoff,
     fallback_on_error,
-    log_execution_time,
     NetworkError
 )
 from shared.resilience import circuit_breaker, NASA_API_CIRCUIT_CONFIG, bulkhead, SBDB_BULKHEAD_CONFIG, timeout, NASA_API_TIMEOUTS
@@ -43,29 +42,34 @@ class NASASBDBClient:
         self.executor.shutdown(wait=True)
     
     @nasa_api_endpoint(max_retries=3)
-    @log_execution_time
     async def get_asteroids(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
-        """Основной метод получения данных об астероидах."""
+        """Основной метод получения данных об астероидах.
+        
+        Args:
+            limit: Максимальное количество астероидов для получения.
+                   Если None — будут получены ВСЕ доступные PHA астероиды
+                   через пагинацию NASA API.
+        """
         if not self.session:
             raise RuntimeError("Сессия не инициализирована")
-            
+
         logger.info("Получение списка потенциально опасных астероидов...")
-        designations = await self._get_pha_list(limit)
-        
+        designations = await self._get_all_pha_designations(limit)
+
         if not designations:
             logger.warning("Не получено обозначений PHA")
             return []
-            
+
         logger.info(f"Получено {len(designations)} обозначений")
         logger.info(f"Запрос данных для {len(designations)} астероидов...")
-        
+
         results = []
         failed = 0
-        
+
         for i in range(0, len(designations), self.batch_size):
             batch = designations[i:i + self.batch_size]
             batch_results = await self._process_batch(batch)
-            
+
             for result in batch_results:
                 if isinstance(result, dict):
                     results.append(result)
@@ -73,17 +77,74 @@ class NASASBDBClient:
                     failed += 1
                     if failed <= 10:
                         logger.warning(f"Ошибка обработки: {type(result).__name__}")
-            
+
             if i + self.batch_size < len(designations):
                 await asyncio.sleep(self.delay_between_batches)
-                
+
             processed = min(i + self.batch_size, len(designations))
             logger.info(f"Обработано {processed}/{len(designations)} астероидов")
-        
+
         self._log_diameter_statistics(results)
         logger.info(f"Успешно получено {len(results)} астероидов, не удалось: {failed}")
-        
+
         return results
+
+    async def _get_all_pha_designations(self, limit: Optional[int] = None) -> List[str]:
+        """
+        Получает список обозначений PHA астероидов через пагинацию NASA API.
+        
+        Args:
+            limit: Максимальное количество астероидов. Если None — получает все.
+        
+        Returns:
+            Список обозначений (designations) PHA астероидов.
+        """
+        all_designations = []
+        offset = 0
+        batch_size = 1000  # Оптимальный размер батча для NASA API
+        
+        while True:
+            # Проверяем лимит
+            if limit is not None and len(all_designations) >= limit:
+                break
+            
+            # Вычисляем размер текущего батча
+            remaining = limit - len(all_designations) if limit else batch_size
+            current_batch_size = min(batch_size, remaining)
+            
+            params = {
+                'fields': 'pdes',
+                'sb-group': 'pha',
+                'limit': current_batch_size,
+                'offset': offset
+            }
+
+            logger.debug(f"Запрос PHA: offset={offset}, limit={current_batch_size}")
+
+            async with self.session.get(self.SBDB_QUERY_URL, params=params) as response:
+                response.raise_for_status()
+                data = await response.json()
+
+                if 'data' not in data or not data['data']:
+                    logger.info(f"Получены все PHA астероиды. Всего: {len(all_designations)}")
+                    break
+
+                batch = [item[0] for item in data.get('data', [])]
+                all_designations.extend(batch)
+                
+                logger.info(f"Получено {len(all_designations)} PHA астероидов (батч {len(batch)})")
+                
+                # Если получили меньше чем запросили — значит это конец
+                if len(batch) < current_batch_size:
+                    logger.info(f"Достигнут конец списка PHA. Всего: {len(all_designations)}")
+                    break
+                
+                offset += current_batch_size
+                
+                # Rate limiting — задержка между запросами
+                await asyncio.sleep(0.5)
+        
+        return all_designations
     
     async def _process_batch(self, batch: List[str]) -> List:
         """Обрабатывает батч астероидов."""
@@ -385,31 +446,11 @@ class NASASBDBClient:
         computed_count = sum(1 for a in results if a.get('diameter_source') == 'computed')
         calculated_count = sum(1 for a in results if a.get('diameter_source') == 'calculated')
         total = len(results)
-        
+
         logger.info(f"Статистика по диаметрам:")
         logger.info(f"  Всего астероидов: {total}")
         logger.info(f"  Точные диаметры: {accurate_count} ({accurate_count/total*100:.1f}%)")
         logger.info(f"  Измеренные диаметры: {measured_count} ({measured_count/total*100:.1f}%)")
         logger.info(f"  Вычисленные NASA: {computed_count} ({computed_count/total*100:.1f}%)")
         logger.info(f"  Рассчитанные программой: {calculated_count} ({calculated_count/total*100:.1f}%)")
-    
-    @nasa_api_endpoint(max_retries=3)
-    async def _get_pha_list(self, limit: Optional[int]) -> List[str]:
-        """Асинхронно получает список обозначений PHA."""
-        params = {
-            'fields': 'pdes',
-            'sb-group': 'pha',
-            'limit': limit or 3000
-        }
-        
-        logger.info(f"Отправка запроса к {self.SBDB_QUERY_URL} с параметрами {params}")
-        
-        async with self.session.get(self.SBDB_QUERY_URL, params=params) as response:
-            response.raise_for_status()
-            data = await response.json()
-            
-            if 'data' not in data:
-                return []
-                
-            return [item[0] for item in data.get('data', [])]
         

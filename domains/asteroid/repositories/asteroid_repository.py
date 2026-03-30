@@ -81,6 +81,28 @@ class AsteroidRepository(BaseRepository[AsteroidModel]):
             order_by="earth_moid_au"
         )
 
+    async def get_all(
+        self,
+        skip: int = 0,
+        limit: Optional[int] = None
+    ) -> List[AsteroidModel]:
+        """
+        Получает все астероиды с поддержкой пагинации.
+        
+        Args:
+            skip: Количество пропускаемых записей.
+            limit: Максимальное количество возвращаемых записей.
+        
+        Returns:
+            Список астероидов.
+        """
+        return await self.filter(
+            filters={},
+            skip=skip,
+            limit=limit,
+            order_by="designation"
+        )
+
     async def get_asteroids_count(self, max_moid: float = 1.0) -> int:
         """
         Получает общее количество астероидов с MOID меньше указанного значения.

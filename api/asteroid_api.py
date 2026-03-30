@@ -41,7 +41,7 @@ async def get_all_asteroids(
 
     Возвращает список всех астероидов в базе данных с поддержкой пагинации.
     """
-    return await asteroid_service.get_by_moid(max_moid=1.0, skip=skip, limit=limit)
+    return await asteroid_service.get_all(skip=skip, limit=limit)
 
 
 @router.get("/count", response_model=dict)

@@ -37,6 +37,25 @@ class AsteroidService(BaseService):
             )
             return [self._model_to_dict(a) for a in asteroids]
 
+    async def get_all(
+        self,
+        skip: int = 0,
+        limit: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Получение всех астероидов с поддержкой пагинации.
+        
+        Args:
+            skip: Количество пропускаемых записей.
+            limit: Максимальное количество возвращаемых записей.
+        
+        Returns:
+            Список всех астероидов в базе данных.
+        """
+        async with UnitOfWork(self.session_factory) as uow:
+            asteroids = await uow.asteroid_repo.get_all(skip=skip, limit=limit)
+            return [self._model_to_dict(a) for a in asteroids]
+
     async def get_count(self, max_moid: float = 1.0) -> int:
         """Получение общего количества астероидов с MOID меньше указанного."""
         async with UnitOfWork(self.session_factory) as uow:
