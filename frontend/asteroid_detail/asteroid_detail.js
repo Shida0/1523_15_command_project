@@ -114,7 +114,6 @@ function displayApproaches(approaches, designation) {
         approachItem.innerHTML = `
             <div class="approach-header">
                 <span class="approach-date">📅 ${formatDateTime(approach.approach_time)}</span>
-                <span class="approach-distance">📏 ${(approach.distance_au * 1000).toFixed(0)} тыс. км</span>
             </div>
             <div class="approach-grid">
                 <div class="approach-info">
@@ -159,7 +158,6 @@ async function loadApproachesForAsteroid(designation) {
             approachItem.innerHTML = `
                 <div class="approach-header">
                     <span class="approach-date">📅 ${formatDateTime(approach.approach_time)}</span>
-                    <span class="approach-distance">📏 ${(approach.distance_au * 1000).toFixed(0)} тыс. км</span>
                 </div>
                 <div class="approach-grid">
                     <div class="approach-info">
