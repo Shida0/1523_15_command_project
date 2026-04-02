@@ -2,7 +2,7 @@
 
 .page-header {
     padding: 8rem 2rem 3rem;
-    background: rgba(30, 41, 59, 0.3);
+    background: var(--bg-card);
     border-bottom: 1px solid var(--border);
 }
 
@@ -15,10 +15,7 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--text-primary), var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--text-primary);
 }
 
 .page-subtitle {
@@ -54,7 +51,7 @@
 .table-container {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 8px;
     overflow: hidden;
 }
 
@@ -75,10 +72,10 @@
 
 .table-title-badge {
     display: inline-block;
-    background: rgba(245, 158, 11, 0.2);
+    background: rgba(217, 119, 6, 0.2);
     color: var(--warning);
     padding: 0.25rem 0.75rem;
-    border-radius: 50px;
+    border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 600;
     margin-left: 0.5rem;
@@ -92,12 +89,11 @@
 
 .filter-btn {
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 4px;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.3s;
     font-size: 0.8rem;
     white-space: nowrap;
 }
@@ -172,22 +168,22 @@
 }
 
 .filter-apply-btn {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--primary);
     color: white;
 }
 
 .filter-apply-btn:hover {
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    background: var(--primary-dark);
 }
 
 .filter-reset-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-secondary);
     border: 1px solid var(--border);
 }
 
 .filter-reset-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
 }
 
@@ -195,12 +191,11 @@
     overflow-x: auto;
     overflow-y: auto;
     max-height: 500px;
-    position: relative;
 }
 
 .table-wrapper::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
 }
 
 .table-wrapper::-webkit-scrollbar-track {
@@ -209,7 +204,6 @@
 
 .table-wrapper::-webkit-scrollbar-thumb {
     background: var(--border);
-    border-radius: 5px;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb:hover {
@@ -233,7 +227,7 @@ th, td {
 }
 
 th {
-    background: rgba(15, 23, 42, 0.95);
+    background: var(--bg-dark);
     font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -322,13 +316,12 @@ tr:hover {
 
 .view-all-btn {
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--primary);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -336,8 +329,7 @@ tr:hover {
 }
 
 .view-all-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    background: var(--primary-dark);
 }
 
 /* Пагинация */
@@ -359,22 +351,21 @@ tr:hover {
     justify-content: center;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.3s;
     font-weight: 500;
     text-decoration: none;
 }
 
 .pagination-btn:hover:not(.active):not(:disabled) {
-    background: rgba(99, 102, 241, 0.2);
+    background: rgba(37, 99, 235, 0.2);
     border-color: var(--primary);
     color: var(--text-primary);
 }
 
 .pagination-btn.active {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--primary);
     border-color: var(--primary);
     color: white;
 }

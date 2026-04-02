@@ -1,8 +1,3 @@
-"""
-Базовый репозиторий с общими методами для работы с базой данных.
-Содержит CRUD-операции и методы фильтрации, которые наследуют все репозитории.
-Включает управление транзакциями (коммиты) внутри методов.
-"""
 from typing import Tuple, Type, TypeVar, Generic, Optional, List, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, or_, select, func
@@ -13,15 +8,12 @@ import time
 from shared.models.base import Base
 from shared.utils.datetime_utils import normalize_datetime
 
-# Тип для обобщенных моделей
 ModelType = TypeVar('ModelType', bound=Base)
 logger = logging.getLogger(__name__)
 
 
 def handle_repository_errors(default_return=None):
-    """
-    Декоратор для унифицированной обработки ошибок в репозиториях.
-    """
+    """Декоратор для унифицированной обработки ошибок в репозиториях"""
     def decorator(func):
         async def wrapper(self, *args, **kwargs):
             try:
@@ -40,10 +32,10 @@ def handle_repository_errors(default_return=None):
 
 
 class BaseRepository(Generic[ModelType]):
-    """Базовый класс репозитория с CRUD-операциями."""
+    """Базовый класс репозитория с CRUD-операциями"""
 
     def __init__(self, model: Type[ModelType]):
-        """Инициализация репозитория с моделью."""
+        """Инициализация репозитория с моделью"""
         self.model = model
         self._session = None
 
@@ -75,7 +67,7 @@ class BaseRepository(Generic[ModelType]):
         self._session = session
     
     async def add(self, entity):
-        """Add an entity to the database - UOW interface method."""
+        """Add an entity to the database - UOW interface method"""
         if self.session:
             self.session.add(entity)
             await self.session.flush()
@@ -85,7 +77,7 @@ class BaseRepository(Generic[ModelType]):
             raise ValueError("No session available for add operation")
     
     async def get(self, id):
-        """Get an entity by ID - UOW interface method."""
+        """Get an entity by ID - UOW interface method"""
         if self.session:
             query = select(self.model).where(self.model.id == id)
             result = await self.session.execute(query)
@@ -95,7 +87,7 @@ class BaseRepository(Generic[ModelType]):
             raise ValueError("No session available for get operation")
     
     async def update(self, entity):
-        """Update an entity - UOW interface method."""
+        """Update an entity - UOW interface method"""
         if self.session:
             await self.session.flush()
             await self.session.refresh(entity)
@@ -104,7 +96,7 @@ class BaseRepository(Generic[ModelType]):
             raise ValueError("No session available for update operation")
     
     async def delete(self, entity):
-        """Delete an entity - UOW interface method."""
+        """Delete an entity - UOW interface method"""
         if self.session:
             await self.session.delete(entity)
             await self.session.flush()
@@ -114,7 +106,7 @@ class BaseRepository(Generic[ModelType]):
 
     @property
     def _unique_fields(self):
-        """Определяет уникальные поля модели (кешируется)."""
+        """Определяет уникальные поля модели (кешируется)"""
         if not hasattr(self, '_cached_unique_fields'):
             model_name = self.model.__name__
             
@@ -131,12 +123,12 @@ class BaseRepository(Generic[ModelType]):
 
     @_unique_fields.setter
     def _unique_fields(self, value):
-        """Setter for _unique_fields to support testing."""
+        """Setter for _unique_fields to support testing"""
         self._cached_unique_fields = value
     
     @handle_repository_errors(default_return=None)
     async def create(self, data: Dict[str, Any]) -> ModelType:
-        """Создает новую запись в базе данных и выполняет коммит."""
+        """Создает новую запись в базе данных и выполняет коммит"""
         try:
             filtered_data = {k: v for k, v in data.items() if k in self._model_columns}
 
@@ -161,7 +153,7 @@ class BaseRepository(Generic[ModelType]):
     
     @handle_repository_errors(default_return=None)
     async def get_by_id(self, id: int) -> Optional[ModelType]:
-        """Получает запись по её ID. Без коммита (чтение)."""
+        """Получает запись по её ID. Без коммита (чтение)"""
         query = select(self.model).where(self.model.id == id)
         result = await self.session.execute(query)
         instance = result.scalar_one_or_none()
@@ -179,7 +171,7 @@ class BaseRepository(Generic[ModelType]):
         id: int,
         update_data: Dict[str, Any]
     ) -> Optional[ModelType]:
-        """Обновляет запись по ID и выполняет коммит."""
+        """Обновляет запись по ID и выполняет коммит"""
         try:
             instance = await self.get_by_id(id)
             if not instance:
@@ -204,7 +196,7 @@ class BaseRepository(Generic[ModelType]):
 
     @handle_repository_errors(default_return=False)
     async def delete(self, id: int) -> bool:
-        """Удаляет запись по ID и выполняет коммит."""
+        """Удаляет запись по ID и выполняет коммит"""
         try:
             instance = await self.get_by_id(id)
             if not instance:
@@ -229,7 +221,7 @@ class BaseRepository(Generic[ModelType]):
         skip: int = 0,
         limit: Optional[int] = 100
     ) -> List[ModelType]:
-        """Получает все записи с пагинацией. Без коммита (чтение)."""
+        """Получает все записи с пагинацией. Без коммита (чтение)"""
         query = select(self.model).offset(skip)
         if limit:
             query = query.limit(limit)
@@ -242,7 +234,7 @@ class BaseRepository(Generic[ModelType]):
 
     @handle_repository_errors(default_return=0)
     async def count(self) -> int:
-        """Подсчитывает общее количество записей. Без коммита (чтение)."""
+        """Подсчитывает общее количество записей. Без коммита (чтение)"""
         query = select(func.count()).select_from(self.model)
         result = await self.session.execute(query)
         count = result.scalar()
@@ -259,7 +251,7 @@ class BaseRepository(Generic[ModelType]):
         order_by: Optional[str] = None,
         order_desc: bool = False
     ) -> List[ModelType]:
-        """Универсальный метод фильтрации записей. Без коммита (чтение)."""
+        """Универсальный метод фильтрации записей. Без коммита (чтение)"""
         query = select(self.model)
 
         conditions = self._build_filter_conditions(filters)
@@ -279,7 +271,7 @@ class BaseRepository(Generic[ModelType]):
         return result.scalars().all()
     
     def _build_filter_conditions(self, filters: Dict[str, Any]) -> list:
-        """Преобразует словарь фильтров в условия SQLAlchemy."""
+        """Преобразует словарь фильтров в условия SQLAlchemy"""
         conditions = []
 
         for key, value in filters.items():
@@ -337,7 +329,7 @@ class BaseRepository(Generic[ModelType]):
         conflict_action: str = "update",
         conflict_fields: Optional[List[str]] = None
     ) -> Tuple[int, int]:
-        """Массовое создание записей с коммитом."""
+        """Массовое создание записей с коммитом"""
         if not data_list:
             return 0, 0
 
@@ -365,7 +357,7 @@ class BaseRepository(Generic[ModelType]):
         data_list: List[Dict[str, Any]],
         conflict_fields: List[str]
     ) -> Tuple[int, int]:
-        """Оптимизированная версия для PostgreSQL с ON CONFLICT DO UPDATE."""
+        """Оптимизированная версия для PostgreSQL с ON CONFLICT DO UPDATE"""
         try:
             filtered_data_list = []
             for data in data_list:
@@ -402,7 +394,7 @@ class BaseRepository(Generic[ModelType]):
         conflict_action: str,
         conflict_fields: List[str]
     ) -> Tuple[int, int]:
-        """Универсальная версия для любых СУБД с коммитом."""
+        """Универсальная версия для любых СУБД с коммитом"""
         try:
             if not conflict_fields or conflict_action not in ("update", "ignore"):
                 created = 0
@@ -450,7 +442,7 @@ class BaseRepository(Generic[ModelType]):
         self,
         fields: Dict[str, Any]
     ) -> Optional[ModelType]:
-        """Ищет запись по указанным полям. Без коммита (чтение)."""
+        """Ищет запись по указанным полям. Без коммита (чтение)"""
         query = select(self.model)
         conditions = []
 
@@ -475,7 +467,7 @@ class BaseRepository(Generic[ModelType]):
         skip: int = 0,
         limit: Optional[int] = 50
     ) -> List[ModelType]:
-        """Поиск по нескольким текстовым полям. Без коммита (чтение)."""
+        """Поиск по нескольким текстовым полям. Без коммита (чтение)"""
         if not search_fields:
             return []
 
@@ -504,7 +496,7 @@ class BaseRepository(Generic[ModelType]):
         self,
         filters: Dict[str, Any]
     ) -> int:
-        """Массовое удаление записей по фильтру с коммитом."""
+        """Массовое удаление записей по фильтру с коммитом"""
         try:
             records = await self.filter(filters, limit=None)
 

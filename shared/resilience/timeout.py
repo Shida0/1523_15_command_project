@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def timeout(seconds: float):
-    """Decorator to apply timeout to a function."""
+    """Decorator to apply timeout to a function"""
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         async def wrapper(*args, **kwargs):
@@ -32,7 +32,7 @@ NASA_API_TIMEOUTS = {
 
 
 def update_nasa_api_timeouts_from_values(nasa_api_config):
-    """Update NASA API timeouts from provided configuration values."""
+    """Update NASA API timeouts from provided configuration values"""
     global NASA_API_TIMEOUTS
     NASA_API_TIMEOUTS = {
         'sbdb': nasa_api_config.sbdb_timeout,
@@ -43,7 +43,7 @@ def update_nasa_api_timeouts_from_values(nasa_api_config):
 
 
 def update_nasa_api_timeouts_from_config():
-    """Update NASA API timeouts from configuration values."""
+    """Update NASA API timeouts from configuration values"""
     from shared.config.config_manager import get_config
     config = get_config()
     update_nasa_api_timeouts_from_values(config.nasa_api)

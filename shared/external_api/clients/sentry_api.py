@@ -1,7 +1,3 @@
-"""
-Асинхронный клиент для NASA Sentry API (Sentry-II).
-Получает данные об объектах с ненулевой вероятностью столкновения с Землей.
-"""
 import logging
 import aiohttp
 from typing import Dict, List, Any, Optional, Tuple
@@ -15,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class SentryImpactRisk:
-    """Данные об объекте с риском столкновения из системы NASA Sentry."""
+    """Данные об объекте с риском столкновения из системы NASA Sentry"""
     designation: str
     fullname: str
     ip: float
@@ -33,7 +29,7 @@ class SentryImpactRisk:
     last_update: datetime
     
     def to_dict(self) -> Dict[str, Any]:
-        """Преобразует объект в словарь."""
+        """Преобразует объект в словарь"""
         return asdict(self)
     
 # Добавить модель валидации ответа Sentry
@@ -52,7 +48,7 @@ class SentryAPIResponse(BaseModel):
         return v    
 
 class SentryClient:
-    """Асинхронный клиент для получения данных о рисках столкновений."""
+    """Асинхронный клиент для получения данных о рисках столкновений"""
     
     SENTRY_API_URL = "https://ssd-api.jpl.nasa.gov/sentry.api"
     
@@ -81,7 +77,7 @@ class SentryClient:
     @validate_response(required_fields=['data'])
     @log_execution_time
     async def fetch_current_impact_risks(self) -> List[SentryImpactRisk]:
-        """Получает все актуальные риски столкновений с ts_max > 0."""
+        """Получает все актуальные риски столкновений с ts_max > 0"""
         if not self.session:
             raise RuntimeError("Сессия не инициализирована. Используйте контекстный менеджер.")
             
@@ -118,7 +114,7 @@ class SentryClient:
     @nasa_api_endpoint(max_retries=3)
     @log_execution_time
     async def fetch_object_details(self, designation: str) -> Optional[SentryImpactRisk]:
-        """Получает детальную информацию о конкретном объекте."""
+        """Получает детальную информацию о конкретном объекте"""
         if not self.session:
             raise RuntimeError("Сессия не инициализирована. Используйте контекстный менеджер.")
             
@@ -144,7 +140,7 @@ class SentryClient:
             return None
             
     def _parse_sentry_item(self, item: Dict[str, Any]) -> SentryImpactRisk:
-        """Парсит элемент данных из Sentry API в объект SentryImpactRisk."""
+        """Парсит элемент данных из Sentry API в объект SentryImpactRisk"""
         # Безопасное извлечение данных с правильными типами
         designation = self._safe_extract_str(item, 'des', 'Неизвестно')
         fullname = self._safe_extract_str(item, 'fullname', designation)
@@ -196,14 +192,14 @@ class SentryClient:
         )
     
     def _safe_extract_str(self, item: Dict, key: str, default: str) -> str:
-        """Безопасно извлекает строковое значение из словаря."""
+        """Безопасно извлекает строковое значение из словаря"""
         value = item.get(key, default)
         if value is None:
             return default
         return str(value)
     
     def _safe_extract_float(self, item: Dict, key: str, default: float) -> float:
-        """Безопасно извлекает и преобразует значение в float."""
+        """Безопасно извлекает и преобразует значение в float"""
         value = item.get(key)
         if value is None:
             return default
@@ -214,7 +210,7 @@ class SentryClient:
             return default
     
     def _safe_extract_int(self, item: Dict, key: str, default: int) -> int:
-        """Безопасно извлекает и преобразует значение в int."""
+        """Безопасно извлекает и преобразует значение в int"""
         value = item.get(key)
         if value is None:
             return default
@@ -225,7 +221,7 @@ class SentryClient:
             return default
     
     def _extract_impact_scenarios(self, impact_data: List[Dict]) -> Tuple[int, List[int]]:
-        """Извлекает информацию о сценариях столкновений."""
+        """Извлекает информацию о сценариях столкновений"""
         impact_years = []
         
         for impact in impact_data:
@@ -241,7 +237,7 @@ class SentryClient:
         return len(impact_data), unique_years
         
     def _translate_torino_scale(self, ts_value: int) -> str:
-        """Переводит значение Туринской шкалы на русский язык."""
+        """Переводит значение Туринской шкалы на русский язык"""
         translations = {
             0: "0 — Нет риска (зелёный)",
             1: "1 — Нормальный (зелёный)",
@@ -278,7 +274,7 @@ class SentryClient:
             return "НЕОПРЕДЕЛЕН"
             
     def _format_probability_text(self, probability: float) -> str:
-        """Форматирует вероятность в читаемый русский текст."""
+        """Форматирует вероятность в читаемый русский текст"""
         if probability <= 0:
             return "Вероятность отсутствует"
         # Защита от деления на ноль

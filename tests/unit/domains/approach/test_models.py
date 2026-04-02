@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from domains.approach.models.close_approach import CloseApproachModel
+from domains.approach import CloseApproachModel
 
 
 class TestApproachModel:

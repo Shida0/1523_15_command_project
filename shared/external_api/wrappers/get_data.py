@@ -1,8 +1,4 @@
 # get_data.py
-"""
-Асинхронные функции для получения данных об астероидах.
-Основной интерфейс для работы с NASA SBDB API.
-"""
 import logging
 from ...external_api.clients.sbdb_api import NASASBDBClient
 from shared.utils.error_handlers import retry_with_exponential_backoff

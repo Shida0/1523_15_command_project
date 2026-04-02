@@ -13,9 +13,9 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from shared.database.engine import async_engine
 from shared.models.base import Base
-from domains.asteroid.models.asteroid import AsteroidModel
-from domains.approach.models.close_approach import CloseApproachModel
-from domains.threat.models.threat_assessment import ThreatAssessmentModel
+from domains.asteroid import AsteroidModel
+from domains.approach import CloseApproachModel
+from domains.threat import ThreatAssessmentModel
 
 
 config = context.config

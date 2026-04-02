@@ -8,8 +8,7 @@ import pytest
 from unittest.mock import AsyncMock, Mock, patch
 from datetime import datetime, timezone, timedelta
 
-from domains.approach.models.close_approach import CloseApproachModel
-from domains.approach.services.approach_service import ApproachService
+from domains.approach import CloseApproachModel, ApproachService
 
 
 class TestApproachService:

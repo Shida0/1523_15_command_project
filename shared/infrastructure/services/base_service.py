@@ -1,6 +1,3 @@
-"""
-Базовый сервис для работы с моделями через UnitOfWork.
-"""
 from typing import Dict, Any, List, Optional, Type, Tuple
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from sqlalchemy import inspect
@@ -15,30 +12,30 @@ logger = logging.getLogger(__name__)
 
 
 class BaseService:
-    """Базовый сервис для работы с одной конкретной моделью."""
+    """Базовый сервис для работы с одной конкретной моделью"""
 
     def __init__(self, session_factory: async_sessionmaker[AsyncSession], model_class: Type):
-        """Инициализация базового сервиса."""
+        """Инициализация базового сервиса"""
         self.session_factory = session_factory
         self.model_class = model_class
         logger.info(f"Инициализирован BaseService для модели {model_class.__name__}")
 
     async def create(self, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Создание записи текущей модели."""
+        """Создание записи текущей модели"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             instance = await repo.create(data)
             return self._model_to_dict(instance) if instance else None
 
     async def get_by_id(self, id: int) -> Optional[Dict[str, Any]]:
-        """Получение записи по ID."""
+        """Получение записи по ID"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             instance = await repo.get_by_id(id)
             return self._model_to_dict(instance) if instance else None
 
     async def get_by_designation(self, designation: str) -> Optional[Dict[str, Any]]:
-        """Получение записи по обозначению (если поддерживается)."""
+        """Получение записи по обозначению (если поддерживается)"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             if hasattr(repo, 'get_by_designation'):
@@ -49,21 +46,21 @@ class BaseService:
                 return instances[0] if instances else None
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
-        """Получение всех записей с пагинацией."""
+        """Получение всех записей с пагинацией"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             instances = await repo.get_all(skip, limit)
             return [self._model_to_dict(inst) for inst in instances]
 
     async def update(self, id: int, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Обновление записи."""
+        """Обновление записи"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             instance = await repo.update(id, data)
             return self._model_to_dict(instance) if instance else None
 
     async def delete(self, id: int) -> bool:
-        """Удаление записи."""
+        """Удаление записи"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             return await repo.delete(id)
@@ -76,7 +73,7 @@ class BaseService:
         order_by: Optional[str] = None,
         order_desc: bool = False
     ) -> List[Dict[str, Any]]:
-        """Универсальная фильтрация записей."""
+        """Универсальная фильтрация записей"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             instances = await repo.filter(filters, skip, limit, order_by, order_desc)
@@ -89,24 +86,23 @@ class BaseService:
         skip: int = 0,
         limit: int = 50
     ) -> List[Dict[str, Any]]:
-        """Поиск по текстовым полям."""
+        """Поиск по текстовым полям"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             instances = await repo.search(search_term, search_fields, skip, limit)
             return [self._model_to_dict(inst) for inst in instances]
 
     async def count(self) -> int:
-        """Подсчет общего количества записей."""
+        """Подсчет общего количества записей"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             return await repo.count()
 
-    # Массовые операции
     async def bulk_create(
         self,
         data_list: List[Dict[str, Any]]
     ) -> Tuple[int, int]:
-        """Массовое создание записей."""
+        """Массовое создание записей"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             return await repo.bulk_create_asteroids(data_list) if hasattr(repo, 'bulk_create_asteroids') else await repo.bulk_create(data_list)
@@ -115,14 +111,13 @@ class BaseService:
         self,
         filters: Dict[str, Any]
     ) -> int:
-        """Массовое удаление записей по фильтру."""
+        """Массовое удаление записей по фильтру"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             return await repo.bulk_delete(filters)
 
-    # Статистические методы
     async def get_statistics(self) -> Dict[str, Any]:
-        """Получение статистики для текущей модели."""
+        """Получение статистики для текущей модели"""
         async with UnitOfWork(self.session_factory) as uow:
             repo = self._get_repository(uow)
             if hasattr(repo, 'get_statistics'):
@@ -134,9 +129,8 @@ class BaseService:
                     "model_type": self.model_class.__name__
                 }
 
-    # Вспомогательные методы
     def _get_repository(self, uow):
-        """Получение нужного репозитория из UnitOfWork."""
+        """Получение нужного репозитория из UnitOfWork"""
         if self.model_class.__name__ == "AsteroidModel":
             return uow.asteroid_repo
         elif self.model_class.__name__ == "CloseApproachModel":
@@ -147,7 +141,7 @@ class BaseService:
             raise ValueError(f"Unknown model class: {self.model_class}")
 
     def _model_to_dict(self, model_instance) -> Dict[str, Any]:
-        """Преобразование экземпляра модели в словарь."""
+        """Преобразование экземпляра модели в словарь"""
         if not model_instance:
             return None
 

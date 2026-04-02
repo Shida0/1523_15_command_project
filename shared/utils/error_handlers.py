@@ -1,4 +1,3 @@
-# Модуль с декораторами для обработки ошибок и повторных попыток
 import asyncio
 import inspect
 import logging
@@ -12,21 +11,18 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-# Стандартные настройки retry
 DEFAULT_RETRY_ATTEMPTS = 3
 DEFAULT_RETRY_MIN_WAIT = 2
 DEFAULT_RETRY_MAX_WAIT = 30
 
-# Коды ошибок HTTP для автоматического повторения
 RETRY_HTTP_STATUS_CODES = {408, 429, 500, 502, 503, 504}
 
-# NASA API rate limits
 NASA_RATE_LIMIT_DELAY = 2.0
 NASA_RATE_LIMIT_BURST_DELAY = 65.0
 
 
 class APIError(Exception):
-    """Базовое исключение для ошибок API."""
+    """Базовое исключение для ошибок API"""
     def __init__(self, message: str, status_code: Optional[int] = None):
         self.message = message
         self.status_code = status_code
@@ -34,40 +30,34 @@ class APIError(Exception):
 
 
 class NASAAPIError(APIError):
-    """Ошибка при работе с NASA API."""
+    """Ошибка при работе с NASA API"""
     pass
 
 
 class RateLimitExceededError(NASAAPIError):
-    """Превышен лимит запросов к NASA API."""
+    """Превышен лимит запросов к NASA API"""
     def __init__(self, retry_after: int = 65):
         super().__init__("Rate limit exceeded for NASA API")
         self.retry_after = retry_after
 
 
 class NetworkError(APIError):
-    """Сетевая ошибка."""
+    """Сетевая ошибка"""
     pass
 
 
 class DataParseError(APIError):
-    """Ошибка парсинга данных."""
+    """Ошибка парсинга данных"""
     pass
 
 
 class DatabaseError(Exception):
-    """Ошибка базы данных."""
+    """Ошибка базы данных"""
     pass
 
 
-def retry_with_exponential_backoff(
-    max_attempts: int = DEFAULT_RETRY_ATTEMPTS,
-    min_wait: float = DEFAULT_RETRY_MIN_WAIT,
-    max_wait: float = DEFAULT_RETRY_MAX_WAIT,
-    retry_exceptions: tuple = (Exception,),
-    logger: logging.Logger = logger
-):
-    """Декоратор для повторных попыток с экспоненциальной задержкой."""
+def retry_with_exponential_backoff(max_attempts: int = DEFAULT_RETRY_ATTEMPTS, min_wait: float = DEFAULT_RETRY_MIN_WAIT, max_wait: float = DEFAULT_RETRY_MAX_WAIT, retry_exceptions: tuple = (Exception,), logger: logging.Logger = logger):
+    """Декоратор для повторных попыток с экспоненциальной задержкой"""
     def decorator(func: Callable) -> Callable:
         if inspect.iscoroutinefunction(func):
             @wraps(func)
@@ -120,7 +110,7 @@ def retry_with_exponential_backoff(
 
 
 def handle_nasa_api_errors(func: Callable) -> Callable:
-    """Декоратор для обработки ошибок NASA API."""
+    """Декоратор для обработки ошибок NASA API"""
     @wraps(func)
     async def async_wrapper(*args, **kwargs):
         try:
@@ -175,7 +165,7 @@ def handle_nasa_api_errors(func: Callable) -> Callable:
 
 
 def rate_limit_nasa_api(delay: float = NASA_RATE_LIMIT_DELAY):
-    """Декоратор для соблюдения rate limits NASA API."""
+    """Декоратор для соблюдения rate limits NASA API"""
     import threading
     local_storage = threading.local()
 
@@ -218,7 +208,7 @@ def rate_limit_nasa_api(delay: float = NASA_RATE_LIMIT_DELAY):
 
 
 def log_execution_time(func: Callable) -> Callable:
-    """Декоратор для логирования времени выполнения функции."""
+    """Декоратор для логирования времени выполнения функции"""
     @wraps(func)
     async def async_wrapper(*args, **kwargs):
         start_time = time.time()
@@ -256,7 +246,7 @@ def log_execution_time(func: Callable) -> Callable:
 
 
 def log_api_call(func: Callable) -> Callable:
-    """Декоратор для логирования вызовов API с параметрами."""
+    """Декоратор для логирования вызовов API с параметрами"""
     @wraps(func)
     async def async_wrapper(*args, **kwargs):
         safe_kwargs = {}
@@ -288,25 +278,20 @@ def log_api_call(func: Callable) -> Callable:
 
 
 def nasa_api_endpoint(max_retries: int = DEFAULT_RETRY_ATTEMPTS, rate_limit_delay: float = NASA_RATE_LIMIT_DELAY):
-    """Композитный декоратор для конечных точек NASA API."""
+    """Композитный декоратор для конечных точек NASA API"""
     def decorator(func: Callable) -> Callable:
         decorated = func
         decorated = log_execution_time(decorated)
         decorated = log_api_call(decorated)
         decorated = handle_nasa_api_errors(decorated)
         decorated = rate_limit_nasa_api(rate_limit_delay)(decorated)
-        decorated = retry_with_exponential_backoff(
-            max_attempts=max_retries,
-            min_wait=DEFAULT_RETRY_MIN_WAIT,
-            max_wait=DEFAULT_RETRY_MAX_WAIT,
-            retry_exceptions=(NetworkError, NASAAPIError, RateLimitExceededError)
-        )(decorated)
+        decorated = retry_with_exponential_backoff(max_attempts=max_retries, min_wait=DEFAULT_RETRY_MIN_WAIT, max_wait=DEFAULT_RETRY_MAX_WAIT, retry_exceptions=(NetworkError, NASAAPIError, RateLimitExceededError))(decorated)
         return decorated
     return decorator
 
 
 def nasa_cad_api_endpoint(func):
-    """Композитный декоратор для конечных точек NASA CAD API."""
+    """Композитный декоратор для конечных точек NASA CAD API"""
     @wraps(func)
     async def wrapper(*args, **kwargs):
         operation_name = func.__name__
@@ -314,12 +299,7 @@ def nasa_cad_api_endpoint(func):
         start_time = time.time()
 
         try:
-            result = await retry_with_exponential_backoff(
-                max_attempts=3,
-                min_wait=DEFAULT_RETRY_MIN_WAIT,
-                max_wait=DEFAULT_RETRY_MAX_WAIT,
-                retry_exceptions=(NetworkError, NASAAPIError, RateLimitExceededError, DataParseError)
-            )(func)(*args, **kwargs)
+            result = await retry_with_exponential_backoff(max_attempts=3, min_wait=DEFAULT_RETRY_MIN_WAIT, max_wait=DEFAULT_RETRY_MAX_WAIT, retry_exceptions=(NetworkError, NASAAPIError, RateLimitExceededError, DataParseError))(func)(*args, **kwargs)
 
             duration = time.time() - start_time
 
@@ -348,23 +328,8 @@ def nasa_cad_api_endpoint(func):
     return wrapper
 
 
-def database_operation(max_retries: int = 3, retry_exceptions: tuple = (DatabaseError,)):
-    """Композитный декоратор для операций с базой данных."""
-    def decorator(func: Callable) -> Callable:
-        decorated = func
-        decorated = log_execution_time(decorated)
-        decorated = retry_with_exponential_backoff(
-            max_attempts=max_retries,
-            min_wait=1.0,
-            max_wait=10.0,
-            retry_exceptions=retry_exceptions
-        )(decorated)
-        return decorated
-    return decorator
-
-
 def validate_response(required_fields: list = None, response_validator: Callable = None):
-    """Декоратор для валидации ответов API."""
+    """Декоратор для валидации ответов API"""
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         async def async_wrapper(*args, **kwargs):
@@ -411,7 +376,7 @@ def validate_response(required_fields: list = None, response_validator: Callable
 
 
 def fallback_on_error(fallback_value: Any = None, fallback_func: Callable = None):
-    """Декоратор для возврата fallback значения при ошибке."""
+    """Декоратор для возврата fallback значения при ошибке"""
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         async def async_wrapper(*args, **kwargs):
@@ -443,28 +408,6 @@ def fallback_on_error(fallback_value: Any = None, fallback_func: Callable = None
     return decorator
 
 
-def is_retryable_error(error: Exception) -> bool:
-    """Проверяет, является ли ошибка повторяемой."""
-    if isinstance(error, (NetworkError, RateLimitExceededError)):
-        return True
-    elif isinstance(error, NASAAPIError) and error.status_code not in {400, 401, 403, 404}:
-        return True
-    elif isinstance(error, (aiohttp.ClientError, asyncio.TimeoutError, requests.exceptions.RequestException, TimeoutError)):
-        return True
-    return False
-
-
-def should_retry_http_status(status_code: int) -> bool:
-    """Проверяет, следует ли повторять запрос при данном HTTP статусе."""
-    return status_code in RETRY_HTTP_STATUS_CODES
-
-
-def get_retry_delay(attempt: int, base_delay: float = 2.0, max_delay: float = 60.0) -> float:
-    """Рассчитывает задержку для повторной попытки."""
-    delay = base_delay * (2 ** (attempt - 1))
-    return min(delay, max_delay)
-
-
 __all__ = [
     'retry_with_exponential_backoff',
     'handle_nasa_api_errors',
@@ -472,12 +415,9 @@ __all__ = [
     'log_execution_time',
     'log_api_call',
     'nasa_api_endpoint',
-    'database_operation',
+    'nasa_cad_api_endpoint',
     'validate_response',
     'fallback_on_error',
-    'is_retryable_error',
-    'should_retry_http_status',
-    'get_retry_delay',
     'APIError',
     'NASAAPIError',
     'RateLimitExceededError',

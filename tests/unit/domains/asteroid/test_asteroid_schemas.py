@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 from datetime import datetime
-from domains.asteroid.schemas.asteroid_schema import AsteroidBase, AsteroidCreate, AsteroidResponse
+from domains.asteroid import AsteroidBase, AsteroidCreate, AsteroidResponse
 
 
 class TestAsteroidCreateSchema:

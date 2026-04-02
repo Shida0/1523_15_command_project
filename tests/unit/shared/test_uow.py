@@ -98,7 +98,7 @@ class TestUnitOfWork:
     async def test_get_repository_caching(self, mock_session_factory):
         """Test that repositories are cached in UnitOfWork."""
         # Arrange
-        from domains.asteroid.repositories.asteroid_repository import AsteroidRepository
+        from domains.asteroid import AsteroidRepository
         
         mock_session = AsyncMock()
         mock_session_factory.return_value = mock_session
@@ -136,9 +136,9 @@ class TestUnitOfWork:
             threat_repo = active_uow.threat_repo
         
         # Assert
-        from domains.asteroid.repositories.asteroid_repository import AsteroidRepository
-        from domains.approach.repositories.approach_repository import ApproachRepository
-        from domains.threat.repositories.threat_repository import ThreatRepository
+        from domains.asteroid import AsteroidRepository
+        from domains.approach import ApproachRepository
+        from domains.threat import ThreatRepository
         
         assert isinstance(asteroid_repo, AsteroidRepository)
         assert isinstance(approach_repo, ApproachRepository)

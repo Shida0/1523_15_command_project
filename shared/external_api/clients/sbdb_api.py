@@ -16,7 +16,7 @@ from shared.resilience import circuit_breaker, NASA_API_CIRCUIT_CONFIG, bulkhead
 logger = logging.getLogger(__name__)
 
 class NASASBDBClient:
-    """Клиент для работы с NASA Small-Body Database."""
+    """Клиент для работы с NASA Small-Body Database"""
     
     SBDB_QUERY_URL = "https://ssd-api.jpl.nasa.gov/sbdb_query.api"
     
@@ -43,13 +43,7 @@ class NASASBDBClient:
     
     @nasa_api_endpoint(max_retries=3)
     async def get_asteroids(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
-        """Основной метод получения данных об астероидах.
-        
-        Args:
-            limit: Максимальное количество астероидов для получения.
-                   Если None — будут получены ВСЕ доступные PHA астероиды
-                   через пагинацию NASA API.
-        """
+        """Основной метод получения данных об астероидах. limit: максимальное количество астероидов, если None — все PHA"""
         if not self.session:
             raise RuntimeError("Сессия не инициализирована")
 
@@ -90,64 +84,39 @@ class NASASBDBClient:
         return results
 
     async def _get_all_pha_designations(self, limit: Optional[int] = None) -> List[str]:
-        """
-        Получает список обозначений PHA астероидов через пагинацию NASA API.
-        
-        Args:
-            limit: Максимальное количество астероидов. Если None — получает все.
-        
-        Returns:
-            Список обозначений (designations) PHA астероидов.
-        """
-        all_designations = []
-        offset = 0
-        batch_size = 1000  # Оптимальный размер батча для NASA API
-        
-        while True:
-            # Проверяем лимит
-            if limit is not None and len(all_designations) >= limit:
-                break
-            
-            # Вычисляем размер текущего батча
-            remaining = limit - len(all_designations) if limit else batch_size
-            current_batch_size = min(batch_size, remaining)
-            
-            params = {
-                'fields': 'pdes',
-                'sb-group': 'pha',
-                'limit': current_batch_size,
-                'offset': offset
-            }
+        """Получает список обозначений PHA астероидов одним запросом к NASA API."""
+        logger.info("Запрос полного списка PHA астероидов...")
 
-            logger.debug(f"Запрос PHA: offset={offset}, limit={current_batch_size}")
+        MAX_PHA_COUNT = 5000
+        api_limit = min(limit, MAX_PHA_COUNT) if limit else MAX_PHA_COUNT
 
-            async with self.session.get(self.SBDB_QUERY_URL, params=params) as response:
-                response.raise_for_status()
-                data = await response.json()
+        params = {
+            'fields': 'pdes',
+            'sb-group': 'pha',
+            'limit': api_limit
+        }
 
-                if 'data' not in data or not data['data']:
-                    logger.info(f"Получены все PHA астероиды. Всего: {len(all_designations)}")
-                    break
+        logger.debug(f"Запрос PHA: limit={api_limit}")
 
-                batch = [item[0] for item in data.get('data', [])]
-                all_designations.extend(batch)
-                
-                logger.info(f"Получено {len(all_designations)} PHA астероидов (батч {len(batch)})")
-                
-                # Если получили меньше чем запросили — значит это конец
-                if len(batch) < current_batch_size:
-                    logger.info(f"Достигнут конец списка PHA. Всего: {len(all_designations)}")
-                    break
-                
-                offset += current_batch_size
-                
-                # Rate limiting — задержка между запросами
-                await asyncio.sleep(0.5)
-        
-        return all_designations
+        async with self.session.get(self.SBDB_QUERY_URL, params=params) as response:
+            response.raise_for_status()
+            data = await response.json()
+
+            if 'data' not in data or not data['data']:
+                logger.warning("Не получено данных от NASA API")
+                return []
+
+            all_designations = [item[0] for item in data.get('data', []) if item[0]]
+
+            # Применяем локальный лимит если нужно
+            if limit and len(all_designations) > limit:
+                all_designations = all_designations[:limit]
+
+            logger.info(f"Получено {len(all_designations)} PHA астероидов")
+            return all_designations
     
     async def _process_batch(self, batch: List[str]) -> List:
-        """Обрабатывает батч астероидов."""
+        """Обрабатывает батч астероидов"""
         # Создаем задачи для асинхронного выполнения
         tasks = [self._fetch_with_astroquery(des) for des in batch]
 
@@ -183,7 +152,7 @@ class NASASBDBClient:
     @retry_with_exponential_backoff(max_attempts=3, retry_exceptions=(Exception,))
     @fallback_on_error(fallback_func=lambda self, designation: self._create_fallback_asteroid(designation))
     async def _fetch_with_astroquery(self, designation: str) -> Optional[Dict[str, Any]]:
-        """Асинхронный запрос через astroquery для одного астероида."""
+        """Асинхронный запрос через astroquery для одного астероида"""
         loop = asyncio.get_event_loop()
         try:
             from astroquery.jplsbdb import SBDB
@@ -208,7 +177,7 @@ class NASASBDBClient:
             raise NetworkError(f"Ошибка при запросе астероида {designation}: {e}")
 
     def _parse_astroquery_result(self, data: Dict, designation: str) -> Dict[str, Any]:
-        """Парсит результат astroquery в формат AsteroidModel."""
+        """Парсит результат astroquery в формат AsteroidModel"""
         try:
             obj = data.get('object', {})
             orbit = data.get('orbit', {})
@@ -247,7 +216,7 @@ class NASASBDBClient:
             return self._create_fallback_asteroid(designation)
     
     def _extract_asteroid_name(self, fullname: str) -> Optional[str]:
-        """Извлекает имя астероида из полного названия."""
+        """Извлекает имя астероида из полного названия"""
         if not fullname:
             return None
             
@@ -259,7 +228,7 @@ class NASASBDBClient:
         return None
     
     def _extract_orbital_elements(self, orbit: Dict) -> tuple:
-        """Извлекает перигелий и афелий из орбитальных данных."""
+        """Извлекает перигелий и афелий из орбитальных данных"""
         def find_value(key: str):
             elements = orbit.get('elements', {})
             if isinstance(elements, dict):
@@ -285,7 +254,7 @@ class NASASBDBClient:
         return perihelion_au, aphelion_au
     
     def _extract_earth_moid(self, orbit: Dict) -> Optional[float]:
-        """Извлекает MOID Земли из орбитальных данных."""
+        """Извлекает MOID Земли из орбитальных данных"""
         moid_data = orbit.get('moid')
         if isinstance(moid_data, dict):
             return self._extract_astro_value(moid_data.get('earth'))
@@ -293,7 +262,7 @@ class NASASBDBClient:
             return self._extract_astro_value(orbit.get('moid_earth')) or self._extract_astro_value(moid_data)
     
     def _extract_absolute_magnitude(self, phys_par: Dict, obj: Dict, designation: str) -> float:
-        """Извлекает абсолютную звездную величину (H)."""
+        """Извлекает абсолютную звездную величину (H)"""
         h_sources = [phys_par.get('H'), obj.get('H'), phys_par.get('h'), obj.get('h')]
         
         for source in h_sources:
@@ -305,7 +274,7 @@ class NASASBDBClient:
         return 18.0
     
     def _extract_albedo(self, phys_par: Dict, obj: Dict) -> tuple:
-        """Извлекает альбедо и флаг наличия данных."""
+        """Извлекает альбедо и флаг наличия данных"""
         albedo_sources = [
             phys_par.get('albedo'),
             phys_par.get('p_v'),
@@ -325,7 +294,7 @@ class NASASBDBClient:
     
     def _extract_diameter(self, phys_par: Dict, obj: Dict, h_mag: float, 
                          albedo: float, has_albedo_data: bool) -> tuple:
-        """Извлекает диаметр, источник данных и флаг точности."""
+        """Извлекает диаметр, источник данных и флаг точности"""
         diameter_sources = [
             phys_par.get('diameter'),
             phys_par.get('diameter_km'),
@@ -348,7 +317,7 @@ class NASASBDBClient:
         return self._calculate_diameter(h_mag, albedo, has_albedo_data), 'calculated', False
     
     def _is_diameter_measured(self, phys_par: Dict) -> bool:
-        """Определяет, является ли диаметр измеренным или вычисленным."""
+        """Определяет, является ли диаметр измеренным или вычисленным"""
         diameter_ref = phys_par.get('diameter_ref', '')
         diameter_note = phys_par.get('diameter_note', '')
         ref_note = f"{diameter_ref} {diameter_note}".lower()
@@ -372,7 +341,7 @@ class NASASBDBClient:
         return True
     
     def _calculate_diameter(self, h_mag: float, albedo: float, has_albedo_data: bool) -> float:
-        """Вычисляет диаметр на основе H-величины и альбедо."""
+        """Вычисляет диаметр на основе H-величины и альбедо"""
         try:
             if has_albedo_data:
                 return get_size_by_albedo(albedo, h_mag)
@@ -382,7 +351,7 @@ class NASASBDBClient:
             return get_size_by_h_mag(h_mag)
     
     def _extract_astro_value(self, value):
-        """Извлекает числовое значение из различных форматов данных NASA SBDB."""
+        """Извлекает числовое значение из различных форматов данных NASA SBDB"""
         if value is None:
             return None
         
@@ -424,7 +393,7 @@ class NASASBDBClient:
         return None
     
     def _create_fallback_asteroid(self, designation: str) -> Dict[str, Any]:
-        """Создает минимальные данные об астероиде при ошибке парсинга."""
+        """Создает минимальные данные об астероиде при ошибке парсинга"""
         return {
             'designation': designation,
             'name': None,
@@ -440,7 +409,7 @@ class NASASBDBClient:
         }
     
     def _log_diameter_statistics(self, results: List[Dict[str, Any]]) -> None:
-        """Логирует статистику по диаметрам астероидов."""
+        """Логирует статистику по диаметрам астероидов"""
         accurate_count = sum(1 for a in results if a.get('accurate_diameter', False))
         measured_count = sum(1 for a in results if a.get('diameter_source') == 'measured')
         computed_count = sum(1 for a in results if a.get('diameter_source') == 'computed')

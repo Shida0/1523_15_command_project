@@ -8,10 +8,7 @@ from shared.models.base import Base
 logger = logging.getLogger(__name__)
 
 class AsteroidModel(Base):
-    """
-    Модель для хранения данных о потенциально опасных астероидах (PHA).
-    Соответствует таблице 'asteroid_models'.
-    """
+    """Модель для хранения данных о потенциально опасных астероидах (PHA). Соответствует таблице 'asteroid_models'"""
     # Основные идентификаторы
     designation: Mapped[str] = mapped_column(
         String(50),
@@ -122,7 +119,7 @@ class AsteroidModel(Base):
     )
     
     def __init__(self, **kwargs):
-        """Инициализирует экземпляр модели астероида с валидацией данных."""
+        """Инициализирует экземпляр модели астероида с валидацией данных"""
         super().__init__(**kwargs)
 
         # валидация альбедо

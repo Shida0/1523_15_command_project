@@ -9,8 +9,7 @@ from unittest.mock import AsyncMock, Mock, patch
 from sqlalchemy import select, func
 from datetime import datetime, timezone
 
-from domains.threat.models.threat_assessment import ThreatAssessmentModel
-from domains.threat.repositories.threat_repository import ThreatRepository
+from domains.threat import ThreatAssessmentModel, ThreatRepository
 
 
 class TestThreatRepository:

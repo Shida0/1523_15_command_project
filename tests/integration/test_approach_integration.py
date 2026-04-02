@@ -9,10 +9,8 @@ from datetime import datetime, timezone, timedelta
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from domains.asteroid.models.asteroid import AsteroidModel
-from domains.approach.models.close_approach import CloseApproachModel
-from domains.approach.repositories.approach_repository import ApproachRepository
-from domains.approach.services.approach_service import ApproachService
+from domains.asteroid import AsteroidModel
+from domains.approach import CloseApproachModel, ApproachRepository, ApproachService
 from shared.transaction.uow import UnitOfWork
 
 
@@ -48,8 +46,8 @@ async def db_session(test_engine):
         # Cleanup - delete all data after test from all tables
         await session.rollback()
         # Import all models to ensure all tables are in metadata
-        from domains.approach.models.close_approach import CloseApproachModel
-        from domains.threat.models.threat_assessment import ThreatAssessmentModel
+        from domains.approach import CloseApproachModel
+        from domains.threat import ThreatAssessmentModel
         for table in reversed(AsteroidModel.metadata.sorted_tables):
             await session.execute(table.delete())
         await session.commit()
@@ -80,7 +78,7 @@ async def sample_asteroid(db_session):
     """Create a sample asteroid for approach tests."""
     # Clean up any existing data with same designation
     from sqlalchemy import delete
-    from domains.approach.models.close_approach import CloseApproachModel
+    from domains.approach import CloseApproachModel
     await db_session.execute(delete(CloseApproachModel).where(CloseApproachModel.asteroid_designation == "2023 TEST"))
     await db_session.execute(delete(AsteroidModel).where(AsteroidModel.designation == "2023 TEST"))
     await db_session.commit()

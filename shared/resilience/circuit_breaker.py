@@ -25,10 +25,10 @@ class CircuitBreakerConfig:
 
 
 class CircuitBreaker:
-    """Реализация паттерна Circuit Breaker для отказоустойчивости."""
+    """Реализация паттерна Circuit Breaker для отказоустойчивости"""
 
     def __init__(self, config: CircuitBreakerConfig):
-        """Инициализация Circuit Breaker."""
+        """Инициализация Circuit Breaker"""
         self.config = config
         self.state = CircuitState.CLOSED
         self.failure_count = 0
@@ -36,7 +36,7 @@ class CircuitBreaker:
         self._lock = asyncio.Lock()
 
     async def call(self, func: Callable, *args, **kwargs) -> Any:
-        """Выполнение вызова функции через Circuit Breaker."""
+        """Выполнение вызова функции через Circuit Breaker"""
         async with self._lock:
             if self.state == CircuitState.OPEN:
                 if self._should_attempt_reset():
@@ -79,7 +79,7 @@ class CircuitBreaker:
 
 
 def circuit_breaker(config: CircuitBreakerConfig):
-    """Декоратор для применения паттерна Circuit Breaker к функции."""
+    """Декоратор для применения паттерна Circuit Breaker к функции"""
     def decorator(func: Callable) -> Callable:
         circuit_breaker_instance = CircuitBreaker(config)
 

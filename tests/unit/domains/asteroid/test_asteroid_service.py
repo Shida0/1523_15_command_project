@@ -8,8 +8,7 @@ import pytest
 from unittest.mock import AsyncMock, Mock, patch
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from domains.asteroid.models.asteroid import AsteroidModel
-from domains.asteroid.services.asteroid_service import AsteroidService
+from domains.asteroid import AsteroidModel, AsteroidService
 
 
 class TestAsteroidService:

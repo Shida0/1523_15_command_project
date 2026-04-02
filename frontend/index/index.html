@@ -35,12 +35,12 @@
 
     <section class="hero">
         <div class="hero-content">
-            <div class="hero-badge">Система мониторинга астероидов в реальном времени</div>
             <h1>Защита Земли от астероидной опасности</h1>
+            <div class="hero-subtitle">Система мониторинга астероидов в реальном времени</div>
             <p>
-                Asteroid Watch — это комплексная система мониторинга <strong>потенциально опасных астероидов (PHA)</strong>,
-                которая отслеживает околоземные объекты, анализирует их орбиты и оценивает риск столкновения с Землёй.
-                Мы используем данные <strong>NASA Sentry API</strong> для оценок угроз и <strong>NASA CAD API</strong> для сближений.
+                Asteroid Watch — комплексная система мониторинга <strong>потенциально опасных астероидов (PHA)</strong>.
+                Отслеживаем околоземные объекты, анализируем орбиты, оцениваем риск столкновения.
+                Данные из <strong>NASA Sentry API</strong> (угрозы) и <strong>NASA CAD API</strong> (сближения).
             </p>
             <div class="hero-buttons">
                 <a href="#table-section" class="btn btn-primary">
@@ -49,10 +49,6 @@
                 <a href="#about" class="btn btn-secondary">
                     📚 Узнать больше
                 </a>
-            </div>
-            <div class="api-notice">
-                <span class="api-notice-icon">ℹ️</span>
-                <span>Оценки угроз получены из NASA Sentry API — мы переводим и визуализируем данные, не рассчитываем их самостоятельно</span>
             </div>
         </div>
     </section>
@@ -97,7 +93,7 @@
             <h2>Почему это важно?</h2>
             <p>Астероидная опасность — реальная угроза, которую необходимо отслеживать и изучать</p>
         </div>
-        <div class="info-grid">
+        <div class="info-grid info-grid-sources">
             <div class="info-card">
                 <div class="info-card-icon">☄️</div>
                 <h3>Исторические прецеденты</h3>
@@ -134,12 +130,13 @@
                     возможность изменения орбиты астероида.
                 </p>
             </div>
-        </div>
-        <div class="info-notice">
-            <span class="info-notice-icon">📡</span>
-            <div class="info-notice-content">
-                <h4>Источник данных об угрозах</h4>
-                <p>Все оценки угроз столкновений (Туринская шкала, Палермская шкала, вероятность удара) получены из <strong>NASA Sentry API</strong>. Наша система не рассчитывает угрозы самостоятельно — мы агрегируем, переводим и визуализируем официальные данные NASA для удобного мониторинга.</p>
+            <div class="info-card source-card">
+                <div class="info-card-icon">📡</div>
+                <h3>Источник данных об угрозах</h3>
+                <p>
+                    Все оценки угроз столкновений (Туринская шкала, Палермская шкала, вероятность удара) получены из <strong>NASA Sentry API</strong>. 
+                    Наша система не рассчитывает угрозы самостоятельно — мы агрегируем, переводим и визуализируем официальные данные NASA для удобного мониторинга.
+                </p>
             </div>
         </div>
     </section>
@@ -148,25 +145,25 @@
         <div class="torino-container">
             <div class="section-header">
                 <h2>Туринская шкала опасности</h2>
-                <p>Международная шкала для оценки опасности столкновения астероидов с Землёй (данные NASA Sentry)</p>
+                <p>Шкала оценки опасности столкновения астероидов с Землёй (NASA Sentry)</p>
             </div>
             <div class="torino-scale">
-                <div class="torino-level torino-0" onclick="showTorinoInfo(0)">0<span>Нет риска</span></div>
-                <div class="torino-level torino-1" onclick="showTorinoInfo(1)">1<span>Нормальный</span></div>
-                <div class="torino-level torino-2" onclick="showTorinoInfo(2)">2<span>Внимание</span></div>
-                <div class="torino-level torino-3" onclick="showTorinoInfo(3)">3<span>Угроза</span></div>
-                <div class="torino-level torino-4" onclick="showTorinoInfo(4)">4<span>Высокий</span></div>
-                <div class="torino-level torino-5" onclick="showTorinoInfo(5)">5<span>Серьёзный</span></div>
-                <div class="torino-level torino-6" onclick="showTorinoInfo(6)">6<span>Угроза</span></div>
-                <div class="torino-level torino-7" onclick="showTorinoInfo(7)">7<span>Опасный</span></div>
-                <div class="torino-level torino-8" onclick="showTorinoInfo(8)">8<span>Катастрофа</span></div>
-                <div class="torino-level torino-9" onclick="showTorinoInfo(9)">9<span>Глобальный</span></div>
-                <div class="torino-level torino-10" onclick="showTorinoInfo(10)">10<span>Коллизия</span></div>
+                <div class="torino-level torino-0">0<span>Нет риска</span></div>
+                <div class="torino-level torino-1">1<span>Нормальный</span></div>
+                <div class="torino-level torino-2">2<span>Внимание</span></div>
+                <div class="torino-level torino-3">3<span>Угроза</span></div>
+                <div class="torino-level torino-4">4<span>Высокий</span></div>
+                <div class="torino-level torino-5">5<span>Серьёзный</span></div>
+                <div class="torino-level torino-6">6<span>Угроза</span></div>
+                <div class="torino-level torino-7">7<span>Опасный</span></div>
+                <div class="torino-level torino-8">8<span>Катастрофа</span></div>
+                <div class="torino-level torino-9">9<span>Глобальный</span></div>
+                <div class="torino-level torino-10">10<span>Коллизия</span></div>
             </div>
             <div class="torino-legend">
                 <div class="torino-legend-item">
                     <strong style="color: #10b981;">Уровень 0 (Зелёный)</strong>
-                    Вероятность столкновения практически нулевая, или объект слишком мал.
+                    Вероятность столкновения практически нулевая или объект слишком мал.
                 </div>
                 <div class="torino-legend-item">
                     <strong style="color: #84cc16;">Уровень 1 (Зелёный)</strong>
@@ -174,11 +171,11 @@
                 </div>
                 <div class="torino-legend-item">
                     <strong style="color: #eab308;">Уровень 2-4 (Жёлтый/Оранжевый)</strong>
-                    Требует внимания астрономов. Вероятность столкновения 1% или выше.
+                    Требует внимания астрономов. Вероятность столкновения ≥1%.
                 </div>
                 <div class="torino-legend-item">
                     <strong style="color: #ef4444;">Уровень 5-7 (Красный)</strong>
-                    Серьёзная угроза. Вероятность столкновения значительная.
+                    Серьёзная угроза. Значительная вероятность столкновения.
                 </div>
                 <div class="torino-legend-item">
                     <strong style="color: #7f1d1d;">Уровень 8-10 (Бордовый)</strong>
@@ -260,26 +257,23 @@
     <section class="nav-cards-section">
         <div class="section-header">
             <h2>Разделы системы</h2>
-            <p>Перейдите к подробной информации по каждому направлению</p>
+            <p>Перейдите к подробной информации</p>
         </div>
         <div class="nav-cards">
             <a href="../asteroids/asteroids.html" class="nav-card">
                 <div class="nav-card-icon">🪨</div>
                 <h3>База PHA астероидов</h3>
-                <p>Полный каталог потенциально опасных околоземных астероидов с данными об орбитах, размерах и физических характеристиках. Фильтрация по классу орбиты, диаметру и MOID.</p>
-                <div class="nav-card-arrow">→</div>
+                <p>Каталог потенциально опасных астероидов с данными об орбитах, размерах и характеристиках. Фильтрация по классу орбиты, диаметру и MOID.</p>
             </a>
             <a href="../approaches/approaches.html" class="nav-card">
                 <div class="nav-card-icon">🌍</div>
                 <h3>Сближения с Землёй</h3>
-                <p>Календарь ближайших сближений астероидов с Землёй. Данные о расстоянии, скорости и времени максимального сближения из NASA CAD API.</p>
-                <div class="nav-card-arrow">→</div>
+                <p>Календарь сближений астероидов с Землёй. Расстояние, скорость и время максимального сближения из NASA CAD API.</p>
             </a>
             <a href="../threats/threats.html" class="nav-card">
                 <div class="nav-card-icon">⚠️</div>
                 <h3>Оценка угроз (Sentry)</h3>
-                <p>Анализ риска столкновения с использованием шкал Турина и Палермо из NASA Sentry API. Расчёт энергии воздействия и категоризация по потенциальным последствиям.</p>
-                <div class="nav-card-arrow">→</div>
+                <p>Анализ риска столкновения по шкалам Турина и Палермо. Энергия воздействия и категоризация последствий из NASA Sentry API.</p>
             </a>
         </div>
     </section>
@@ -291,13 +285,11 @@
                 <span>Asteroid Watch</span>
             </div>
             <ul class="footer-links">
-                <li><a href="#">API Документация</a></li>
                 <li><a href="#">О проекте</a></li>
-                <li><a href="#">Контакты</a></li>
                 <li><a href="#">GitHub</a></li>
             </ul>
             <div class="footer-copy">
-                © 2025 Asteroid Watch. Данные: NASA JPL Sentry API, NASA CAD API. Только PHA астероиды.
+                © 2025 Asteroid Watch. Данные: NASA JPL Sentry API, NASA CAD API.
             </div>
         </div>
     </footer>

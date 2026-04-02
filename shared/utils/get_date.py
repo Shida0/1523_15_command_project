@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class GetDate:
     def _parse_cad_date_exact(self, cd_str: str) -> datetime:
-        """ТОЧНЫЙ парсинг даты из поля 'cd' NASA CAD API."""
+        """ТОЧНЫЙ парсинг даты из поля 'cd' NASA CAD API"""
         if not cd_str or not isinstance(cd_str, str):
             raise ValueError(f"Недопустимая строка даты: {cd_str}")
 
@@ -63,10 +63,10 @@ class GetDate:
                 pass
 
     def _debug_date_string(self, cd_str: str) -> None:
-        """Детальная диагностика проблемной строки даты."""
+        """Детальная диагностика проблемной строки даты"""
         logger.error("=" * 60)
         logger.error("НЕВОЗМОЖНО РАСПАРСИТЬ ДАТУ: '%s'", cd_str)
-        logger.error("Длина строки: %d символов", len(cd_str))
+        logger.error("Длина строки: %d", len(cd_str))
         logger.error("Содержит пробел: %s", ' ' in cd_str)
         logger.error("Содержит дефис: %s", '-' in cd_str)
         logger.error("Содержит двоеточие: %s", ':' in cd_str)
@@ -79,7 +79,7 @@ class GetDate:
         logger.error("=" * 60)
 
     def _recover_date_from_string(self, cd_str: str) -> datetime:
-        """Попытка восстановить дату из поврежденной строки."""
+        """Попытка восстановить дату из поврежденной строки"""
         try:
             clean_str = ' '.join(cd_str.split())
 

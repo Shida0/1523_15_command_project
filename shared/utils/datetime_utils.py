@@ -1,6 +1,5 @@
-# Утилиты для работы с датами и временем
 from datetime import datetime, timezone
-from typing import Optional, Union, Any
+from typing import Optional, Any
 import logging
 
 
@@ -8,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def ensure_aware_utc(dt: Optional[datetime]) -> Optional[datetime]:
-    """Преобразует datetime в aware UTC."""
+    """Преобразует datetime в aware UTC"""
     if dt is None:
         return None
     if dt.tzinfo is None:
@@ -23,7 +22,7 @@ def ensure_aware_utc(dt: Optional[datetime]) -> Optional[datetime]:
 
 
 def ensure_naive_utc(dt: Optional[datetime]) -> Optional[datetime]:
-    """Преобразует aware datetime в naive UTC."""
+    """Преобразует aware datetime в naive UTC"""
     if dt is None:
         return None
     if dt.tzinfo is not None:
@@ -34,7 +33,7 @@ def ensure_naive_utc(dt: Optional[datetime]) -> Optional[datetime]:
 
 
 def normalize_datetime(value: Any) -> Any:
-    """Рекурсивно нормализует datetime значения в структурах данных."""
+    """Рекурсивно нормализует datetime значения в структурах данных"""
     if isinstance(value, datetime):
         return ensure_aware_utc(value)
     elif isinstance(value, list):
@@ -46,12 +45,12 @@ def normalize_datetime(value: Any) -> Any:
 
 
 def current_naive_utc() -> datetime:
-    """Возвращает текущее время как naive datetime в UTC."""
+    """Возвращает текущее время как naive datetime в UTC"""
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def current_aware_utc() -> datetime:
-    """Возвращает текущее время как aware datetime в UTC."""
+    """Возвращает текущее время как aware datetime в UTC"""
     return datetime.now(timezone.utc)
 
 

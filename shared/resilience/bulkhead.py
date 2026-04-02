@@ -42,7 +42,7 @@ class Bulkhead:
 
 
 def bulkhead(config: BulkheadConfig):
-    """Decorator to apply bulkhead pattern to a function."""
+    """Decorator to apply bulkhead pattern to a function"""
     def decorator(func: Callable) -> Callable:
         bulkhead_instance = Bulkhead(config)
         

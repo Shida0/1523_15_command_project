@@ -613,11 +613,11 @@ while True:
     # Запрашиваем батч данных
     params = {
         'fields': 'pdes',
-        'sb-group': 'pha',
+        'neo': '1',  # Околоземные объекты (PHA фильтруется в БД по MOID)
         'limit': batch_size,
         'offset': offset
     }
-    
+
     batch = await nasa_api.get(params)
     
     if not batch:

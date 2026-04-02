@@ -1,1 +1,1 @@
-from .engine import get_async_session, close_async_engine
+from .engine import get_async_session, close_async_engine, async_session_factory

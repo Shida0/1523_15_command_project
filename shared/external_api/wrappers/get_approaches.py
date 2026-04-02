@@ -1,8 +1,4 @@
 # get_approaches.py
-"""
-Асинхронные функции для получения данных о сближениях.
-Основной интерфейс для работы с NASA CAD API.
-"""
 import logging
 from typing import List, Dict, Any
 from datetime import datetime, timedelta
@@ -18,7 +14,7 @@ async def get_current_close_approaches(
     days: int = 3650,
     max_distance_au: float = 0.05
 ) -> List[Dict[str, Any]]:
-    """Получает все сближения астероидов с Землей на указанный период."""
+    """Получает все сближения астероидов с Землей на указанный период"""
     try:
         if not asteroids:
             logger.warning("Пустой список астероидов для получения сближений")

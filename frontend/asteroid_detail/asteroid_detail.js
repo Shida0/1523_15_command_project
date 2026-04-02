@@ -54,16 +54,23 @@ function displayAsteroidData(asteroid) {
     const threat = asteroid.threat_assessment;
     if (threat) {
         document.getElementById('impact-probability').textContent = threat.ip ? `${(threat.ip * 100).toFixed(6)}%` : '0%';
+        document.getElementById('impact-probability-text').textContent = threat.impact_probability_text_ru || '—';
 
         const turinScaleEl = document.getElementById('turin-scale');
         turinScaleEl.textContent = threat.ts_max;
         turinScaleEl.style.background = getTurinColor(threat.ts_max);
         turinScaleEl.style.color = '#fff';
 
+        document.getElementById('torino-description').textContent = threat.torino_scale_ru || '—';
         document.getElementById('palermo-scale').textContent = threat.ps_max ? threat.ps_max.toFixed(2) : '—';
         document.getElementById('energy').textContent = threat.energy_megatons ? `${threat.energy_megatons.toFixed(1)} Мт` : '—';
         document.getElementById('impact-category').textContent = threat.impact_category || '—';
         document.getElementById('threat-level').textContent = getThreatLevelRu(threat.ts_max);
+        document.getElementById('threat-diameter').textContent = threat.diameter_km ? `${threat.diameter_km.toFixed(3)} км` : '—';
+        document.getElementById('impact-velocity').textContent = threat.velocity_km_s ? `${threat.velocity_km_s.toFixed(1)} км/с` : '—';
+        document.getElementById('threat-magnitude').textContent = threat.absolute_magnitude ? threat.absolute_magnitude.toFixed(2) : '—';
+        document.getElementById('n-impacts').textContent = threat.n_imp || '—';
+        document.getElementById('last-obs').textContent = threat.last_obs || '—';
 
         // Года риска берём из threat_assessment или из close_approaches
         const impactYears = threat.impact_years || [];
@@ -81,14 +88,21 @@ function displayAsteroidData(asteroid) {
     } else {
         // Нет данных об угрозе - показываем нулевые значения
         document.getElementById('impact-probability').textContent = '0%';
+        document.getElementById('impact-probability-text').textContent = '—';
         const turinScaleEl = document.getElementById('turin-scale');
         turinScaleEl.textContent = '0';
         turinScaleEl.style.background = getTurinColor(0);
         turinScaleEl.style.color = '#fff';
+        document.getElementById('torino-description').textContent = '—';
         document.getElementById('palermo-scale').textContent = '—';
         document.getElementById('energy').textContent = '—';
         document.getElementById('impact-category').textContent = '—';
         document.getElementById('threat-level').textContent = 'НУЛЕВОЙ';
+        document.getElementById('threat-diameter').textContent = '—';
+        document.getElementById('impact-velocity').textContent = '—';
+        document.getElementById('threat-magnitude').textContent = '—';
+        document.getElementById('n-impacts').textContent = '—';
+        document.getElementById('last-obs').textContent = '—';
         document.getElementById('risk-years-section').style.display = 'none';
     }
 

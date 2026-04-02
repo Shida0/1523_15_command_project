@@ -6,7 +6,7 @@ let currentSort = { field: 'ts_max', order: 'desc' };
 
 async function loadThreats() {
     try {
-        allThreats = await api.getCurrentThreats();
+        allThreats = await api.getCurrentThreats(0, 0, 10000);
         filteredThreats = [...allThreats];
         updateStats();
         sortThreats();
@@ -77,6 +77,13 @@ function renderTable() {
                 }
             </td>
             <td><span class="risk-badge ${getRiskClass(threat.ts_max)}">${threat.threat_level_ru || '—'}</span></td>
+            <td>${threat.diameter_km ? threat.diameter_km.toFixed(3) : '—'}</td>
+            <td>${threat.velocity_km_s ? threat.velocity_km_s.toFixed(1) : '—'}</td>
+            <td>${threat.absolute_magnitude ? threat.absolute_magnitude.toFixed(2) : '—'}</td>
+            <td>${threat.n_imp || '—'}</td>
+            <td>${threat.last_obs || '—'}</td>
+            <td>${threat.torino_scale_ru || '—'}</td>
+            <td>${threat.impact_probability_text_ru || '—'}</td>
         `;
         tbody.appendChild(row);
     });
@@ -127,14 +134,14 @@ async function filterByRisk(risk) {
 
     try {
         if (risk === 'all') {
-            filteredThreats = await api.getCurrentThreats();
+            filteredThreats = await api.getCurrentThreats(0, 0, 10000);
         } else if (risk === 'high') {
-            filteredThreats = await api.getHighRiskThreats();
+            filteredThreats = await api.getHighRiskThreats(0, 10000);
         } else if (risk === 'medium') {
-            const all = await api.getCurrentThreats();
+            const all = await api.getCurrentThreats(0, 0, 10000);
             filteredThreats = all.filter(t => t.ts_max >= 2 && t.ts_max <= 4);
         } else if (risk === 'low') {
-            const all = await api.getCurrentThreats();
+            const all = await api.getCurrentThreats(0, 0, 10000);
             filteredThreats = all.filter(t => t.ts_max <= 1);
         }
 

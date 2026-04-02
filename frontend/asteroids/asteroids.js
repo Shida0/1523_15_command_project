@@ -20,8 +20,7 @@ async function loadAsteroids() {
         const countData = await api.getAsteroidsCount();
         totalAsteroids = countData.total;
 
-        // Загружаем ВСЕ астероиды без ограничения
-        allAsteroids = await api.getAllAsteroids(0, null);
+        allAsteroids = await api.getAllAsteroids(0, 10000);
         filteredAsteroids = [...allAsteroids];
         sortAsteroids();
         updatePagination();
@@ -55,6 +54,8 @@ function renderTable() {
             <td><a href="../asteroid_detail/asteroid_detail.html?name=${encodeURIComponent(asteroid.designation)}" class="asteroid-link">${asteroid.designation}</a></td>
             <td>${asteroid.name ? `<a href="../asteroid_detail/asteroid_detail.html?name=${encodeURIComponent(asteroid.designation)}" class="asteroid-link">${asteroid.name}</a>` : '—'}</td>
             <td>${asteroid.estimated_diameter_km.toFixed(3)}</td>
+            <td>${asteroid.perihelion_au ? asteroid.perihelion_au.toFixed(4) : '—'}</td>
+            <td>${asteroid.aphelion_au ? asteroid.aphelion_au.toFixed(4) : '—'}</td>
             <td>${asteroid.earth_moid_au.toFixed(4)}</td>
             <td>${asteroid.absolute_magnitude.toFixed(2)}</td>
             <td>${asteroid.albedo ? asteroid.albedo.toFixed(3) : '—'}</td>

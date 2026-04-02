@@ -1,11 +1,8 @@
-"""
-Запуск обновления данных
-"""
 import asyncio
 import logging
 from datetime import datetime
 from shared.infrastructure.services.update_service import UpdateService
-from shared.database.engine import AsyncSessionLocal
+from shared.database.engine import async_session_factory
 
 # Настройка подробного логирования
 logging.basicConfig(
@@ -26,13 +23,11 @@ async def main():
     
     try:
         # Создаем сервис обновления
-        update_service = UpdateService(AsyncSessionLocal)
+        update_service = UpdateService(async_session_factory)
         
-        # Запускаем обновление
         result = await update_service.update_all()
         
         # Выводим отчет
-        
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
         
@@ -58,13 +53,13 @@ async def main():
         
         # Пытаемся получить частичный отчет, если возможно
         try:
-            update_service = UpdateService(AsyncSessionLocal)
-            # Попробуем получить текущее состояние из БД
-            async with AsyncSessionLocal() as session:
-                from domains.asteroid.models.asteroid import AsteroidModel
+            update_service = UpdateService(async_session_factory)
+            async with async_session_factory() as session: # Попробуем получить текущее состояние из БД
+                from domains.asteroid import AsteroidModel
                 from sqlalchemy import func
                 asteroid_count = await session.scalar(func.count(AsteroidModel.id))
                 logger.info(f"Текущее количество астероидов в БД: {asteroid_count}")
+
         except Exception as db_e:
             logger.error(f"Ошибка при попытке получить статистику из БД: {db_e}")
 

@@ -9,9 +9,7 @@ from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from domains.asteroid.models.asteroid import AsteroidModel
-from domains.asteroid.repositories.asteroid_repository import AsteroidRepository
-from domains.asteroid.services.asteroid_service import AsteroidService
+from domains.asteroid import AsteroidModel, AsteroidRepository, AsteroidService
 from shared.transaction.uow import UnitOfWork
 
 
@@ -50,8 +48,8 @@ async def db_session(test_engine):
         yield session
         # Cleanup - delete all data after test
         # Import all models to ensure all tables are in metadata
-        from domains.approach.models.close_approach import CloseApproachModel
-        from domains.threat.models.threat_assessment import ThreatAssessmentModel
+        from domains.approach import CloseApproachModel
+        from domains.threat import ThreatAssessmentModel
         await session.rollback()
         for table in reversed(AsteroidModel.metadata.sorted_tables):
             await session.execute(table.delete())

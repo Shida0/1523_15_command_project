@@ -14,7 +14,7 @@ async_engine = create_async_engine(
     pool_recycle=3600
 )
 
-AsyncSessionLocal = async_sessionmaker(
+async_session_factory = async_sessionmaker(
     bind=async_engine,
     class_=AsyncSession,
     expire_on_commit=False,
@@ -23,11 +23,8 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    """
-    Зависимость FastAPI - предоставляет сессию без автокомита.
-    Контроллеры сами управляют коммитами.
-    """
-    session = AsyncSessionLocal()
+    """Зависимость FastAPI - предоставляет сессию без автокомита. Контроллеры сами управляют коммитами"""
+    session = async_session_factory()
     try:
         logger.debug("Сессия БД открыта (зависимость FastAPI)")
         yield session
@@ -40,5 +37,5 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
         logger.debug("Сессия БД закрыта (зависимость FastAPI)")
 
 async def close_async_engine():
-   """Корректно закрывает соединение с базой данных."""
+   """Корректно закрывает соединение с базой данных"""
    await async_engine.dispose()

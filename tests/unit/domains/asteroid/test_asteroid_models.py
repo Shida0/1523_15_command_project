@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 from decimal import Decimal
-from domains.asteroid.models.asteroid import AsteroidModel
+from domains.asteroid import AsteroidModel
 
 
 class TestAsteroidModel:

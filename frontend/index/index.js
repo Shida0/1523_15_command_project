@@ -48,7 +48,7 @@ async function loadStatistics() {
 // Получаем список астероидов для главной таблицы, показываем первые 15
 async function loadAsteroids() {
     try {
-        allAsteroids = await api.getAllAsteroids();
+        allAsteroids = await api.getAllAsteroids(0, 10000);
         filteredAsteroids = [...allAsteroids];
         renderTable(filteredAsteroids);
     } catch (error) {

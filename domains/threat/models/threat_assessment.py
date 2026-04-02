@@ -9,10 +9,7 @@ logger = logging.getLogger(__name__)
 from shared.models.base import Base
 
 class ThreatAssessmentModel(Base):
-    """
-    Модель для хранения оценок угроз столкновений из NASA Sentry API.
-    Соответствует таблице 'threat_assessment_models'.
-    """
+    """Модель для хранения оценок угроз столкновений из NASA Sentry API. Соответствует таблице 'threat_assessment_models'"""
     
     # Связь с астероидом - ОДИН К ОДНОМУ
     asteroid_id: Mapped[int] = mapped_column(
@@ -181,9 +178,8 @@ class ThreatAssessmentModel(Base):
     )
     
     def __init__(self, **kwargs):
-        """Инициализирует экземпляр модели оценки угрозы с валидацией и нормализацией данных."""
-        # Поля, которые могут приходить под разными именами
-        field_mapping = {
+        """Инициализирует экземпляр модели оценки угрозы с валидацией и нормализацией данных"""
+        field_mapping = { # Поля, которые могут приходить под разными именами
             'diameter_km': 'diameter',
             'velocity_km_s': 'v_inf',
             'absolute_magnitude': 'h'
@@ -217,10 +213,9 @@ class ThreatAssessmentModel(Base):
             self.threat_level_ru = self._assess_threat_level()
     
     def _calculate_energy(self) -> float:
-        """Расчет энергии удара в мегатоннах тротила."""
+        """Расчет энергии удара в мегатоннах тротила"""
         try:
-            # Используем поля с правильными именами
-            diameter_km = getattr(self, 'diameter', 0.05)
+            diameter_km = getattr(self, 'diameter', 0.05) # Используем поля с правильными именами
             velocity_km_s = getattr(self, 'v_inf', 20.0)
             
             if diameter_km <= 0:
@@ -248,7 +243,7 @@ class ThreatAssessmentModel(Base):
             return 0.0
     
     def _determine_impact_category(self) -> str:
-        """Определение категории воздействия на основе энергии."""
+        """Определение категории воздействия на основе энергии"""
         energy = getattr(self, 'energy_megatons', 0.0)
         
         if energy < 1:
@@ -259,7 +254,7 @@ class ThreatAssessmentModel(Base):
             return 'глобальный'
     
     def _assess_threat_level(self) -> str:
-        """Оценка уровня угрозы на основе шкал Турина и Палермо."""
+        """Оценка уровня угрозы на основе шкал Турина и Палермо"""
         ts_max = getattr(self, 'ts_max', 0)
         ps_max = getattr(self, 'ps_max', -10.0)
         

@@ -10,7 +10,7 @@ from shared.resilience import circuit_breaker, NASA_API_CIRCUIT_CONFIG, bulkhead
 logger = logging.getLogger(__name__)
 
 class CADClient(GetDate):
-    """Асинхронный клиент для получения данных о сближениях."""
+    """Асинхронный клиент для получения данных о сближениях"""
     
     CAD_API_URL = "https://ssd-api.jpl.nasa.gov/cad.api"
     
@@ -45,10 +45,7 @@ class CADClient(GetDate):
         end_date: Optional[datetime] = None,
         max_distance_au: float = 0.05
     ) -> Dict[str, List[Dict[str, Any]]]:
-        """
-        Получает данные о сближениях астероидов с Землей.
-        Обрабатывает разные форматы ответов от NASA API.
-        """
+        """Получает данные о сближениях астероидов с Землей. Обрабатывает разные форматы ответов от NASA API"""
         if not self.session:
             raise RuntimeError("Сессия не инициализирована. Используйте контекстный менеджер.")
 
@@ -121,7 +118,7 @@ class CADClient(GetDate):
         cad_data: Dict[str, Any],
         filter_ids: Optional[List[str]] = None
     ) -> Dict[str, List[Dict[str, Any]]]:
-        """Обрабатывает ответ CAD API и преобразует его в формат сближений."""
+        """Обрабатывает ответ CAD API и преобразует его в формат сближений"""
         results = {}
         
         if 'data' not in cad_data or not cad_data['data']:
@@ -148,7 +145,7 @@ class CADClient(GetDate):
         return results
     
     def _extract_field_indices(self, fields: List[str]) -> Dict[str, int]:
-        """Извлекает индексы полей из заголовков CAD API."""
+        """Извлекает индексы полей из заголовков CAD API"""
         try:
             return {
                 'des': fields.index('des'),
@@ -167,7 +164,7 @@ class CADClient(GetDate):
         field_indices: Dict[str, int],
         filter_set: Optional[set]
     ) -> Optional[Dict[str, Any]]:
-        """Парсит одну запись сближения из CAD API."""
+        """Парсит одну запись сближения из CAD API"""
         des = str(entry[field_indices['des']])
         
         if filter_set and des not in filter_set:
@@ -191,7 +188,7 @@ class CADClient(GetDate):
         }
     
     def _extract_asteroid_name(self, entry: List[Any], field_indices: Dict[str, int], default: str) -> str:
-        """Извлекает имя астероида из записи CAD."""
+        """Извлекает имя астероида из записи CAD"""
         if field_indices['fullname'] != -1 and field_indices['fullname'] < len(entry):
             return str(entry[field_indices['fullname']])
         return default

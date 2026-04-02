@@ -1,9 +1,3 @@
-"""
-Система управления конфигурацией для приложения мониторинга астероидов.
-
-Параметры подключения к базе данных берутся ТОЛЬКО из переменных окружения (.env файл).
-Файл config.yaml используется только для настроек приложения и NASA API.
-"""
 import os
 import json
 import logging
@@ -19,16 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class DatabaseConfig(BaseModel):
-    """
-    Конфигурация базы данных.
-    
-    Все параметры берутся ТОЛЬКО из переменных окружения:
-    - DB_HOST
-    - DB_PORT
-    - DB_USER
-    - DB_PASSWORD
-    - DB_NAME
-    """
+    """Конфигурация базы данных. Все параметры берутся ТОЛЬКО из переменных окружения: DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME"""
     host: str = Field(default_factory=lambda: os.getenv('DB_HOST'))
     port: int = Field(default_factory=lambda: int(os.getenv('DB_PORT', '5432')))
     user: str = Field(default_factory=lambda: os.getenv('DB_USER'))
@@ -37,16 +22,16 @@ class DatabaseConfig(BaseModel):
 
     @property
     def dsn(self) -> str:
-        """Получить строку подключения к базе данных."""
+        """Получить строку подключения к базе данных"""
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"
 
     @property
     def async_driver(self) -> str:
-        """Получить драйвер для асинхронного подключения."""
+        """Получить драйвер для асинхронного подключения"""
         return "asyncpg"
 
     def validate_required(self) -> None:
-        """Проверить что все обязательные параметры заданы."""
+        """Проверить что все обязательные параметры заданы"""
         missing = []
         if not self.host:
             missing.append('DB_HOST')
@@ -65,7 +50,7 @@ class DatabaseConfig(BaseModel):
 
 
 class NasaApiConfig(BaseModel):
-    """Конфигурация API NASA."""
+    """Конфигурация API NASA"""
     base_url: str = Field(default="https://api.nasa.gov")
     rate_limit_requests: int = Field(default=1000)
     rate_limit_period: int = Field(default=3600)
@@ -77,7 +62,7 @@ class NasaApiConfig(BaseModel):
 
 
 class ApplicationConfig(BaseModel):
-    """Конфигурация на уровне приложения."""
+    """Конфигурация на уровне приложения"""
     environment: str = Field(default="development")
     log_level: str = Field(default="INFO")
     debug: bool = Field(default=False)
@@ -150,7 +135,7 @@ class ConfigManager:
             raise
 
     def validate(self) -> bool:
-        """Валидация текущей конфигурации."""
+        """Валидация текущей конфигурации"""
         try:
             # Проверяем обязательные параметры БД
             self.database.validate_required()
@@ -166,15 +151,15 @@ class ConfigManager:
             return False
 
     def get_database_url(self) -> str:
-        """Получить URL базы данных."""
+        """Получить URL базы данных"""
         return self.database.dsn
 
     def get_log_level(self) -> str:
-        """Получить настроенный уровень логирования."""
+        """Получить настроенный уровень логирования"""
         return self.application.log_level.upper()
 
     def is_production(self) -> bool:
-        """Проверить, запущено ли в производственном окружении."""
+        """Проверить, запущено ли в производственном окружении"""
         return self.application.environment.lower() == 'production'
 
     def __str__(self) -> str:
@@ -210,6 +195,6 @@ def get_config() -> ConfigManager:
 
 
 def set_config(config: ConfigManager) -> None:
-    """Установить глобальный экземпляр конфигурации."""
+    """Установить глобальный экземпляр конфигурации"""
     global _config_instance
     _config_instance = config

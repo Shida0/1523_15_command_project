@@ -1,17 +1,12 @@
 from typing import Optional
 from sqlalchemy import Float, DateTime, ForeignKey, String, UniqueConstraint, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql import func
-from datetime import datetime, timezone
+from datetime import datetime
 
 from shared.models.base import Base
 
 class CloseApproachModel(Base):
-    """
-    Модель для хранения рассчитанных сближений астероидов с Землей.
-    Соответствует таблице 'close_approach_models'.
-    """
-
+    """Модель для хранения рассчитанных сближений астероидов с Землей. Соответствует таблице 'close_approach_models'"""
     # Связь с астероидом
     asteroid_id: Mapped[int] = mapped_column(
         ForeignKey('asteroid_models.id', ondelete='CASCADE'),
@@ -45,7 +40,7 @@ class CloseApproachModel(Base):
         comment="Относительная скорость в км/с"
     )
     
-    # NASA обозначение (для удобства, дублирует данные из asteroid)
+    # НАСА обозначение (для удобства, дублирует данные из asteroid)
     asteroid_designation: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
@@ -93,8 +88,9 @@ class CloseApproachModel(Base):
         ),
     )
     
+    
     def __init__(self, **kwargs):
-        """Инициализирует экземпляр модели сближения с валидацией данных."""
+        """Инициализирует экземпляр модели сближения с валидацией данных"""
         super().__init__(**kwargs)
 
         # Автоматический расчет расстояния в км, если не задано

@@ -7,9 +7,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
 
 # Pre-import models to ensure SQLAlchemy mappers are configured before tests run
-from domains.asteroid.models.asteroid import AsteroidModel
-from domains.approach.models.close_approach import CloseApproachModel
-from domains.threat.models.threat_assessment import ThreatAssessmentModel
+from domains.asteroid import AsteroidModel
+from domains.approach import CloseApproachModel
+from domains.threat import ThreatAssessmentModel
 
 
 # ============ SESSION FIXTURES ============
@@ -97,9 +97,9 @@ async def db_session(async_engine):
     For integration tests that need actual database operations.
     """
     # Import all models to ensure tables are created
-    from domains.asteroid.models.asteroid import AsteroidModel
-    from domains.approach.models.close_approach import CloseApproachModel
-    from domains.threat.models.threat_assessment import ThreatAssessmentModel
+    from domains.asteroid import AsteroidModel
+    from domains.approach import CloseApproachModel
+    from domains.threat import ThreatAssessmentModel
     
     # Create tables
     async with async_engine.begin() as conn:
@@ -264,7 +264,7 @@ def ordered_scalar_mock():
 @pytest.fixture
 def mock_asteroid_service(mock_session_factory):
     """Mock asteroid service for API tests."""
-    from domains.asteroid.services.asteroid_service import AsteroidService
+    from domains.asteroid import AsteroidService
     service = AsteroidService(mock_session_factory)
     return service
 
@@ -272,7 +272,7 @@ def mock_asteroid_service(mock_session_factory):
 @pytest.fixture
 def mock_approach_service(mock_session_factory):
     """Mock approach service for API tests."""
-    from domains.approach.services.approach_service import ApproachService
+    from domains.approach import ApproachService
     service = ApproachService(mock_session_factory)
     return service
 
@@ -280,7 +280,7 @@ def mock_approach_service(mock_session_factory):
 @pytest.fixture
 def mock_threat_service(mock_session_factory):
     """Mock threat service for API tests."""
-    from domains.threat.services.threat_service import ThreatService
+    from domains.threat import ThreatService
     service = ThreatService(mock_session_factory)
     return service
 

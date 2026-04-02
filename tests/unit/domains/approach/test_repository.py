@@ -9,8 +9,7 @@ from unittest.mock import AsyncMock, Mock, patch
 from sqlalchemy import select, func
 from datetime import datetime, timezone, timedelta
 
-from domains.approach.models.close_approach import CloseApproachModel
-from domains.approach.repositories.approach_repository import ApproachRepository
+from domains.approach import CloseApproachModel, ApproachRepository
 
 
 class TestApproachRepository:

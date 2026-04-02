@@ -1,8 +1,4 @@
-# get_treat.py (исправленная версия)
-"""
-Асинхронные функции для получения данных об угрозах.
-Основной интерфейс для работы с NASA Sentry API.
-"""
+# get_threat.py
 import logging
 from typing import List, Dict, Any, Optional
 from ...external_api.clients.sentry_api import SentryClient, SentryImpactRisk
@@ -10,8 +6,8 @@ from ...external_api.clients.sentry_api import SentryClient, SentryImpactRisk
 
 logger = logging.getLogger(__name__)
 
-async def get_all_treats() -> List[Dict[str, Any]]:
-    """Получает все актуальные угрозы столкновения с Землей."""
+async def get_all_threats() -> List[Dict[str, Any]]:
+    """Получает все актуальные угрозы столкновения с Землей"""
     try:
         async with SentryClient() as client:
             risks = await client.fetch_current_impact_risks()
@@ -44,35 +40,9 @@ async def get_all_treats() -> List[Dict[str, Any]]:
         logger.error(f"Неожиданная ошибка получения данных об угрозах: {e}", exc_info=True)
         return []
 
-async def get_treat_details(designation: str) -> Optional[Dict[str, Any]]:
-    """Получает детальную информацию об угрозе для конкретного астероида."""
-    try:
-        async with SentryClient() as client:
-            risk = await client.fetch_object_details(designation)
-
-            if risk is None:
-                logger.info(f"Объект {designation} не найден или отсутствует в Sentry")
-                return None
-
-            if not isinstance(risk, SentryImpactRisk):
-                logger.warning(f"Для объекта {designation} получен неожиданный тип данных: {type(risk)}")
-                return None
-
-            try:
-                return risk.to_dict()
-            except AttributeError:
-                logger.warning(f"У объекта {designation} отсутствует метод to_dict, создаем словарь вручную")
-                return _impact_risk_to_dict(risk)
-
-    except RuntimeError as e:
-        logger.error(f"Ошибка SentryClient при запросе объекта {designation}: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Неожиданная ошибка получения деталей угрозы для {designation}: {e}")
-        return None
 
 def _impact_risk_to_dict(risk: SentryImpactRisk) -> Dict[str, Any]:
-    """Создает словарь из объекта SentryImpactRisk (резервный метод)."""
+    """Создает словарь из объекта SentryImpactRisk (резервный метод)"""
     return {
         'designation': risk.designation,
         'fullname': risk.fullname,

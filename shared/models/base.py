@@ -13,7 +13,7 @@ class Base(AsyncAttrs, DeclarativeBase):
     
     @declared_attr.directive
     def __tablename__(cls) -> str:
-        """Автоматически генерирует имя таблицы из имени класса."""
+        """Автоматически генерирует имя таблицы из имени класса"""
         name = cls.__name__
         
         # Улучшенная логика преобразования CamelCase в snake_case
@@ -51,7 +51,7 @@ class Base(AsyncAttrs, DeclarativeBase):
     )
     
     def __repr__(self) -> str:
-        """Строковое представление объекта для отладки."""
+        """Строковое представление объекта для отладки"""
         attrs = []
         for key, value in self.__dict__.items():
             if not key.startswith('_'):                

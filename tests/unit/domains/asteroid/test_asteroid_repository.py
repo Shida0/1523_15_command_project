@@ -10,8 +10,7 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
 
-from domains.asteroid.models.asteroid import AsteroidModel
-from domains.asteroid.repositories.asteroid_repository import AsteroidRepository
+from domains.asteroid import AsteroidModel, AsteroidRepository
 
 
 class TestAsteroidRepository:

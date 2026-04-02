@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 from datetime import datetime
-from domains.threat.schemas.threat_schema import ThreatAssessmentBase, ThreatAssessmentCreate, ThreatAssessmentResponse
+from domains.threat import ThreatAssessmentBase, ThreatAssessmentCreate, ThreatAssessmentResponse
 
 
 class TestThreatAssessmentCreateSchema:

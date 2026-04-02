@@ -9,9 +9,9 @@ from api.dependencies import (
     async_session_factory
 )
 from shared.transaction.uow import UnitOfWork
-from domains.asteroid.services.asteroid_service import AsteroidService
-from domains.approach.services.approach_service import ApproachService
-from domains.threat.services.threat_service import ThreatService
+from domains.asteroid import AsteroidService
+from domains.approach import ApproachService
+from domains.threat import ThreatService
 
 
 class TestAPIDependencies:

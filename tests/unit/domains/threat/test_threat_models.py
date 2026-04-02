@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from domains.threat.models.threat_assessment import ThreatAssessmentModel
+from domains.threat import ThreatAssessmentModel
 
 
 class TestThreatAssessmentModel:

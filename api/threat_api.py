@@ -5,112 +5,76 @@ from fastapi import APIRouter, Depends, Query
 from typing import List, Optional
 
 from .dependencies import get_threat_service
-from domains.threat.schemas import ThreatAssessmentResponse
-from domains.threat.services.threat_service import ThreatService
+from domains.threat import ThreatAssessmentResponse, ThreatService
 
 router = APIRouter(prefix="/threats", tags=["Threats"])
 
 
-@router.get("/current", response_model=List[ThreatAssessmentResponse])
+@router.get("/current")
 async def get_current_threats(
-    skip: int = Query(0, ge=0),
-    limit: Optional[int] = Query(None, ge=0),
-    min_ts: int = Query(0, ge=0, le=10),
-    threat_service: ThreatService = Depends(get_threat_service)):
-    """
-    Получить актуальные угрозы.
+    skip: int = Query(0),
+    limit: Optional[int] = Query(),
+    min_ts: int = Query(default=1, description="Минимальная Туринская шкала"),
+    threat_service: ThreatService = Depends(get_threat_service)
+) -> List[ThreatAssessmentResponse]:
+    """Получить актуальные угрозы. Возвращает список объектов с ненулевым риском, отсортированных по степени опасности"""
+    return await threat_service.get_by_risk_level(min_ts, 10, skip, limit)
 
-    Возвращает список объектов с ненулевым риском, отсортированных по степени опасности.
-    """
-    return await threat_service.get_by_risk_level(min_ts=min_ts, max_ts=10, skip=skip, limit=limit)
-
-
-@router.get("/high-risk", response_model=List[ThreatAssessmentResponse])
+@router.get("/high-risk")
 async def get_high_risk_threats(
-    limit: Optional[int] = Query(None, ge=0),
-    skip: int = Query(0, ge=0),
-    threat_service: ThreatService = Depends(get_threat_service)):
-    """
-    Получить угрозы высокого риска.
+    limit: Optional[int] = Query(),
+    skip: int = Query(),
+    threat_service: ThreatService = Depends(get_threat_service)
+) -> List[ThreatAssessmentResponse]:
+    """Получить угрозы высокого риска. Возвращает угрозы с Туринской шкалой >= 5"""
+    return await threat_service.get_high_risk(limit, skip)
 
-    Возвращает угрозы с Туринской шкалой >= 5 (значительная вероятность
-    столкновения с серьезными последствиями).
-    """
-    return await threat_service.get_high_risk(limit=limit, skip=skip)
-
-
-@router.get("/by-probability", response_model=List[ThreatAssessmentResponse])
+@router.get("/by-probability")
 async def get_threats_by_probability(
-    skip: int = Query(0, ge=0),
-    limit: Optional[int] = Query(None, ge=0),
-    min_probability: float = Query(0.0, ge=0.0, le=1.0),
-    max_probability: float = Query(1.0, ge=0.0, le=1.0),
-    threat_service: ThreatService = Depends(get_threat_service)):
-    """
-    Получить угрозы по диапазону вероятности столкновения.
-    """
-    return await threat_service.get_by_probability(
-        min_probability=min_probability,
-        max_probability=max_probability,
-        skip=skip,
-        limit=limit
-    )
+    skip: int = Query(),
+    limit: Optional[int] = Query(),
+    min_probability: float = Query(),
+    max_probability: float = Query(),
+    threat_service: ThreatService = Depends(get_threat_service)
+) -> List[ThreatAssessmentResponse]:
+    """Получить угрозы по диапазону вероятности столкновения"""
+    return await threat_service.get_by_probability(min_probability, max_probability, skip, limit)
 
-
-@router.get("/by-energy", response_model=List[ThreatAssessmentResponse])
+@router.get("/by-energy")
 async def get_threats_by_energy(
-    skip: int = Query(0, ge=0),
-    limit: Optional[int] = Query(None, ge=0),
-    min_energy: float = Query(0.0, ge=0.0),
-    max_energy: Optional[float] = Query(None, ge=0.0),
-    threat_service: ThreatService = Depends(get_threat_service)):
-    """
-    Получить угрозы по диапазону энергии воздействия.
+    skip: int = Query(),
+    limit: Optional[int] = Query(),
+    min_energy: float = Query(),
+    max_energy: Optional[float] = Query(),
+    threat_service: ThreatService = Depends(get_threat_service)
+) -> List[ThreatAssessmentResponse]:
+    """Получить угрозы по диапазону энергии воздействия. Энергия измеряется в мегатоннах (Мт)"""
+    return await threat_service.get_by_energy(min_energy, max_energy, skip, limit)
 
-    Энергия измеряется в мегатоннах (Мт).
-    """
-    return await threat_service.get_by_energy(
-        min_energy=min_energy,
-        max_energy=max_energy,
-        skip=skip,
-        limit=limit
-    )
-
-
-@router.get("/statistics", response_model=dict)
-async def get_threat_statistics(threat_service: ThreatService = Depends(get_threat_service)):
-    """
-    Получить статистику по угрозам.
-
-    Возвращает общую статистику: количество угроз, распределение по
-    уровням риска и другую полезную информацию.
-    """
+@router.get("/statistics")
+async def get_threat_statistics(threat_service: ThreatService = Depends(get_threat_service)) -> dict:
+    """Получить статистику по угрозам. Возвращает общую статистику: количество угроз, распределение по уровням риска"""
     return await threat_service.get_statistics()
 
-
-@router.get("/{designation}", response_model=ThreatAssessmentResponse)
+@router.get("/{designation}")
 async def get_threat_by_designation(
     designation: str,
-    threat_service: ThreatService = Depends(get_threat_service)):
-    """
-    Получить угрозу для конкретного астероида.
-
-    designation: Обозначение астероида в системе NASA
-
-    Возвращает оценку угрозы или None, если угроза не найдена.
-    """
+    threat_service: ThreatService = Depends(get_threat_service)
+) -> ThreatAssessmentResponse:
+    """Получить угрозу для конкретного астероида. Возвращает оценку угрозы или None, если угроза не найдена"""
     return await threat_service.get_by_designation(designation)
 
-
-@router.get("/by-category/{category}", response_model=List[ThreatAssessmentResponse])
+@router.get("/by-category/{category}")
 async def get_threats_by_category(
     category: str,
-    skip: int = Query(0, ge=0),
-    limit: Optional[int] = Query(None, ge=0),
-    threat_service: ThreatService = Depends(get_threat_service)):
-    """
-    Получить угрозы по категории воздействия.
-
-    Категории: локальный, региональный, глобальный
-    """
-    return await threat_service.get_by_category(category=category, skip=skip, limit=limit)
+    skip: int = Query(0),
+    limit: Optional[int] = Query(),
+    threat_service: ThreatService = Depends(get_threat_service)
+) -> List[ThreatAssessmentResponse]:
+    """Получить угрозы по категории воздействия. Категории: локальный, региональный, глобальный"""
+    if category not in ["локальный", "региональный", "глобальный"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid category: {category}. Supported: локальный, региональный, глобальный"
+        )
+    return await threat_service.get_by_category(category, skip, limit)

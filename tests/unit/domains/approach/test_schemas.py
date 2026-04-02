@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 from datetime import datetime
-from domains.approach.schemas.approach_schema import ApproachBase, ApproachCreate, ApproachResponse
+from domains.approach import ApproachBase, ApproachCreate, ApproachResponse
 
 
 class TestApproachCreateSchema:

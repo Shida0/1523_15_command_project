@@ -2,7 +2,7 @@
 
 .page-header {
     padding: 8rem 2rem 3rem;
-    background: rgba(30, 41, 59, 0.3);
+    background: var(--bg-card);
     border-bottom: 1px solid var(--border);
 }
 
@@ -15,10 +15,7 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--text-primary), var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--text-primary);
 }
 
 .page-subtitle {
@@ -63,14 +60,14 @@
 .detail-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 8px;
     overflow: hidden;
 }
 
 .card-header {
     padding: 1.5rem 2rem;
     border-bottom: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.5);
+    background: var(--bg-dark);
 }
 
 .card-header h2 {
@@ -263,14 +260,12 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--primary);
     color: white;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
+    background: var(--primary-dark);
 }
 
 /* Адаптивность */

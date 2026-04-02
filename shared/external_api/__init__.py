@@ -8,13 +8,13 @@ from .clients.sbdb_api import NASASBDBClient
 from .clients.sentry_api import SentryClient
 from .wrappers.get_data import get_asteroid_data
 from .wrappers.get_approaches import get_current_close_approaches
-from .wrappers.get_threat import get_all_treats
+from .wrappers.get_threat import get_all_threats
 
 __all__ = [
     'CADClient',
-    'NASASBDBClient', 
+    'NASASBDBClient',
     'SentryClient',
     'get_asteroid_data',
     'get_current_close_approaches',
-    'get_all_treats'
+    'get_all_threats'
 ]
