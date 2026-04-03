@@ -2,7 +2,7 @@
 API роутеры для работы с астероидами.
 """
 from fastapi import APIRouter, Depends, status, HTTPException, Query
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 
 from .dependencies import get_asteroid_service, get_approach_service, get_threat_service
 from domains.asteroid import AsteroidResponse, AsteroidDetailResponse, AsteroidService
@@ -66,13 +66,13 @@ async def get_asteroid_statistics(asteroid_service: AsteroidService = Depends(ge
     """Получить статистику по астероидам. Возвращает общую статистику: количество, средний диаметр, минимальный MOID"""
     return await asteroid_service.get_statistics()
 
-@router.get("/{designation}", response_model=AsteroidDetailResponse)
+@router.get("/{designation}")
 async def get_asteroid_by_designation(
     designation: str,
     asteroid_service: AsteroidService = Depends(get_asteroid_service),
     approach_service: ApproachService = Depends(get_approach_service),
     threat_service: ThreatService = Depends(get_threat_service)
-) -> Dict[str, Any]:
+):
     """Получить детальную информацию об астероиде. Возвращает полную информацию включая сближения и оценку угрозы"""
     asteroid = await asteroid_service.get_by_designation(designation)
     if not asteroid:

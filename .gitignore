@@ -9,3 +9,5 @@ __pycache__
 .qwen
 .roo
 run_updates.sh
+tests
+pytest.ini

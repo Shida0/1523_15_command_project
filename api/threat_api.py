@@ -1,7 +1,7 @@
 """
 API роутеры для работы с оценками угроз астероидов.
 """
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from typing import List, Optional
 
 from .dependencies import get_threat_service
