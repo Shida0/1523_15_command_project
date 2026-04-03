@@ -11,3 +11,4 @@ __pycache__
 run_updates.sh
 tests
 pytest.ini
+update_log.log

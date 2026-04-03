@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo -u postgres psql << EOF
-CREATE USER administrator WITH PASSWORD 'strong_password';
+CREATE USER administrator WITH PASSWORD 'secure_password';
 CREATE DATABASE asteroid_watch_db 
     ENCODING 'UTF8' 
     LC_COLLATE 'en_US.UTF-8' 
